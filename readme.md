@@ -1,11 +1,11 @@
 # Organisations Service (v2)
 
-**Repository:** Reapit.Platform.Organisations
+**Repository:** Reapit.Platform.Access
 
-**Namespace:** Reapit.Platform.Organisations
+**Namespace:** Reapit.Platform.Access
 
-**Description:** Second iteration of the organisations service, responsible for managing users, organisations, and the 
-associations between them.  Broadcasts event notifications to a configurable topic, and pushes changes to IDP as needed.
+**Description:** Access management service used to control user access to products and product instances.  
+Broadcasts event notifications to a configurable topic.
 
 ---
 
@@ -93,7 +93,7 @@ This project provides an AWS CDK project to provision the required infrastructur
 The provisioned infrastructure hosts this service in an ECS cluster using a docker image.  The docker image is hosted 
 in an ECR repository.
 
-- Get the URI of the orgs-v2-sandbox-repository ECR repository from AWS
+- Get the URI of the <repository> ECR repository from AWS
 - Get the [Personal Access Token (PAT)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) to access the Reapit GitHub NuGet feed
 - Open a terminal window in the `./src` directory
 - Make sure docker is running
@@ -104,15 +104,15 @@ in an ECR repository.
   ```
 - Build the service docker image
   ```cmd
-  docker build -t orgs-v2-sandbox-repository --build-arg NUGET_ACCESS_TOKEN=<personal-access-token> .
+  docker build -t <repository> --build-arg NUGET_ACCESS_TOKEN=<personal-access-token> .
   ```
 - Tag the image
   ```
-  docker tag orgs-v2-sandbox-repository:latest <ecr-uri>/orgs-v2-sandbox-repository:latest
+  docker tag <repository>:latest <ecr-uri>/<repository>:latest
   ```
 - Push the image to the container repository
   ```
-  docker push <ecr-uri>/orgs-v2-sandbox-repository:latest
+  docker push <ecr-uri>/<repository>:latest
   ```
 
 ### Database Preparation
