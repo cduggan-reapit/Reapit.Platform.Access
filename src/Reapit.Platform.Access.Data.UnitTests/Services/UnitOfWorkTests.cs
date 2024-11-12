@@ -10,26 +10,49 @@ namespace Reapit.Platform.Access.Data.UnitTests.Services;
 public class UnitOfWorkTests : DatabaseAwareTestBase
 {
     /*
-     * Dummies
+     * Users
      */
-
+    
     [Fact]
-    public async Task Dummies_ReturnsRepository_WhenCalledForTheFirstTime()
+    public async Task Users_ReturnsRepository_WhenCalledForTheFirstTime()
     {
         await using var dbContext = await GetContextAsync();
         var sut = CreateSut(dbContext);
-        // var actual = sut.Dummies;
-        // actual.Should().NotBeNull();
+        var actual = sut.Users;
+        actual.Should().NotBeNull();
     }
-
+    
     [Fact]
-    public async Task Dummies_ReusesRepository_ForSubsequentCalls()
+    public async Task Users_ReusesRepository_ForSubsequentCalls()
     {
         await using var dbContext = await GetContextAsync();
         var sut = CreateSut(dbContext);
-        // var initial = sut.Dummies;
-        // var subsequent = sut.Dummies;
-        // subsequent.Should().BeSameAs(initial);
+        var initial = sut.Users;
+        var subsequent = sut.Users;
+        subsequent.Should().BeSameAs(initial);
+    }
+    
+    /*
+     * Organisations
+     */
+    
+    [Fact]
+    public async Task Organisations_ReturnsRepository_WhenCalledForTheFirstTime()
+    {
+        await using var dbContext = await GetContextAsync();
+        var sut = CreateSut(dbContext);
+        var actual = sut.Organisations;
+        actual.Should().NotBeNull();
+    }
+    
+    [Fact]
+    public async Task Organisations_ReusesRepository_ForSubsequentCalls()
+    {
+        await using var dbContext = await GetContextAsync();
+        var sut = CreateSut(dbContext);
+        var initial = sut.Organisations;
+        var subsequent = sut.Organisations;
+        subsequent.Should().BeSameAs(initial);
     }
     
     /*
@@ -45,13 +68,13 @@ public class UnitOfWorkTests : DatabaseAwareTestBase
         var sut = CreateSut(dbContext);
         
         // CreateAsync should add one - check that it's state is Added
-        // await sut.Dummies.CreateAsync(dummy, default);
+        await sut.Users.CreateUserAsync(new User("id", "name", "email"), default);
         dbContext.ChangeTracker.Entries().Should().AllSatisfy(entry => entry.State .Should().Be(EntityState.Added));
         
         await sut.SaveChangesAsync(default);
 
         // Once it's saved, it should be committed and thus tracked as Unchanged
-        // dbContext.Dummies.Should().HaveCount(1);
+        dbContext.Users.Should().HaveCount(1);
         dbContext.ChangeTracker.Entries().Should().AllSatisfy(entry => entry.State .Should().Be(EntityState.Unchanged));
     }
     
@@ -62,7 +85,7 @@ public class UnitOfWorkTests : DatabaseAwareTestBase
         var sut = CreateSut(dbContext);
         
         await sut.SaveChangesAsync(default);
-        // dbContext.Dummies.Should().HaveCount(0);
+        dbContext.Users.Should().HaveCount(0);
     }
     
     /*

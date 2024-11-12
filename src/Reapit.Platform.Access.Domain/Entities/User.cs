@@ -8,6 +8,11 @@ namespace Reapit.Platform.Access.Domain.Entities;
 public class User : RemoteEntityBase
 {
     /// <summary>Initializes a new instance of the <see cref="User"/> class.</summary>
+    public User()
+    {
+    }
+    
+    /// <summary>Initializes a new instance of the <see cref="User"/> class.</summary>
     /// <param name="id">The unique identifier of the user.</param>
     /// <param name="name">The name of the user.</param>
     /// <param name="email">The email address of the user.</param>
@@ -30,7 +35,7 @@ public class User : RemoteEntityBase
     }
     
     /// <summary>The unique identifier of the User in the organisations service.</summary>
-    public string Id { get; private set; }
+    public string Id { get; init; }
     
     /// <summary>The name of the User in the organisations service.</summary>
     public string Name { get; private set; }
@@ -49,5 +54,5 @@ public class User : RemoteEntityBase
 
     /// <inheritdoc /> 
     public override object AsSerializable()
-        => new { Id, Name, Email, Sync = DateLastSynchronised };
+        => new { Id, Name, Email, Sync = DateLastSynchronised.UtcDateTime };
 }

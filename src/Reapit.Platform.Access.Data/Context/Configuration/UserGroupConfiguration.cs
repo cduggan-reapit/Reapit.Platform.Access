@@ -6,9 +6,11 @@ using Reapit.Platform.Access.Domain.Entities;
 
 namespace Reapit.Platform.Access.Data.Context.Configuration;
 
+/// <summary>Entity framework configuration for the <see cref="UserGroup"/> type.</summary>
 [ExcludeFromCodeCoverage]
 public class UserGroupConfiguration : IEntityTypeConfiguration<UserGroup>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<UserGroup> builder)
     {
         builder.ConfigureEntityBase()

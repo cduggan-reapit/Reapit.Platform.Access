@@ -1,12 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Reapit.Platform.Access.Data.Context.Configuration.Helpers;
 using Reapit.Platform.Access.Domain.Entities;
 
 namespace Reapit.Platform.Access.Data.Context.Configuration;
 
+/// <summary>Entity framework configuration for the <see cref="Organisation"/> type.</summary>
+[ExcludeFromCodeCoverage]
 public class OrganisationConfiguration : IEntityTypeConfiguration<Organisation>
 {
+    /// <inheritdoc/>
     public void Configure(EntityTypeBuilder<Organisation> builder)
     {
         builder.ConfigureRemoteEntityBase()

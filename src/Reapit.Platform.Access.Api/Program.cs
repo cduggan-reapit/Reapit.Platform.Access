@@ -46,7 +46,7 @@ app.UseReapitSwagger()
 app.UseHttpsRedirection();
 app.UseRangedApiVersioning();
 app.UseRouting();
-app.UseEndpoints(endpoint => endpoint.MapControllers());
+app.MapControllers();
 
 app.Run();
 

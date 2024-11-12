@@ -1,11 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Reapit.Platform.Access.Domain.Entities.Transient;
 
 namespace Reapit.Platform.Access.Data.Context.Configuration.Transient;
 
+/// <summary>Entity framework configuration for the <see cref="UserGroupUser"/> type.</summary>
+[ExcludeFromCodeCoverage]
 public class UserGroupUserConfiguration : IEntityTypeConfiguration<UserGroupUser>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<UserGroupUser> builder)
     {
         builder.ToTable("user_group_users");

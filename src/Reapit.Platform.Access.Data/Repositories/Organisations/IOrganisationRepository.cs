@@ -28,4 +28,14 @@ public interface IOrganisationRepository
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>True if the operation is successful.</returns>
     public Task<bool> DeleteOrganisationAsync(Organisation organisation, CancellationToken cancellationToken);
+
+    /// <summary>Adds a user to an organisation.</summary>
+    /// <param name="member">The organisation-user relationship object.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    public Task<bool> AddMemberAsync(OrganisationUser member, CancellationToken cancellationToken);
+
+    /// <summary>Removes a user from an organisation.</summary>
+    /// <param name="member">The organisation-user relationship object.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    public Task<bool> RemoveMemberAsync(OrganisationUser member, CancellationToken cancellationToken);
 }

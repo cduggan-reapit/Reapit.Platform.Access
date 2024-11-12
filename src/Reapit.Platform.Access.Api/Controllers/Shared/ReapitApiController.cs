@@ -6,7 +6,7 @@ namespace Reapit.Platform.Access.Api.Controllers.Shared;
 /// Base controller class for Reapit API controllers.
 /// </summary>
 [ApiController]
-[Route("/access/api/[controller]")]
+[Route("/api/[controller]")]
 public abstract class ReapitApiController : ControllerBase
 {
 }

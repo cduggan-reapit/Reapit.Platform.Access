@@ -1,11 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Reapit.Platform.Access.Domain.Entities.Transient;
 
 namespace Reapit.Platform.Access.Data.Context.Configuration.Transient;
 
+/// <summary>Entity framework configuration for the <see cref="UserRole"/> type.</summary>
+[ExcludeFromCodeCoverage]
 public class UserRoleConfiguration : IEntityTypeConfiguration<UserRole>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<UserRole> builder)
     {
         builder.ToTable("user_roles");

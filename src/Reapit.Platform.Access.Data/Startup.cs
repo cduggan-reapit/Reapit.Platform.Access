@@ -25,8 +25,6 @@ public static class Startup
                 }));
         
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-        return builder; 
-        
-        return builder; 
+        return builder;
     }
 }

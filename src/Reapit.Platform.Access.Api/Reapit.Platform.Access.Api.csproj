@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\Synchronisation\" />
+    <Folder Include="Controllers\Internal\" />
   </ItemGroup>
   
 </Project>

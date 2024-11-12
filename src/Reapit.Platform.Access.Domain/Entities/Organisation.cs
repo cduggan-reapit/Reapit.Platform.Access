@@ -7,6 +7,11 @@ namespace Reapit.Platform.Access.Domain.Entities;
 public class Organisation : RemoteEntityBase
 {
     /// <summary>Initializes a new instance of the <see cref="Organisation"/> class.</summary>
+    public Organisation()
+    {
+    }
+    
+    /// <summary>Initializes a new instance of the <see cref="Organisation"/> class.</summary>
     /// <param name="id">The unique identifier of the organisation.</param>
     /// <param name="name">The name of the organisation.</param>
     public Organisation(string id, string name)
@@ -25,10 +30,10 @@ public class Organisation : RemoteEntityBase
     }
     
     /// <summary>The unique identifier of the organisation in the organisations service.</summary>
-    public string Id { get; set; }
+    public string Id { get; init; }
     
     /// <summary>The name of the organisation in the organisations service.</summary>
-    public string Name { get; set; }
+    public string Name { get; private set; }
 
     /// <summary>The product instances associated with the organisation.</summary>
     public ICollection<Instance> Instances { get; set; } = new List<Instance>();
@@ -40,5 +45,5 @@ public class Organisation : RemoteEntityBase
     
     /// <inheritdoc /> 
     public override object AsSerializable()
-        => new { Id, Name, Sync = DateLastSynchronised };
+        => new { Id, Name, Sync = DateLastSynchronised.UtcDateTime };
 }

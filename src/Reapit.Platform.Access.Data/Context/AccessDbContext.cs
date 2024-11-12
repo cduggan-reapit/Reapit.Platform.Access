@@ -8,13 +8,13 @@ namespace Reapit.Platform.Access.Data.Context;
 public class AccessDbContext(DbContextOptions<AccessDbContext> options) : DbContext(options)
 {
     /// <summary>The collection of users.</summary>
-    public DbSet<User> Users { get; set; }
+    public DbSet<User> Users { get; init; }
     
     /// <summary>The collection of user-organisation relationships.</summary>
-    public DbSet<OrganisationUser> OrganisationUsers { get; set; }
+    public DbSet<OrganisationUser> OrganisationUsers { get; init; }
     
     /// <summary>The collection of organisations.</summary>
-    public DbSet<Organisation> Organisations { get; set; }
+    public DbSet<Organisation> Organisations { get; init; }
 
     /// <summary>Configures the Entity Framework model.</summary>
     /// <param name="builder">The model builder.</param>

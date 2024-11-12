@@ -6,9 +6,11 @@ using Reapit.Platform.Access.Domain.Entities;
 
 namespace Reapit.Platform.Access.Data.Context.Configuration;
 
+/// <summary>Entity framework configuration for the <see cref="Product"/> type.</summary>
 [ExcludeFromCodeCoverage]
 public class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
+    /// <inheritdoc/>
     public void Configure(EntityTypeBuilder<Product> builder)
     {
         builder.ConfigureEntityBase()

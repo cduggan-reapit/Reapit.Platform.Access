@@ -6,9 +6,11 @@ using Reapit.Platform.Access.Domain.Entities;
 
 namespace Reapit.Platform.Access.Data.Context.Configuration;
 
+/// <summary>Entity framework configuration for the <see cref="Instance"/> type.</summary>
 [ExcludeFromCodeCoverage]
 public class InstanceConfiguration : IEntityTypeConfiguration<Instance>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<Instance> builder)
     {
         builder.ConfigureEntityBase()

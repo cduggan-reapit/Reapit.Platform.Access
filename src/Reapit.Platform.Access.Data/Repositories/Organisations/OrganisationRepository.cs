@@ -39,4 +39,18 @@ public class OrganisationRepository : IOrganisationRepository
         _context.Organisations.Remove(organisation);
         return Task.FromResult(true);
     }
+    
+    /// <inheritdoc/>
+    public async Task<bool> AddMemberAsync(OrganisationUser member, CancellationToken cancellationToken)
+    {
+        _ = await _context.OrganisationUsers.AddAsync(member, cancellationToken);
+        return true;
+    }
+
+    /// <inheritdoc/>
+    public Task<bool> RemoveMemberAsync(OrganisationUser member, CancellationToken cancellationToken)
+    {
+        _context.OrganisationUsers.Remove(member);
+        return Task.FromResult(true);
+    }
 }
