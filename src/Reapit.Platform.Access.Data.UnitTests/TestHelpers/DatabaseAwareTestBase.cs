@@ -6,11 +6,11 @@ namespace Reapit.Platform.Access.Data.UnitTests.TestHelpers;
 public abstract class DatabaseAwareTestBase
 {
     private readonly TestDbContextFactory _contextFactory = new();
-    private DemoDbContext? _context;
+    private AccessDbContext? _context;
 
-    public DemoDbContext GetContext(bool ensureCreated = true)
+    public AccessDbContext GetContext(bool ensureCreated = true)
         => _context ??= _contextFactory.CreateContext(ensureCreated);
     
-    public async Task<DemoDbContext> GetContextAsync(bool ensureCreated = true, CancellationToken cancellationToken = default)
+    public async Task<AccessDbContext> GetContextAsync(bool ensureCreated = true, CancellationToken cancellationToken = default)
         => _context ??= await _contextFactory.CreateContextAsync(ensureCreated, cancellationToken);
 }
