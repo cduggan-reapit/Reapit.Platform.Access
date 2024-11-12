@@ -28,7 +28,5 @@
   
   <ItemGroup>
     <Folder Include="Context\Migrations\" />
-    <Folder Include="Helpers\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
 </Project>

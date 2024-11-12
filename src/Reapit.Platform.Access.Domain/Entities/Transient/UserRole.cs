@@ -7,7 +7,7 @@ public class UserRole
     public string UserId { get; set; }
     
     [ForeignKey(nameof(UserId))]
-    public User User { get; set; }
+    public User? User { get; set; }
     
     public string RoleId { get; set; }
     

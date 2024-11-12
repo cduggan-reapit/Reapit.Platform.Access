@@ -1,12 +1,17 @@
 ﻿using Reapit.Platform.Access.Data.Context;
+using Reapit.Platform.Access.Data.Repositories.Organisations;
+using Reapit.Platform.Access.Data.Repositories.OrganisationUsers;
+using Reapit.Platform.Access.Data.Repositories.Users;
 
 namespace Reapit.Platform.Access.Data.Services;
 
 public class UnitOfWork : IUnitOfWork
 {
     private readonly AccessDbContext _context;
-
-    // private IDummyRepository? _dummyRepository;
+    
+    private IUserRepository? _userRepository;
+    private IOrganisationRepository? _organisationRepository;
+    private IOrganisationUserRepository? _organisationUserRepository;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UnitOfWork"/> class.
@@ -15,9 +20,17 @@ public class UnitOfWork : IUnitOfWork
     public UnitOfWork(AccessDbContext context)
         => _context = context;
     
-    // /// <inheritdoc />
-    // public IDummyRepository Dummies 
-    //     => _dummyRepository ??= new DummyRepository(_context);
+    /// <inheritdoc />
+    public IUserRepository Users 
+        => _userRepository ??= new UserRepository(_context);
+
+    /// <inheritdoc/>
+    public IOrganisationRepository Organisations
+        => _organisationRepository ??= new OrganisationRepository(_context);
+    
+    /// <inheritdoc/>
+    public IOrganisationUserRepository OrganisationUsers
+        => _organisationUserRepository ??= new OrganisationUserRepository(_context);
 
     /// <inheritdoc />
     public async Task SaveChangesAsync(CancellationToken cancellationToken)

@@ -21,5 +21,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(entity => entity.Name)
             .HasColumnName("name")
             .HasMaxLength(100);
+        
+        builder.Property(entity => entity.Email)
+            .HasColumnName("email")
+            .HasMaxLength(500);
     }
 }

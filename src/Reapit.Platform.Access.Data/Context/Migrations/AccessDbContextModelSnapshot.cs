@@ -88,7 +88,7 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                         .HasColumnType("varchar(36)")
                         .HasColumnName("id");
 
-                    b.Property<DateTimeOffset?>("DateLastSynchronised")
+                    b.Property<DateTimeOffset>("DateLastSynchronised")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("last_sync");
 
@@ -111,7 +111,7 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTimeOffset?>("DateLastSynchronised")
+                    b.Property<DateTimeOffset>("DateLastSynchronised")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("last_sync");
 
@@ -285,9 +285,15 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                         .HasColumnType("varchar(36)")
                         .HasColumnName("id");
 
-                    b.Property<DateTimeOffset?>("DateLastSynchronised")
+                    b.Property<DateTimeOffset>("DateLastSynchronised")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("last_sync");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)")
+                        .HasColumnName("email");
 
                     b.Property<string>("Name")
                         .IsRequired()

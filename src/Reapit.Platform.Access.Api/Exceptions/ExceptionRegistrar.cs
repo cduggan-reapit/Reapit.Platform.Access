@@ -1,4 +1,5 @@
 using FluentValidation;
+using Reapit.Platform.Access.Core.Exceptions;
 using Reapit.Platform.Common.Interfaces;
 
 namespace Reapit.Platform.Access.Api.Exceptions;
@@ -16,7 +17,14 @@ public static class ExceptionRegistrar
         if (factory is null)
             return app;
         
+        // Validation errors arising from write endpoints (422)
         factory.RegisterFactoryMethod<ValidationException>(ProblemDetailFactoryImplementations.GetValidationExceptionProblemDetails);
+        
+        // Validation errors arising from read endpoints (400)
+        factory.RegisterFactoryMethod<QueryStringException>(QueryStringException.CreateProblemDetails);
+        
+        // Conflict errors - thing already exists (409)
+        factory.RegisterFactoryMethod<ConflictException>(ConflictException.CreateProblemDetails);
 
         return app;
     }

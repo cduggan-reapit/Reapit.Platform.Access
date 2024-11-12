@@ -1,20 +1,30 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Reapit.Platform.Access.Domain.Entities.Abstract;
 using Reapit.Platform.Access.Domain.Entities.Transient;
+using Reapit.Platform.Common.Providers.Temporal;
 
 namespace Reapit.Platform.Access.Domain.Entities;
 
 /// <summary>Represents the relationship between a user and an organisation.</summary>
 public class OrganisationUser : RemoteEntityBase
 {
+    public OrganisationUser(Organisation organisation, User user)
+    {
+        OrganisationId = organisation.Id;
+        Organisation = organisation;
+        UserId = user.Id;
+        User = user;
+        DateLastSynchronised = DateTimeOffsetProvider.Now;
+    }
+    
     /// <summary>Unique identifier for an organisation-user relationship.</summary>
     public long Id { get; init; }
     
     /// <summary>The unique identifier of the user.</summary>
-    public required string UserId { get; init; }
+    public string UserId { get; init; }
     
     /// <summary>The unique identifier of the organisation.</summary>
-    public required string OrganisationId { get; init; }
+    public string OrganisationId { get; init; }
     
     /// <summary>The user with which this entity is associated.</summary>
     [ForeignKey(nameof(UserId))]
@@ -25,4 +35,8 @@ public class OrganisationUser : RemoteEntityBase
     public Organisation? Organisation { get; set; }
     
     public ICollection<UserGroupUser> UserGroupUsers { get; set; } = new List<UserGroupUser>();
+    
+    /// <inheritdoc /> 
+    public override object AsSerializable()
+        => new { Id, User = UserId, Organisation = OrganisationId, Sync = DateLastSynchronised };
 }

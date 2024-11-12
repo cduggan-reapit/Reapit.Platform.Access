@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
-using Reapit.Platform.Access.Api.Controllers.Abstract;
+using Reapit.Platform.Access.Api.Controllers.Shared;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Reapit.Platform.Access.Api.Controllers;
 
@@ -9,6 +10,7 @@ public class HealthController : ReapitApiController
 {
     /// <summary>Endpoint used to confirm service is live.</summary>
     [HttpGet]
+    [SwaggerIgnore]
     [ApiVersionNeutral]
     [ApiExplorerSettings(IgnoreApi = false)]
     [ProducesResponseType(204)]
