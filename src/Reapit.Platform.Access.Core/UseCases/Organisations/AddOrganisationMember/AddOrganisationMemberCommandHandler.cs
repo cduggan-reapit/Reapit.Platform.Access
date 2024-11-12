@@ -37,6 +37,7 @@ public class AddOrganisationMemberCommandHandler : IRequestHandler<AddOrganisati
         _ = await _unitOfWork.Organisations.AddMemberAsync(organisationUser, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         
+        _logger.LogInformation("User {userId} added to organisation {organisationId}", request.UserId, request.OrganisationId);
         return organisationUser;
     }
 }

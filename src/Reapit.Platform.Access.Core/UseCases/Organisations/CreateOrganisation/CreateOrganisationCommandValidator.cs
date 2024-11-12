@@ -8,7 +8,7 @@ public class CreateOrganisationCommandValidator : AbstractValidator<CreateOrgani
     /*
      * | Property | Constraints              |
      * | -------- | ------------------------ |
-     * | Id       | Required, MaxLength(36)  |
+     * | Id       | Required, MaxLength(100) |
      * | Name     | Required, MaxLength(100) |
     */
 
@@ -18,7 +18,7 @@ public class CreateOrganisationCommandValidator : AbstractValidator<CreateOrgani
         RuleFor(request => request.Id)
             .NotEmpty()
             .WithMessage(CommonValidationMessages.Required)
-            .MaximumLength(36)
+            .MaximumLength(100)
             .WithMessage(OrganisationValidationMessages.IdExceedsMaxLength);
         
         RuleFor(request => request.Name)

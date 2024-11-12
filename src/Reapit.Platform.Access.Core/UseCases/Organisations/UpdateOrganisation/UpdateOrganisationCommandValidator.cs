@@ -20,6 +20,8 @@ public class UpdateOrganisationCommandValidator : AbstractValidator<UpdateOrgani
             .WithMessage(CommonValidationMessages.Required);
         
         RuleFor(request => request.Name)
+            .NotEmpty()
+            .WithMessage(CommonValidationMessages.Required)
             .MaximumLength(100)
             .WithMessage(OrganisationValidationMessages.NameExceedsMaxLength);
     }

@@ -7,17 +7,17 @@ using Reapit.Platform.Common.Exceptions;
 namespace Reapit.Platform.Access.Core.UseCases.Organisations.RemoveOrganisationMember;
 
 /// <summary>Request handler for the <see cref="RemoveOrganisationMemberCommand"/> command.</summary>
-public class DeleteOrganisationUserCommandHandler : IRequestHandler<RemoveOrganisationMemberCommand, OrganisationUser>
+public class RemoveOrganisationMemberCommandHandler : IRequestHandler<RemoveOrganisationMemberCommand, OrganisationUser>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ILogger<DeleteOrganisationUserCommandHandler> _logger;
+    private readonly ILogger<RemoveOrganisationMemberCommandHandler> _logger;
 
-    /// <summary>Initializes a new instance of the <see cref="DeleteOrganisationUserCommandHandler"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="RemoveOrganisationMemberCommandHandler"/> class.</summary>
     /// <param name="unitOfWork">The unit of work service.</param>
     /// <param name="logger">The logging service.</param>
-    public DeleteOrganisationUserCommandHandler(
+    public RemoveOrganisationMemberCommandHandler(
         IUnitOfWork unitOfWork, 
-        ILogger<DeleteOrganisationUserCommandHandler> logger)
+        ILogger<RemoveOrganisationMemberCommandHandler> logger)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
@@ -35,6 +35,7 @@ public class DeleteOrganisationUserCommandHandler : IRequestHandler<RemoveOrgani
         _ = await _unitOfWork.Organisations.RemoveMemberAsync(relationship, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         
+        _logger.LogInformation("User {userId} removed from organisation {organisationId}", request.UserId, request.OrganisationId);
         return relationship;
     }
 }

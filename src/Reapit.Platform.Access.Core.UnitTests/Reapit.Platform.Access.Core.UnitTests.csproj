@@ -31,8 +31,4 @@
     <ProjectReference Include="..\Reapit.Platform.Access.Core\Reapit.Platform.Access.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="UseCases\" />
-  </ItemGroup>
-
 </Project>
