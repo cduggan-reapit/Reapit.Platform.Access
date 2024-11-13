@@ -4,7 +4,7 @@ using Reapit.Platform.Common.Exceptions;
 
 namespace Reapit.Platform.Access.Core.UnitTests.Exceptions;
 
-public class QueryStringExceptionTests
+public class QueryValidationExceptionTests
 {
     /*
      * Ctor
@@ -13,7 +13,7 @@ public class QueryStringExceptionTests
     [Fact]
     public void Ctor_InitializesException_WithNoParameters()
     {
-        var sut = new QueryStringException();
+        var sut = new QueryValidationException();
         sut.Should().NotBeNull();
     }
     
@@ -21,7 +21,7 @@ public class QueryStringExceptionTests
     public void Ctor_InitializesException_WithMessage()
     {
         const string message = nameof(Ctor_InitializesException_WithMessage);
-        var sut = new QueryStringException(message);
+        var sut = new QueryValidationException(message);
         sut.Message.Should().Be(message);
     }
     
@@ -30,7 +30,7 @@ public class QueryStringExceptionTests
     {
         const string message = nameof(Ctor_InitializesException_WithMessage_AndInnerException);
         var innerException = new ArgumentNullException(nameof(Ctor_InitializesException_WithMessage_AndInnerException), "message");
-        var sut = new QueryStringException(message, innerException);
+        var sut = new QueryValidationException(message, innerException);
         sut.Message.Should().Be(message);
         sut.InnerException.Should().BeEquivalentTo(innerException);
     }
@@ -45,7 +45,7 @@ public class QueryStringExceptionTests
         const string expectedMessage = "One or more validation errors occurred.";
         var validation = new ValidationResult(new[] { new ValidationFailure("propertyName", "errorMessage") });
         
-        var sut = QueryStringException.ValidationFailed(validation);
+        var sut = QueryValidationException.ValidationFailed(validation);
         sut.Message.Should().Be(expectedMessage);
         sut.Errors.Should().BeEquivalentTo(validation.Errors);
     }
@@ -57,7 +57,7 @@ public class QueryStringExceptionTests
     [Fact]
     public void CreateProblemDetails_ShouldThrow_WhenExceptionTypeIncorrect()
     {
-        var action = () => QueryStringException.CreateProblemDetails(new Exception());
+        var action = () => QueryValidationException.CreateProblemDetails(new Exception());
         action.Should().Throw<ProblemDetailsFactoryException>();
     }
     
@@ -65,12 +65,12 @@ public class QueryStringExceptionTests
     public void CreateProblemDetails_WithExpectedProperties_ForQueryStringException()
     {
         const string exceptionMessage = "test-exception";
-        var exception = new QueryStringException(exceptionMessage);
-        var actual = QueryStringException.CreateProblemDetails(exception);
+        var exception = new QueryValidationException(exceptionMessage);
+        var actual = QueryValidationException.CreateProblemDetails(exception);
         
-        actual.Type.Should().EndWith(QueryStringException.ProblemDetailsType);
-        actual.Title.Should().Be(QueryStringException.ProblemDetailsTitle);
-        actual.Status.Should().Be(QueryStringException.ProblemDetailsStatusCode);
+        actual.Type.Should().EndWith(QueryValidationException.ProblemDetailsType);
+        actual.Title.Should().Be(QueryValidationException.ProblemDetailsTitle);
+        actual.Status.Should().Be(QueryValidationException.ProblemDetailsStatusCode);
         actual.Detail.Should().BeEquivalentTo(exceptionMessage);
         
         // No errors?  No extensions!
@@ -98,12 +98,12 @@ public class QueryStringExceptionTests
             { "property-3", ["error-1"] }
         };
         
-        var exception = QueryStringException.ValidationFailed(validation);
-        var actual = QueryStringException.CreateProblemDetails(exception);
+        var exception = QueryValidationException.ValidationFailed(validation);
+        var actual = QueryValidationException.CreateProblemDetails(exception);
         
-        actual.Type.Should().EndWith(QueryStringException.ProblemDetailsType);
-        actual.Title.Should().Be(QueryStringException.ProblemDetailsTitle);
-        actual.Status.Should().Be(QueryStringException.ProblemDetailsStatusCode);
+        actual.Type.Should().EndWith(QueryValidationException.ProblemDetailsType);
+        actual.Title.Should().Be(QueryValidationException.ProblemDetailsTitle);
+        actual.Status.Should().Be(QueryValidationException.ProblemDetailsStatusCode);
         
         // Errors?  Have some extensions!
         actual.Extensions.Should().HaveCount(1)

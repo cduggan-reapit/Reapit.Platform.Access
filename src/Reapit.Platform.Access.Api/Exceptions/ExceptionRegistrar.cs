@@ -21,7 +21,7 @@ public static class ExceptionRegistrar
         factory.RegisterFactoryMethod<ValidationException>(ProblemDetailFactoryImplementations.GetValidationExceptionProblemDetails);
         
         // Validation errors arising from read endpoints (400)
-        factory.RegisterFactoryMethod<QueryStringException>(QueryStringException.CreateProblemDetails);
+        factory.RegisterFactoryMethod<QueryValidationException>(QueryValidationException.CreateProblemDetails);
         
         // Conflict errors - thing already exists (409)
         factory.RegisterFactoryMethod<ConflictException>(ConflictException.CreateProblemDetails);
