@@ -48,10 +48,7 @@ public class User : RemoteEntityBase
 
     /// <summary>The user-role relationships associated with this user.</summary>
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
-
-    /// <summary>The user-user group relationships associated with this user.</summary>
-    public ICollection<UserGroupUser> UserGroupUsers { get; set; } = new List<UserGroupUser>();
-
+    
     /// <inheritdoc /> 
     public override object AsSerializable()
         => new { Id, Name, Email, Sync = DateLastSynchronised.UtcDateTime };

@@ -42,7 +42,7 @@ public class OrganisationUser : RemoteEntityBase
     [ForeignKey(nameof(OrganisationId))]
     public Organisation? Organisation { get; set; }
     
-    public ICollection<UserGroupUser> UserGroupUsers { get; set; } = new List<UserGroupUser>();
+    public ICollection<GroupUser> GroupUsers { get; set; } = new List<GroupUser>();
     
     /// <inheritdoc /> 
     public override object AsSerializable()

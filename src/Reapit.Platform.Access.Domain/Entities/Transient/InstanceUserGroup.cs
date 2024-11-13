@@ -14,5 +14,5 @@ public class InstanceUserGroup
     public string UserGroupId { get; set; }
     
     [ForeignKey(nameof(UserGroupId))]
-    public UserGroup UserGroup { get; set; }
+    public Group Group { get; set; }
 }

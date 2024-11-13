@@ -30,7 +30,7 @@ public class InstanceUserGroupConfiguration : IEntityTypeConfiguration<InstanceU
             .WithMany(instance => instance.InstanceUserGroups)
             .HasForeignKey(entity => entity.InstanceId);
 
-        builder.HasOne(entity => entity.UserGroup)
+        builder.HasOne(entity => entity.Group)
             .WithMany(userGroup => userGroup.InstanceUserGroups)
             .HasForeignKey(entity => entity.UserGroupId);
     }

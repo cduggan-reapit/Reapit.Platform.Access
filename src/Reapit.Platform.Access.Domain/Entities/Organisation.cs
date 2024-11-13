@@ -39,7 +39,7 @@ public class Organisation : RemoteEntityBase
     public ICollection<Instance> Instances { get; set; } = new List<Instance>();
     
     /// <summary>The user groups associated with the organisation.</summary>
-    public ICollection<UserGroup> UserGroups { get; set; } = new List<UserGroup>();
+    public ICollection<Group> Groups { get; set; } = new List<Group>();
 
     public ICollection<OrganisationUser> OrganisationUsers { get; set; } = new List<OrganisationUser>();
     

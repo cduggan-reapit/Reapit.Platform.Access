@@ -7,7 +7,8 @@ namespace Reapit.Platform.Access.Data.Context;
 /// <param name="options">The options for this context.</param>
 public class AccessDbContext(DbContextOptions<AccessDbContext> options) : DbContext(options)
 {
-    // TODO: add entities for this service here
+    /// <summary>The collection of user groups.</summary>
+    public DbSet<Group> Groups { get; init; }
     
     #region Organisations Service Entities
     
