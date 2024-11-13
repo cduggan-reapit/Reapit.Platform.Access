@@ -7,7 +7,6 @@ env:
   nuget_user_name: cduggan-reapit
 jobs:
   build-and-test:
-    if: ${{false}}
     name: build and test project
     runs-on: ubuntu-latest
     steps:
