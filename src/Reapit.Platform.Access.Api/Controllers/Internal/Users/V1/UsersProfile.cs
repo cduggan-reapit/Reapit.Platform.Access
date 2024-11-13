@@ -16,8 +16,5 @@ public class UsersProfile : Profile
             .ForCtorParam(nameof(SimpleUserModel.Name), ops => ops.MapFrom(src => src.Name))
             .ForCtorParam(nameof(SimpleUserModel.Email), ops => ops.MapFrom(src => src.Email))
             .ForCtorParam(nameof(SimpleUserModel.DateLastSynchronised), ops => ops.MapFrom(src => src.DateLastSynchronised.UtcDateTime));
-
-        
-      
     }
 }

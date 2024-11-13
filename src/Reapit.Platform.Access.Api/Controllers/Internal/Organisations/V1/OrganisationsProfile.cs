@@ -12,6 +12,7 @@ public class OrganisationsProfile : Profile
     {
         CreateMap<Organisation, SimpleOrganisationModel>()
             .ForCtorParam(nameof(SimpleOrganisationModel.Id), ops => ops.MapFrom(src => src.Id))
-            .ForCtorParam(nameof(SimpleOrganisationModel.Name), ops => ops.MapFrom(src => src.Name));
+            .ForCtorParam(nameof(SimpleOrganisationModel.Name), ops => ops.MapFrom(src => src.Name))
+            .ForCtorParam(nameof(SimpleOrganisationModel.DateLastSynchronised), ops => ops.MapFrom(src => src.DateLastSynchronised.UtcDateTime));
     }
 }
