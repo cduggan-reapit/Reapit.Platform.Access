@@ -1,0 +1,64 @@
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Reapit.Platform.Access.Api.Controllers.Groups.V1.Examples;
+using Reapit.Platform.Access.Api.Controllers.Groups.V1.Models;
+using Reapit.Platform.Access.Api.Controllers.Shared;
+using Reapit.Platform.Access.Api.Controllers.Shared.Examples;
+using Reapit.Platform.Access.Core.UseCases.Groups.CreateGroup;
+using Reapit.Platform.Access.Core.UseCases.Groups.GetGroupById;
+using Reapit.Platform.Access.Core.UseCases.Groups.GetGroups;
+using Reapit.Platform.ApiVersioning.Attributes;
+using Swashbuckle.AspNetCore.Filters;
+
+namespace Reapit.Platform.Access.Api.Controllers.Groups.V1;
+
+/// <summary>Endpoints for interacting with user groups.</summary>
+[IntroducedInVersion(1, 0)]
+[ProducesResponseType<ProblemDetails>(400)]
+[SwaggerResponseExample(400, typeof(ApiVersionProblemDetailsExample))]
+public class GroupsController(IMapper mapper, ISender mediator) : ReapitApiController
+{
+    /// <summary>Get a page of groups with optional filters.</summary>
+    [HttpGet]
+    [ProducesResponseType<ResultPage<GroupModel>>(200)]
+    [ProducesResponseType<ProblemDetails>(400)]
+    [SwaggerResponseExample(200, typeof(GroupModelResultPageExample))]
+    [SwaggerResponseExample(400, typeof(QueryStringProblemDetailsExample))]
+    public async Task<IActionResult> GetGroups([FromQuery] GetGroupsRequestModel model)
+    {
+        var request = mapper.Map<GetGroupsQuery>(model);
+        var result = await mediator.Send(request);
+        return Ok(mapper.Map<ResultPage<GroupModel>>(result));
+    }
+    
+    /// <summary>Get an individual group.</summary>
+    /// <param name="id">The unique identifier of the group.</param>
+    [HttpGet("{id}")]
+    [ProducesResponseType<GroupModel>(200)]
+    [ProducesResponseType<ProblemDetails>(404)]
+    [SwaggerResponseExample(200, typeof(GroupModelExample))]
+    [SwaggerResponseExample(404, typeof(NotFoundProblemDetailsExample))]
+    public async Task<IActionResult> GetGroupById([FromRoute] string id)
+    {
+        var request = new GetGroupByIdQuery(id);
+        var result = await mediator.Send(request);
+        return Ok(mapper.Map<GroupModel>(result));
+    }
+
+    /// <summary>Create a new group.</summary>
+    /// <param name="model">Definition of the group to create.</param>
+    [HttpPost]
+    [ProducesResponseType<GroupModel>(201)]
+    [ProducesResponseType<ProblemDetails>(422)]
+    [SwaggerRequestExample(typeof(CreateUserGroupRequestModel), typeof(CreateUserGroupRequestModelExample))]
+    [SwaggerResponseExample(201, typeof(GroupModelExample))]
+    [SwaggerResponseExample(422, typeof(ValidationFailedProblemDetailsExample))]
+    public async Task<IActionResult> CreateGroup(CreateUserGroupRequestModel model)
+    {
+        var request = new CreateGroupCommand(model.Name, model.Description, model.OrganisationId);
+        var result = await mediator.Send(request);
+        var groupModel = mapper.Map<GroupModel>(result);
+        return CreatedAtAction(nameof(GetGroupById), new { id = groupModel.Id }, groupModel);
+    }
+}

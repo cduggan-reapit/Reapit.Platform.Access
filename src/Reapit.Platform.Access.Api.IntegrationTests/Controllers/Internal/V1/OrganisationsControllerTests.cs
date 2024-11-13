@@ -5,7 +5,7 @@ using Reapit.Platform.Access.Data.Context;
 using Reapit.Platform.Access.Domain.Entities;
 using Reapit.Platform.Common.Providers.Temporal;
 
-namespace Reapit.Platform.Access.Api.IntegrationTests.Controllers.Internal;
+namespace Reapit.Platform.Access.Api.IntegrationTests.Controllers.Internal.V1;
 
 public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegrationTestBase(apiFactory)
 {

@@ -1,0 +1,115 @@
+﻿using AutoMapper;
+using Reapit.Platform.Access.Api.Controllers.Groups.V1;
+using Reapit.Platform.Access.Api.Controllers.Groups.V1.Models;
+using Reapit.Platform.Access.Data.Context;
+using Reapit.Platform.Access.Domain.Entities;
+using Reapit.Platform.Access.Domain.Entities.Transient;
+using Reapit.Platform.Common.Providers.Identifiers;
+using Reapit.Platform.Common.Providers.Temporal;
+
+namespace Reapit.Platform.Access.Api.IntegrationTests.Controllers.Groups.V1;
+
+public class GroupsControllerTests(TestApiFactory apiFactory) : ApiIntegrationTestBase(apiFactory)
+{
+    private static readonly DateTimeOffset BaseDate = DateTime.Parse("2020-01-01T12:00:00Z");
+    private readonly IMapper _mapper = new MapperConfiguration(
+            cfg => cfg.AddProfile<GroupsProfile>())
+        .CreateMapper();
+    
+    /*
+     * GET /api/groups/{id}
+     */
+    
+    [Fact]
+    public async Task GetGroupById_ReturnsOk_WithGroupModel()
+    {
+        const int seed = 7;
+        var id = Guid.Parse($"{seed:D32}").ToString("N");
+        await InitializeDatabaseAsync();
+        
+        var group = SeedGroups.Single(u => u.Id == id);
+        var expected = _mapper.Map<GroupModel>(group);
+
+        var response = await SendRequestAsync(HttpMethod.Get, $"/api/groups/{id}");
+        await response.Should().HaveStatusCode(200).And.HavePayloadAsync(expected);
+    }
+
+    [Fact]
+    public async Task GetGroupById_ReturnsBadRequest_WhenApiVersionNotProvided()
+    {
+        var response = await SendRequestAsync(HttpMethod.Get, "/api/groups/any", null);
+        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync();
+    }
+    
+    [Fact]
+    public async Task GetGroupById_ReturnsBadRequest_WhenEndpointNotAvailableInVersion()
+    {
+        var response = await SendRequestAsync(HttpMethod.Get, "/api/groups/any", "0.9");
+        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync();
+    }
+    
+    [Fact]
+    public async Task GetGroupById_ReturnsNotFound_WhenGroupDoesNotExist()
+    {
+        await InitializeDatabaseAsync();
+        var response = await SendRequestAsync(HttpMethod.Get, "/api/groups/any");
+        await response.Should().HaveStatusCode(404).And.BeProblemDescriptionAsync();
+    }
+    
+    /*
+     * Private methods
+     */
+
+    private async Task InitializeDatabaseAsync()
+    {
+        await using var scope = ApiFactory.Services.CreateAsyncScope();
+        var serviceProvider = scope.ServiceProvider;
+        var dbContext = serviceProvider.GetRequiredService<AccessDbContext>();
+
+        _ = await dbContext.Database.EnsureDeletedAsync();
+        _ = await dbContext.Database.EnsureCreatedAsync();
+
+        await dbContext.Groups.AddRangeAsync(SeedGroups);
+
+        _ = await dbContext.SaveChangesAsync();
+    }
+
+    private static IEnumerable<Group> SeedGroups 
+        => Enumerable.Range(1, 10)
+            .Select(GetSeedGroup)
+            .ToList();
+
+    private static Group GetSeedGroup(int seed)
+    {
+        using var timeProvider = new DateTimeOffsetProviderContext(BaseDate.AddDays(seed - 1));
+        using var guidProvider = new GuidProviderContext(new Guid($"{seed:D32}"));
+
+        var groupId = GuidProvider.New.ToString("N");
+        var group = new Group($"Group {seed:D2}", $"Description of Group {seed:D2}", $"organisation-{seed:D2}")
+        {
+            Organisation = new Organisation($"organisation-{seed:D2}", $"Organisation {seed:D2}"),
+            GroupUsers = [
+                new GroupUser
+                {
+                    GroupId = groupId,
+                    OrganisationUser = new OrganisationUser
+                    {
+                        OrganisationId = $"organisation-{seed:D2}",
+                        User = new User($"user-{seed:D2}-01", $"User {seed:D2} 01",$"user-01@{seed:D2}.net")
+                    }
+                },
+                new GroupUser
+                {
+                    GroupId = groupId,
+                    OrganisationUser = new OrganisationUser
+                    {
+                        OrganisationId = $"organisation-{seed:D2}",
+                        User = new User($"user-{seed:D2}-02", $"User {seed:D2} 02",$"user-02@{seed:D2}.net")
+                    }
+                }
+            ]
+        };
+
+        return group;
+    }
+}
