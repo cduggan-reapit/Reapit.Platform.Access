@@ -196,8 +196,6 @@ public class UsersControllerTests(TestApiFactory apiFactory) : ApiIntegrationTes
 
     private async Task InitializeDatabaseAsync()
     {
-        TestApiFactory.TimeFixture = new DateTimeOffset(2022, 12, 1, 12, 1, 12, TimeSpan.FromHours(-6));
-        
         await using var scope = ApiFactory.Services.CreateAsyncScope();
         var serviceProvider = scope.ServiceProvider;
         var dbContext = serviceProvider.GetRequiredService<AccessDbContext>();

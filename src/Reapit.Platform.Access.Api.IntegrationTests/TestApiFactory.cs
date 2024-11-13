@@ -9,12 +9,8 @@ namespace Reapit.Platform.Access.Api.IntegrationTests;
 
 public class TestApiFactory : WebApplicationFactory<Program>
 {
-    public static DateTimeOffset TimeFixture = new(2020, 1, 1, 12, 15, 45, TimeSpan.Zero);
-    
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        using var _ = new DateTimeOffsetProviderContext(TimeFixture);
-        
         // Replace services
         builder.ConfigureServices(services =>
         {
