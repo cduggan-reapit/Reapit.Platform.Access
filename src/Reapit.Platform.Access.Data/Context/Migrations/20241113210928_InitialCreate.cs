@@ -19,11 +19,11 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 name: "organisations",
                 columns: table => new
                 {
-                    id = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false)
+                    id = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    name = table.Column<string>(type: "varchar(300)", maxLength: 300, nullable: false)
+                    name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    last_sync = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true)
+                    last_sync = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -73,11 +73,13 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 name: "users",
                 columns: table => new
                 {
-                    id = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false)
+                    id = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                    name = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    last_sync = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true)
+                    email = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    last_sync = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -86,12 +88,14 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "user_groups",
+                name: "groups",
                 columns: table => new
                 {
                     id = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    description = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     organisation_id = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -102,9 +106,9 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_user_groups", x => x.id);
+                    table.PrimaryKey("PK_groups", x => x.id);
                     table.ForeignKey(
-                        name: "FK_user_groups_organisations_organisation_id",
+                        name: "FK_groups_organisations_organisation_id",
                         column: x => x.organisation_id,
                         principalTable: "organisations",
                         principalColumn: "id",
@@ -157,7 +161,7 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     organisation_id = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    last_sync = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true)
+                    last_sync = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -217,15 +221,15 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 {
                     table.PrimaryKey("PK_instance_user_groups", x => new { x.instance_id, x.user_group_id });
                     table.ForeignKey(
-                        name: "FK_instance_user_groups_instances_instance_id",
-                        column: x => x.instance_id,
-                        principalTable: "instances",
+                        name: "FK_instance_user_groups_groups_user_group_id",
+                        column: x => x.user_group_id,
+                        principalTable: "groups",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_instance_user_groups_user_groups_user_group_id",
-                        column: x => x.user_group_id,
-                        principalTable: "user_groups",
+                        name: "FK_instance_user_groups_instances_instance_id",
+                        column: x => x.instance_id,
+                        principalTable: "instances",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -243,19 +247,46 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 {
                     table.PrimaryKey("PK_user_group_users", x => new { x.user_group_id, x.organisation_user_id });
                     table.ForeignKey(
+                        name: "FK_user_group_users_groups_user_group_id",
+                        column: x => x.user_group_id,
+                        principalTable: "groups",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_user_group_users_organisation_users_organisation_user_id",
                         column: x => x.organisation_user_id,
                         principalTable: "organisation_users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_user_group_users_user_groups_user_group_id",
-                        column: x => x.user_group_id,
-                        principalTable: "user_groups",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_groups_cursor",
+                table: "groups",
+                column: "cursor",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_groups_date_created",
+                table: "groups",
+                column: "date_created");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_groups_date_modified",
+                table: "groups",
+                column: "date_modified");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_groups_deleted",
+                table: "groups",
+                column: "deleted");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_groups_organisation_id_name_deleted",
+                table: "groups",
+                columns: new[] { "organisation_id", "name", "deleted" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_instance_user_groups_user_group_id",
@@ -299,9 +330,10 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 column: "organisation_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_organisation_users_user_id",
+                name: "IX_organisation_users_user_id_organisation_id",
                 table: "organisation_users",
-                column: "user_id");
+                columns: new[] { "user_id", "organisation_id" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_products_cursor",
@@ -351,32 +383,6 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 column: "organisation_user_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_user_groups_cursor",
-                table: "user_groups",
-                column: "cursor",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_user_groups_date_created",
-                table: "user_groups",
-                column: "date_created");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_user_groups_date_modified",
-                table: "user_groups",
-                column: "date_modified");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_user_groups_deleted",
-                table: "user_groups",
-                column: "deleted");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_user_groups_organisation_id",
-                table: "user_groups",
-                column: "organisation_id");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_user_roles_role_id",
                 table: "user_roles",
                 column: "role_id");
@@ -398,10 +404,10 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 name: "instances");
 
             migrationBuilder.DropTable(
-                name: "organisation_users");
+                name: "groups");
 
             migrationBuilder.DropTable(
-                name: "user_groups");
+                name: "organisation_users");
 
             migrationBuilder.DropTable(
                 name: "roles");
@@ -410,10 +416,10 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 name: "products");
 
             migrationBuilder.DropTable(
-                name: "users");
+                name: "organisations");
 
             migrationBuilder.DropTable(
-                name: "organisations");
+                name: "users");
         }
     }
 }

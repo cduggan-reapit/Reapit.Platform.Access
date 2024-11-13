@@ -19,14 +19,14 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(entity => entity.Id)
             .HasColumnName("id")
-            .HasMaxLength(36);
+            .HasMaxLength(100);
 
         builder.Property(entity => entity.Name)
             .HasColumnName("name")
-            .HasMaxLength(100);
+            .HasMaxLength(500);
         
         builder.Property(entity => entity.Email)
             .HasColumnName("email")
-            .HasMaxLength(500);
+            .HasMaxLength(1000);
     }
 }

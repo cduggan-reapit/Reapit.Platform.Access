@@ -20,10 +20,10 @@ public class OrganisationConfiguration : IEntityTypeConfiguration<Organisation>
 
         builder.Property(entity => entity.Id)
             .HasColumnName("id")
-            .HasMaxLength(36);
+            .HasMaxLength(100);
 
         builder.Property(entity => entity.Name)
             .HasColumnName("name")
-            .HasMaxLength(300);
+            .HasMaxLength(100);
     }
 }

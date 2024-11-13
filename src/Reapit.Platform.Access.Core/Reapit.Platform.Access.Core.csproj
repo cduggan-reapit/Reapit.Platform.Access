@@ -19,5 +19,11 @@
     <PackageReference Include="MediatR" Version="12.4.0" />
     <PackageReference Include="Reapit.Platform.Cloud" Version="1.2.0" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="UseCases\Groups\DeleteGroup\" />
+    <Folder Include="UseCases\Groups\GetGroups\" />
+    <Folder Include="UseCases\Groups\PatchGroup\" />
+  </ItemGroup>
 
 </Project>

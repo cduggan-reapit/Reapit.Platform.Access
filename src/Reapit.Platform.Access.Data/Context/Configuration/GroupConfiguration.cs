@@ -15,6 +15,10 @@ public class UserGroupConfiguration : IEntityTypeConfiguration<Group>
     {
         builder.ConfigureEntityBase()
             .ToTable("groups");
+
+        // The same name cannot be re-used within an organisation (unless deleted)
+        builder.HasIndex(entity => new { entity.OrganisationId, entity.Name, entity.DateDeleted })
+            .IsUnique();
         
         builder.Property(entity => entity.Name)
             .HasColumnName("name")

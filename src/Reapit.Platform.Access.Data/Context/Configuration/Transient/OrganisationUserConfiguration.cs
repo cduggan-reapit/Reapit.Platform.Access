@@ -29,6 +29,9 @@ public class OrganisationUserConfiguration : IEntityTypeConfiguration<Organisati
             .HasColumnName("organisation_id")
             .HasMaxLength(100);
 
+        builder.HasIndex(entity => new { entity.UserId, entity.OrganisationId })
+            .IsUnique();
+
         builder.HasOne(entity => entity.User)
             .WithMany(user => user.OrganisationUsers)
             .HasForeignKey(entity => entity.UserId);
