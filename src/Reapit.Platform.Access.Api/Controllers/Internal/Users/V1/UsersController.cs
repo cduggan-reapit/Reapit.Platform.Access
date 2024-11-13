@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Reapit.Platform.Access.Api.Controllers.Internal.Users.V1.Examples;
 using Reapit.Platform.Access.Api.Controllers.Internal.Users.V1.Models;
-using Reapit.Platform.Access.Api.Controllers.Shared;
 using Reapit.Platform.Access.Api.Controllers.Shared.Examples;
 using Reapit.Platform.Access.Core.UseCases.Users.CreateUser;
 using Reapit.Platform.Access.Core.UseCases.Users.DeleteUser;
@@ -15,11 +14,10 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Reapit.Platform.Access.Api.Controllers.Internal.Users.V1;
 
 /// <summary>Endpoints for interacting with users.</summary>
-[Route("/internal/[controller]")]
 [IntroducedInVersion(1, 0)]
 [ProducesResponseType(typeof(ProblemDetails), 400)]
 [SwaggerResponseExample(400, typeof(ApiVersionProblemDetailsExample))]
-public class UsersController : ReapitApiController
+public class UsersController : InternalApiController
 {
     private readonly IMapper _mapper;
     private readonly IMediator _mediator;

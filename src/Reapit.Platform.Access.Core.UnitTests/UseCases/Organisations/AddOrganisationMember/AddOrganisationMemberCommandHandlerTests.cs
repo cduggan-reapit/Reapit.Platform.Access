@@ -1,4 +1,5 @@
-﻿using Reapit.Platform.Access.Core.UseCases.Organisations.AddOrganisationMember;
+﻿using Reapit.Platform.Access.Core.Exceptions;
+using Reapit.Platform.Access.Core.UseCases.Organisations.AddOrganisationMember;
 using Reapit.Platform.Access.Data.Repositories.Organisations;
 using Reapit.Platform.Access.Data.Repositories.Users;
 using Reapit.Platform.Access.Data.Services;
@@ -29,6 +30,24 @@ public class AddOrganisationMemberCommandHandlerTests
         var sut = CreateSut();
         var action = () => sut.Handle(request, default);
         await action.Should().ThrowAsync<NotFoundException>();
+    }
+    
+    [Fact]
+    public async Task Handle_ThrowsConflict_WhenUserAlreadyAssociatedWithOrganisation()
+    {
+        const string organisationId = "orgId", userId = "userId";
+        _organisationRepository.GetOrganisationByIdAsync(organisationId, Arg.Any<CancellationToken>())
+            .Returns(new Organisation(organisationId, "name")
+            {
+                OrganisationUsers = [
+                    new OrganisationUser { UserId = userId}
+                ]
+            });
+
+        var request = GetRequest(organisationId, userId);
+        var sut = CreateSut();
+        var action = () => sut.Handle(request, default);
+        await action.Should().ThrowAsync<ConflictException>();
     }
 
     [Fact]

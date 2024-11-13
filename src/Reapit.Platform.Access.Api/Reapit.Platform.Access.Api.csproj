@@ -28,9 +28,5 @@
     <InternalsVisibleTo Include="Reapit.Platform.Access.Api.Test" />
     <ProjectReference Include="..\Reapit.Platform.Access.Core\Reapit.Platform.Access.Core.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\Internal\" />
-  </ItemGroup>
   
 </Project>

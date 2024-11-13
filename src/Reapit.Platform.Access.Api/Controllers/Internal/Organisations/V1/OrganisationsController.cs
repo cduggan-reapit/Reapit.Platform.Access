@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Reapit.Platform.Access.Api.Controllers.Internal.Organisations.V1.Examples;
 using Reapit.Platform.Access.Api.Controllers.Internal.Organisations.V1.Models;
-using Reapit.Platform.Access.Api.Controllers.Shared;
 using Reapit.Platform.Access.Api.Controllers.Shared.Examples;
 using Reapit.Platform.Access.Core.UseCases.Organisations.AddOrganisationMember;
 using Reapit.Platform.Access.Core.UseCases.Organisations.CreateOrganisation;
@@ -17,19 +16,18 @@ using Swashbuckle.AspNetCore.Filters;
 namespace Reapit.Platform.Access.Api.Controllers.Internal.Organisations.V1;
 
 /// <summary>Endpoints for interacting with organisations.</summary>
-[Route("/internal/[controller]")]
 [IntroducedInVersion(1, 0)]
 [ProducesResponseType(typeof(ProblemDetails), 400)]
 [SwaggerResponseExample(400, typeof(ApiVersionProblemDetailsExample))]
-public class OrganisationsController : ReapitApiController
+public class OrganisationsController : InternalApiController
 {
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;
     
     /// <summary>Initializes a new instance of the <see cref="OrganisationsController"/> class.</summary>
-    /// <param name="mediator">The mediator service.</param>
     /// <param name="mapper">The automapper service.</param>
-    public OrganisationsController(IMediator mediator, IMapper mapper)
+    /// <param name="mediator">The mediator service.</param>
+    public OrganisationsController(IMapper mapper, IMediator mediator)
     {
         _mediator = mediator;
         _mapper = mapper;
@@ -104,11 +102,13 @@ public class OrganisationsController : ReapitApiController
     [HttpPost("{id}/members/{userId}")]
     [ProducesResponseType(204)]
     [ProducesResponseType(typeof(ProblemDetails), 404)]
+    [ProducesResponseType(typeof(ProblemDetails), 409)]
     [SwaggerResponseExample(404, typeof(NotFoundProblemDetailsExample))]
+    [SwaggerResponseExample(409, typeof(ConflictProblemDetailsExample))]
     public async Task<IActionResult> AddOrganisationMember([FromRoute] string id, [FromRoute] string userId)
     {
         var request = new AddOrganisationMemberCommand(id, userId);
-        var organisation = await _mediator.Send(request);
+        _ = await _mediator.Send(request);
         return NoContent();
     }
     
@@ -122,7 +122,7 @@ public class OrganisationsController : ReapitApiController
     public async Task<IActionResult> RemoveOrganisationMember([FromRoute] string id, [FromRoute] string userId)
     {
         var request = new RemoveOrganisationMemberCommand(id, userId);
-        var organisation = await _mediator.Send(request);
+        _ = await _mediator.Send(request);
         return NoContent();
     }
 }

@@ -1,10 +1,11 @@
-﻿using Reapit.Platform.Access.Api.Controllers.Internal.Organisations.V1.Models;
+﻿using System.Diagnostics.CodeAnalysis;
+using Reapit.Platform.Access.Api.Controllers.Internal.Organisations.V1.Models;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace Reapit.Platform.Access.Api.Controllers.Internal.Organisations.V1.Examples;
 
 /// <summary>Example provider for the <see cref="SimpleOrganisationModel"/> type.</summary>
-[ExcludeFromDescription]
+[ExcludeFromCodeCoverage]
 public class OrganisationModelExample : IExamplesProvider<SimpleOrganisationModel>
 {
     /// <inheritdoc/>

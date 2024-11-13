@@ -1,8 +1,9 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using Reapit.Platform.Access.Core.Exceptions;
 using Reapit.Platform.Access.Data.Services;
 using Reapit.Platform.Access.Domain.Entities;
-using Reapit.Platform.Common.Exceptions;
+using NotFoundException = Reapit.Platform.Common.Exceptions.NotFoundException;
 
 namespace Reapit.Platform.Access.Core.UseCases.Organisations.AddOrganisationMember;
 
@@ -28,6 +29,9 @@ public class AddOrganisationMemberCommandHandler : IRequestHandler<AddOrganisati
     {
         var organisation = await _unitOfWork.Organisations.GetOrganisationByIdAsync(request.OrganisationId, cancellationToken)
             ?? throw new NotFoundException(typeof(Organisation), request.OrganisationId);
+
+        if (organisation.OrganisationUsers.Any(ou => ou.UserId == request.UserId))
+            throw ConflictException.ResourceExists("Member", request.UserId);
         
         var user = await _unitOfWork.Users.GetUserByIdAsync(request.UserId, cancellationToken)
                    ?? throw new NotFoundException(typeof(User), request.UserId);

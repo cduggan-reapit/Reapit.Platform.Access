@@ -17,6 +17,7 @@ public class OrganisationRepository : IOrganisationRepository
     /// <inheritdoc/>
     public async Task<Organisation?> GetOrganisationByIdAsync(string id, CancellationToken cancellationToken) 
         => await _context.Organisations
+            .Include(o => o.OrganisationUsers)
             .SingleOrDefaultAsync(organisation => organisation.Id == id, cancellationToken);
 
     /// <inheritdoc/>
