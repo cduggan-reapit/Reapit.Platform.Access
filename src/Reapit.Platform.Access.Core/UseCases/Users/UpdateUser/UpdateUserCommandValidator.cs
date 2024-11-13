@@ -6,11 +6,11 @@ namespace Reapit.Platform.Access.Core.UseCases.Users.UpdateUser;
 public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
 {
     /*
-     * | Property | Constraints             |
-     * | -------- | ----------------------- |
-     * | Id       | Required,               |
-     * | Name     | MaxLength(100)          |
-     * | Email    | MaxLength(500)          |
+     * | Property | Constraints               |
+     * | -------- | ------------------------- |
+     * | Id       | Required,                 |
+     * | Name     | Required, MaxLength(500)  |
+     * | Email    | Required, MaxLength(1000) |
     */
 
     /// <summary>Initializes a new instance of the <see cref="UpdateUserCommandValidator"/> class.</summary>
@@ -21,11 +21,15 @@ public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
             .WithMessage(CommonValidationMessages.Required);
         
         RuleFor(request => request.Name)
-            .MaximumLength(100)
+            .NotEmpty()
+            .WithMessage(CommonValidationMessages.Required)
+            .MaximumLength(500)
             .WithMessage(UserValidationMessages.NameExceedsMaxLength);
         
         RuleFor(request => request.Email)
-            .MaximumLength(500)
+            .NotEmpty()
+            .WithMessage(CommonValidationMessages.Required)
+            .MaximumLength(1000)
             .WithMessage(UserValidationMessages.EmailExceedsMaxLength);
     }
 }

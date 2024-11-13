@@ -1,0 +1,116 @@
+﻿using FluentValidation.Results;
+using Reapit.Platform.Access.Core.Exceptions;
+using Reapit.Platform.Common.Exceptions;
+
+namespace Reapit.Platform.Access.Core.UnitTests.Exceptions;
+
+public class QueryStringExceptionTests
+{
+    /*
+     * Ctor
+     */
+
+    [Fact]
+    public void Ctor_InitializesException_WithNoParameters()
+    {
+        var sut = new QueryStringException();
+        sut.Should().NotBeNull();
+    }
+    
+    [Fact]
+    public void Ctor_InitializesException_WithMessage()
+    {
+        const string message = nameof(Ctor_InitializesException_WithMessage);
+        var sut = new QueryStringException(message);
+        sut.Message.Should().Be(message);
+    }
+    
+    [Fact]
+    public void Ctor_InitializesException_WithMessage_AndInnerException()
+    {
+        const string message = nameof(Ctor_InitializesException_WithMessage_AndInnerException);
+        var innerException = new ArgumentNullException(nameof(Ctor_InitializesException_WithMessage_AndInnerException), "message");
+        var sut = new QueryStringException(message, innerException);
+        sut.Message.Should().Be(message);
+        sut.InnerException.Should().BeEquivalentTo(innerException);
+    }
+    
+    /*
+     * Pre-defined exception: ValidationFailed
+     */
+
+    [Fact]
+    public void ResourceExistsQueryString_ReturnsException_WithExpectedMessage()
+    {
+        const string expectedMessage = "One or more validation errors occurred.";
+        var validation = new ValidationResult(new[] { new ValidationFailure("propertyName", "errorMessage") });
+        
+        var sut = QueryStringException.ValidationFailed(validation);
+        sut.Message.Should().Be(expectedMessage);
+        sut.Errors.Should().BeEquivalentTo(validation.Errors);
+    }
+    
+    /*
+     * CreateProblemDetails
+     */
+    
+    [Fact]
+    public void CreateProblemDetails_ShouldThrow_WhenExceptionTypeIncorrect()
+    {
+        var action = () => QueryStringException.CreateProblemDetails(new Exception());
+        action.Should().Throw<ProblemDetailsFactoryException>();
+    }
+    
+    [Fact]
+    public void CreateProblemDetails_WithExpectedProperties_ForQueryStringException()
+    {
+        const string exceptionMessage = "test-exception";
+        var exception = new QueryStringException(exceptionMessage);
+        var actual = QueryStringException.CreateProblemDetails(exception);
+        
+        actual.Type.Should().EndWith(QueryStringException.ProblemDetailsType);
+        actual.Title.Should().Be(QueryStringException.ProblemDetailsTitle);
+        actual.Status.Should().Be(QueryStringException.ProblemDetailsStatusCode);
+        actual.Detail.Should().BeEquivalentTo(exceptionMessage);
+        
+        // No errors?  No extensions!
+        actual.Extensions.Should().BeEmpty();
+    }
+    
+    [Fact]
+    public void CreateProblemDetails_WithExpectedExtensions_ForQueryStringException()
+    {
+        var validation = new ValidationResult(
+            new[]
+            {
+                new ValidationFailure("property-1", "error-1"), 
+                new ValidationFailure("property-1", "error-2"),
+                new ValidationFailure("property-1", "error-3"),
+                new ValidationFailure("property-2", "error-1"),
+                new ValidationFailure("property-2", "error-2"),
+                new ValidationFailure("property-3", "error-1") 
+            });
+
+        var expectedDictionary = new Dictionary<string, IEnumerable<string>>
+        {
+            { "property-1", ["error-1", "error-2", "error-3"] },
+            { "property-2", ["error-1", "error-2"] },
+            { "property-3", ["error-1"] }
+        };
+        
+        var exception = QueryStringException.ValidationFailed(validation);
+        var actual = QueryStringException.CreateProblemDetails(exception);
+        
+        actual.Type.Should().EndWith(QueryStringException.ProblemDetailsType);
+        actual.Title.Should().Be(QueryStringException.ProblemDetailsTitle);
+        actual.Status.Should().Be(QueryStringException.ProblemDetailsStatusCode);
+        
+        // Errors?  Have some extensions!
+        actual.Extensions.Should().HaveCount(1)
+            .And.AllSatisfy(item => item.Key.Should().Be("errors"));
+
+        actual.Extensions.TryGetValue("errors", out var actualDictionaryObj);
+        var actualDictionary = actualDictionaryObj as Dictionary<string, IEnumerable<string>>;
+        actualDictionary.Should().BeEquivalentTo(expectedDictionary);
+    }
+}
