@@ -1,4 +1,5 @@
 ﻿using Reapit.Platform.Access.Data.Context;
+using Reapit.Platform.Access.Data.Repositories.Groups;
 using Reapit.Platform.Access.Data.Repositories.Organisations;
 using Reapit.Platform.Access.Data.Repositories.Users;
 
@@ -10,6 +11,7 @@ public class UnitOfWork : IUnitOfWork
     
     private IUserRepository? _userRepository;
     private IOrganisationRepository? _organisationRepository;
+    private IGroupRepository? _groupRepository;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UnitOfWork"/> class.
@@ -25,6 +27,10 @@ public class UnitOfWork : IUnitOfWork
     /// <inheritdoc/>
     public IOrganisationRepository Organisations
         => _organisationRepository ??= new OrganisationRepository(_context);
+    
+    /// <inheritdoc/>
+    public IGroupRepository Groups
+        => _groupRepository ??= new GroupRepository(_context);
     
     /// <inheritdoc />
     public async Task SaveChangesAsync(CancellationToken cancellationToken)

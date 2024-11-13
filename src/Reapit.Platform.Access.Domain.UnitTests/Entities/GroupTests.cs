@@ -73,4 +73,39 @@ public class GroupTests
         sut.IsDirty.Should().BeTrue();
         sut.DateModified.Should().NotBe(sut.DateCreated);
     }
+    
+    /*
+     * SoftDelete
+     */
+    
+    [Fact]
+    public void SoftDelete_SetsDateDeleted_WhenCalled()
+    {
+        using var timeFixture = new DateTimeOffsetProviderContext(DateTimeOffset.UnixEpoch);
+        var sut = new Group( "name", "description", "organisation-id");
+        sut.DateDeleted.Should().BeNull();
+        
+        var fixedDate = new DateTimeOffset(2024, 10, 18, 15, 12, 17, TimeSpan.FromHours(1));
+        using var secondTimeFixture = new DateTimeOffsetProviderContext(fixedDate);
+
+        sut.SoftDelete();
+
+        sut.DateDeleted.Should().Be(fixedDate.UtcDateTime);
+    }
+    
+    /*
+     * AsSerializable
+     */
+
+    [Fact]
+    public void AsSerializable_ReturnsAnonymousObject_ForUser()
+    {
+        const string name = "name", description = "description", organisationId = "organisation-id";
+        
+        var group = new Group(name, description, organisationId);
+        var expected = new { group.Id, group.Name, group.Description, group.OrganisationId, group.DateCreated, group.DateModified };
+        
+        var actual = group.AsSerializable();
+        actual.Should().BeEquivalentTo(expected);
+    }
 }

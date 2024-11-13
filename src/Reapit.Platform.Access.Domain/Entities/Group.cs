@@ -50,5 +50,5 @@ public class Group : EntityBase
 
     /// <inheritdoc/>
     public override object AsSerializable()
-        => new { Id, Name, OrganisationId, DateCreated, DateModified };
+        => new { Id, Name, Description, OrganisationId, DateCreated, DateModified };
 }

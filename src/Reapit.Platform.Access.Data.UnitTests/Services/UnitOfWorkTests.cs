@@ -56,6 +56,29 @@ public class UnitOfWorkTests : DatabaseAwareTestBase
     }
     
     /*
+     * Groups
+     */
+    
+    [Fact]
+    public async Task Groups_ReturnsRepository_WhenCalledForTheFirstTime()
+    {
+        await using var dbContext = await GetContextAsync();
+        var sut = CreateSut(dbContext);
+        var actual = sut.Groups;
+        actual.Should().NotBeNull();
+    }
+    
+    [Fact]
+    public async Task Groups_ReusesRepository_ForSubsequentCalls()
+    {
+        await using var dbContext = await GetContextAsync();
+        var sut = CreateSut(dbContext);
+        var initial = sut.Groups;
+        var subsequent = sut.Groups;
+        subsequent.Should().BeSameAs(initial);
+    }
+    
+    /*
      * SaveChangesAsync
      */
 

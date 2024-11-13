@@ -1,4 +1,5 @@
-﻿using Reapit.Platform.Access.Data.Repositories.Organisations;
+﻿using Reapit.Platform.Access.Data.Repositories.Groups;
+using Reapit.Platform.Access.Data.Repositories.Organisations;
 using Reapit.Platform.Access.Data.Repositories.Users;
 
 namespace Reapit.Platform.Access.Data.Services;
@@ -12,6 +13,8 @@ public interface IUnitOfWork
     /// <summary>The organisation repository.</summary>
     public IOrganisationRepository Organisations { get; }
     
+    /// <summary>The group repository.</summary>
+    public IGroupRepository Groups { get; }
     
     /// <summary>Saves all changes made in this context to the database.</summary>
     /// <param name="cancellationToken">The cancellation token.</param>
