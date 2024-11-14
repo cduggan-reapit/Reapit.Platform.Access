@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using Reapit.Platform.Access.Api.Controllers.Internal.Users.V1;
 using Reapit.Platform.Access.Api.Controllers.Internal.Users.V1.Models;
 using Reapit.Platform.Access.Data.Context;
@@ -28,21 +29,21 @@ public class UsersControllerTests(TestApiFactory apiFactory) : ApiIntegrationTes
         var expected = _mapper.Map<SimpleUserModel>(user);
 
         var response = await SendRequestAsync(HttpMethod.Get, $"/api/internal/users/{id}");
-        await response.Should().HaveStatusCode(200).And.HavePayloadAsync(expected);
+        await response.Should().HaveStatusCode(HttpStatusCode.OK).And.HavePayloadAsync(expected);
     }
 
     [Fact]
     public async Task GetUserById_ReturnsBadRequest_WhenApiVersionNotProvided()
     {
         var response = await SendRequestAsync(HttpMethod.Get, "/api/internal/users/any", null);
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync();
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync();
     }
     
     [Fact]
     public async Task GetUserById_ReturnsBadRequest_WhenEndpointNotAvailableInVersion()
     {
         var response = await SendRequestAsync(HttpMethod.Get, "/api/internal/users/any", "0.9");
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync();
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync();
     }
     
     [Fact]
@@ -50,7 +51,7 @@ public class UsersControllerTests(TestApiFactory apiFactory) : ApiIntegrationTes
     {
         await InitializeDatabaseAsync();
         var response = await SendRequestAsync(HttpMethod.Get, "/api/internal/users/user-000");
-        await response.Should().HaveStatusCode(404).And.BeProblemDescriptionAsync();
+        await response.Should().HaveStatusCode(HttpStatusCode.NotFound).And.BeProblemDescriptionAsync();
     }
     
     /*
@@ -64,7 +65,7 @@ public class UsersControllerTests(TestApiFactory apiFactory) : ApiIntegrationTes
         var requestModel = new CreateUserRequestModel("user-011", "User Eleven", "userEleven@test.net");
         var response = await SendRequestAsync(HttpMethod.Post, "/api/internal/users", content: requestModel);
         
-        await response.Should().HaveStatusCode(201)
+        await response.Should().HaveStatusCode(HttpStatusCode.Created)
             .And.MatchPayloadAsync<SimpleUserModel>(actual => 
                 actual.Id == requestModel.Id && 
                 actual.Name == requestModel.Name && 
@@ -75,14 +76,14 @@ public class UsersControllerTests(TestApiFactory apiFactory) : ApiIntegrationTes
     public async Task CreateUser_ReturnsBadRequest_WhenApiVersionNotProvided()
     {
         var response = await SendRequestAsync(HttpMethod.Post, "/api/internal/users", null);
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
     }
     
     [Fact]
     public async Task CreateUser_ReturnsBadRequest_WhenEndpointNotAvailableInVersion()
     {
         var response = await SendRequestAsync(HttpMethod.Post, "/api/internal/users", "0.9");
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
     }
     
     [Fact]
@@ -91,7 +92,7 @@ public class UsersControllerTests(TestApiFactory apiFactory) : ApiIntegrationTes
         await InitializeDatabaseAsync();
         var requestModel = new CreateUserRequestModel("user-001", "User One", "userOne@test.net");
         var response = await SendRequestAsync(HttpMethod.Post, "/api/internal/users", content: requestModel);
-        await response.Should().HaveStatusCode(409).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceConflict); 
+        await response.Should().HaveStatusCode(HttpStatusCode.Conflict).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceConflict); 
     }
     
     [Fact]
@@ -100,7 +101,7 @@ public class UsersControllerTests(TestApiFactory apiFactory) : ApiIntegrationTes
         await InitializeDatabaseAsync();
         var requestModel = new CreateUserRequestModel("user-011", new string('a', 1000), "userOne@test.net");
         var response = await SendRequestAsync(HttpMethod.Post, "/api/internal/users", content: requestModel);
-        await response.Should().HaveStatusCode(422).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ValidationFailed); 
+        await response.Should().HaveStatusCode(HttpStatusCode.UnprocessableContent).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ValidationFailed); 
     }
     
     /*
@@ -114,21 +115,21 @@ public class UsersControllerTests(TestApiFactory apiFactory) : ApiIntegrationTes
         const string id = "user-007";
         var requestModel = new UpdateUserRequestModel("new name", "new email");
         var response = await SendRequestAsync(HttpMethod.Put, $"/api/internal/users/{id}", content: requestModel);
-        response.Should().HaveStatusCode(204);
+        response.Should().HaveStatusCode(HttpStatusCode.NoContent);
     }
     
     [Fact]
     public async Task UpdateUser_ReturnsBadRequest_WhenApiVersionNotProvided()
     {
         var response = await SendRequestAsync(HttpMethod.Put, "/api/internal/users/any", null);
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
     }
     
     [Fact]
     public async Task UpdateUser_ReturnsBadRequest_WhenEndpointNotAvailableInVersion()
     {
         var response = await SendRequestAsync(HttpMethod.Put, "/api/internal/users/any", "0.9");
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
     }
     
     [Fact]
@@ -138,7 +139,7 @@ public class UsersControllerTests(TestApiFactory apiFactory) : ApiIntegrationTes
         const string id = "user-000";
         var requestModel = new UpdateUserRequestModel("new name", "new email");
         var response = await SendRequestAsync(HttpMethod.Put, $"/api/internal/users/{id}", content: requestModel);
-        await response.Should().HaveStatusCode(404).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound);
+        await response.Should().HaveStatusCode(HttpStatusCode.NotFound).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound);
     }
     
     [Fact]
@@ -147,7 +148,7 @@ public class UsersControllerTests(TestApiFactory apiFactory) : ApiIntegrationTes
         const string id = "user-000";
         var requestModel = new UpdateUserRequestModel(new string('a', 1000), "new email");
         var response = await SendRequestAsync(HttpMethod.Put, $"/api/internal/users/{id}", content: requestModel);
-        await response.Should().HaveStatusCode(422).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ValidationFailed);
+        await response.Should().HaveStatusCode(HttpStatusCode.UnprocessableContent).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ValidationFailed);
     }
     
     /*
@@ -161,25 +162,25 @@ public class UsersControllerTests(TestApiFactory apiFactory) : ApiIntegrationTes
         await InitializeDatabaseAsync();
         
         var response = await SendRequestAsync(HttpMethod.Delete, url);
-        response.Should().HaveStatusCode(204);
+        response.Should().HaveStatusCode(HttpStatusCode.NoContent);
 
-        // Following deletion, GET should return a 404
+        // Following deletion, GET should return a HttpStatusCode.NotFound
         var deleteCheck = await SendRequestAsync(HttpMethod.Get, url);
-        deleteCheck.Should().HaveStatusCode(404);
+        deleteCheck.Should().HaveStatusCode(HttpStatusCode.NotFound);
     }
 
     [Fact]
     public async Task DeleteUserById_ReturnsBadRequest_WhenApiVersionNotProvided()
     {
         var response = await SendRequestAsync(HttpMethod.Delete, "/api/internal/users/any", null);
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
     }
     
     [Fact]
     public async Task DeleteUserById_ReturnsBadRequest_WhenEndpointNotAvailableInVersion()
     {
         var response = await SendRequestAsync(HttpMethod.Delete, "/api/internal/users/any", "0.9");
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
     }
     
     [Fact]
@@ -187,7 +188,7 @@ public class UsersControllerTests(TestApiFactory apiFactory) : ApiIntegrationTes
     {
         await InitializeDatabaseAsync();
         var response = await SendRequestAsync(HttpMethod.Delete, "/api/internal/users/user-000");
-        await response.Should().HaveStatusCode(404).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound);
+        await response.Should().HaveStatusCode(HttpStatusCode.NotFound).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound);
     }
     
     /*

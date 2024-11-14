@@ -3,11 +3,11 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace Reapit.Platform.Access.Api.Controllers.Groups.V1.Examples;
 
-/// <summary>Example provider for the <see cref="CreateUserGroupRequestModel"/> type.</summary>
-public class CreateUserGroupRequestModelExample : IExamplesProvider<CreateUserGroupRequestModel>
+/// <summary>Example provider for the <see cref="CreateGroupRequestModel"/> type.</summary>
+public class CreateGroupRequestModelExample : IExamplesProvider<CreateGroupRequestModel>
 {
     /// <inheritdoc />
-    public CreateUserGroupRequestModel GetExamples()
+    public CreateGroupRequestModel GetExamples()
         => new(
             Name: "Swindon Office Users", 
             Description: "Users with access to offices in Swindon and north-east Wiltshire", 

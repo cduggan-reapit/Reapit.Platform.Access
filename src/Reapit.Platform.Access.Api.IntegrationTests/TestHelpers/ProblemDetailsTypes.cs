@@ -12,6 +12,8 @@ public static class ProblemDetailsTypes
     public const string ResourceNotFound = "Resource Not Found";
 
     public const string ValidationFailed = "Validation Failed";
+    
+    public const string QueryStringInvalid = "Bad Request";
 
     public const string ResourceConflict = "Resource Conflict";
 }

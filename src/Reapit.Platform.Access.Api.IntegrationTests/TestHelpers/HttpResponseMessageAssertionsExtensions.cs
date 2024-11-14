@@ -8,30 +8,6 @@ namespace Reapit.Platform.Access.Api.IntegrationTests.TestHelpers;
 
 public static class HttpResponseMessageAssertionsExtensions
 {
-    /// <summary>Tests that the status code of an HttpResponseMessage matches the expected value.</summary>
-    /// <param name="assertions">The assertions object.</param>
-    /// <param name="expected">The expected status code.</param>
-    /// <param name="because">
-    /// A formatted phrase as is supported by Format(string, params object?[]) explaining why the assertion is needed.
-    /// If the phrase does not start with the word because, it is prepended automatically.
-    /// </param>
-    /// <param name="becauseArgs">Zero or more objects to format using the placeholders in because.</param>
-    public static AndConstraint<HttpResponseMessageAssertions> HaveStatusCode(
-        this HttpResponseMessageAssertions assertions,
-        int expected, 
-        string because = "",
-        params object[] becauseArgs)
-    {
-        var actual = (int)assertions.Subject.StatusCode;
-        
-        Execute.Assertion
-            .BecauseOf(because, becauseArgs)
-            .ForCondition(actual == expected)
-            .FailWith("Expected StatusCode {0} but found {1}.", expected, actual);
-        
-        return new AndConstraint<HttpResponseMessageAssertions>(assertions);
-    }
-    
     /// <summary>Tests that the payload of an HttpResponseMessage matches the expected value.</summary>
     /// <param name="assertions">The assertions object.</param>
     /// <param name="title">The expected problem detail title.</param>

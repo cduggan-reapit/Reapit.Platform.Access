@@ -4,4 +4,4 @@
 /// <param name="Name"></param>
 /// <param name="Description"></param>
 /// <param name="OrganisationId"></param>
-public record CreateUserGroupRequestModel(string Name, string Description, string OrganisationId);
+public record CreateGroupRequestModel(string Name, string Description, string OrganisationId);

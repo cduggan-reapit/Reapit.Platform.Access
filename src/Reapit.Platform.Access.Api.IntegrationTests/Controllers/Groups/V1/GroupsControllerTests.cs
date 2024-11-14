@@ -1,6 +1,8 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using Reapit.Platform.Access.Api.Controllers.Groups.V1;
 using Reapit.Platform.Access.Api.Controllers.Groups.V1.Models;
+using Reapit.Platform.Access.Api.Controllers.Shared;
 using Reapit.Platform.Access.Data.Context;
 using Reapit.Platform.Access.Domain.Entities;
 using Reapit.Platform.Access.Domain.Entities.Transient;
@@ -17,6 +19,41 @@ public class GroupsControllerTests(TestApiFactory apiFactory) : ApiIntegrationTe
         .CreateMapper();
     
     /*
+     * GET /api/groups
+     */
+
+    [Fact]
+    public async Task GetGroups_ReturnsBadRequest_WhenNoApiVersionProvided()
+    {
+        var response = await SendRequestAsync(HttpMethod.Get, "/api/groups/", null);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
+    }
+
+    [Fact]
+    public async Task GetGroups_ReturnsBadRequest_WhenApiVersionNotSupported()
+    {
+        var response = await SendRequestAsync(HttpMethod.Get, "/api/groups/", "0.9");
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
+    }
+
+    [Fact]
+    public async Task GetGroups_ReturnsBadRequest_WhenQueryStringParametersInvalid()
+    {
+        var response = await SendRequestAsync(HttpMethod.Get, "/api/groups/?cursor=-1");
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.QueryStringInvalid);
+    }
+
+    [Fact]
+    public async Task GetGroups_ReturnsOk_WhenRequestSuccessful()
+    {
+        await InitializeDatabaseAsync();
+        var expected = _mapper.Map<ResultPage<GroupModel>>(SeedGroups.Take(3));
+        
+        var response = await SendRequestAsync(HttpMethod.Get, "/api/groups/?pageSize=3");
+        await response.Should().HaveStatusCode(HttpStatusCode.OK).And.HavePayloadAsync(expected);
+    }
+    
+    /*
      * GET /api/groups/{id}
      */
     
@@ -31,21 +68,21 @@ public class GroupsControllerTests(TestApiFactory apiFactory) : ApiIntegrationTe
         var expected = _mapper.Map<GroupModel>(group);
 
         var response = await SendRequestAsync(HttpMethod.Get, $"/api/groups/{id}");
-        await response.Should().HaveStatusCode(200).And.HavePayloadAsync(expected);
+        await response.Should().HaveStatusCode(HttpStatusCode.OK).And.HavePayloadAsync(expected);
     }
 
     [Fact]
     public async Task GetGroupById_ReturnsBadRequest_WhenApiVersionNotProvided()
     {
         var response = await SendRequestAsync(HttpMethod.Get, "/api/groups/any", null);
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync();
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync();
     }
     
     [Fact]
     public async Task GetGroupById_ReturnsBadRequest_WhenEndpointNotAvailableInVersion()
     {
         var response = await SendRequestAsync(HttpMethod.Get, "/api/groups/any", "0.9");
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync();
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync();
     }
     
     [Fact]
@@ -53,7 +90,47 @@ public class GroupsControllerTests(TestApiFactory apiFactory) : ApiIntegrationTe
     {
         await InitializeDatabaseAsync();
         var response = await SendRequestAsync(HttpMethod.Get, "/api/groups/any");
-        await response.Should().HaveStatusCode(404).And.BeProblemDescriptionAsync();
+        await response.Should().HaveStatusCode(HttpStatusCode.NotFound).And.BeProblemDescriptionAsync();
+    }
+    
+    /*
+     * POST /api/groups/
+     */
+
+    [Fact]
+    public async Task CreateGroup_ReturnsCreated_WhenUserCreated()
+    {
+        await InitializeDatabaseAsync();
+        var requestModel = new CreateGroupRequestModel("test-group", "description of test group", "organisation-01");
+        var response = await SendRequestAsync(HttpMethod.Post, "/api/groups", content: requestModel);
+        
+        await response.Should().HaveStatusCode(HttpStatusCode.Created)
+            .And.MatchPayloadAsync<GroupModel>(actual => 
+                actual.Name == requestModel.Name && 
+                actual.OrganisationId == requestModel.OrganisationId);
+    }
+    
+    [Fact]
+    public async Task CreateGroup_ReturnsBadRequest_WhenApiVersionNotProvided()
+    {
+        var response = await SendRequestAsync(HttpMethod.Post, "/api/groups", null);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
+    }
+    
+    [Fact]
+    public async Task CreateGroup_ReturnsBadRequest_WhenEndpointNotAvailableInVersion()
+    {
+        var response = await SendRequestAsync(HttpMethod.Post, "/api/groups", "0.9");
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
+    }
+    
+    [Fact]
+    public async Task CreateGroup_ReturnsUnprocessable_WhenRequestInvalid()
+    {
+        await InitializeDatabaseAsync();
+        var requestModel = new CreateGroupRequestModel("user-011", new string('a', 1001), "organisation-01");
+        var response = await SendRequestAsync(HttpMethod.Post, "/api/groups", content: requestModel);
+        await response.Should().HaveStatusCode(HttpStatusCode.UnprocessableContent).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ValidationFailed); 
     }
     
     /*

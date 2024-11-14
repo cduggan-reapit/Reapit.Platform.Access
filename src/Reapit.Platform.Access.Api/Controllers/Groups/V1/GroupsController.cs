@@ -51,10 +51,10 @@ public class GroupsController(IMapper mapper, ISender mediator) : ReapitApiContr
     [HttpPost]
     [ProducesResponseType<GroupModel>(201)]
     [ProducesResponseType<ProblemDetails>(422)]
-    [SwaggerRequestExample(typeof(CreateUserGroupRequestModel), typeof(CreateUserGroupRequestModelExample))]
+    [SwaggerRequestExample(typeof(CreateGroupRequestModel), typeof(CreateGroupRequestModelExample))]
     [SwaggerResponseExample(201, typeof(GroupModelExample))]
     [SwaggerResponseExample(422, typeof(ValidationFailedProblemDetailsExample))]
-    public async Task<IActionResult> CreateGroup(CreateUserGroupRequestModel model)
+    public async Task<IActionResult> CreateGroup(CreateGroupRequestModel model)
     {
         var request = new CreateGroupCommand(model.Name, model.Description, model.OrganisationId);
         var result = await mediator.Send(request);

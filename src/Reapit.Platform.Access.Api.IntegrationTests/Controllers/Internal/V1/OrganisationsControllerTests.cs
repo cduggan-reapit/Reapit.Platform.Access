@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Net;
+using AutoMapper;
 using Reapit.Platform.Access.Api.Controllers.Internal.Organisations.V1;
 using Reapit.Platform.Access.Api.Controllers.Internal.Organisations.V1.Models;
 using Reapit.Platform.Access.Data.Context;
@@ -28,21 +29,21 @@ public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegr
         var expected = _mapper.Map<SimpleOrganisationModel>(organisation);
 
         var response = await SendRequestAsync(HttpMethod.Get, $"/api/internal/organisations/{id}");
-        await response.Should().HaveStatusCode(200).And.HavePayloadAsync(expected);
+        await response.Should().HaveStatusCode(HttpStatusCode.OK).And.HavePayloadAsync(expected);
     }
 
     [Fact]
     public async Task GetOrganisationById_ReturnsBadRequest_WhenApiVersionNotProvided()
     {
         var response = await SendRequestAsync(HttpMethod.Get, "/api/internal/organisations/any", null);
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync();
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync();
     }
     
     [Fact]
     public async Task GetOrganisationById_ReturnsBadRequest_WhenEndpointNotAvailableInVersion()
     {
         var response = await SendRequestAsync(HttpMethod.Get, "/api/internal/organisations/any", "0.9");
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync();
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync();
     }
     
     [Fact]
@@ -50,7 +51,7 @@ public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegr
     {
         await InitializeDatabaseAsync();
         var response = await SendRequestAsync(HttpMethod.Get, "/api/internal/organisations/organisation-000");
-        await response.Should().HaveStatusCode(404).And.BeProblemDescriptionAsync();
+        await response.Should().HaveStatusCode(HttpStatusCode.NotFound).And.BeProblemDescriptionAsync();
     }
     
     /*
@@ -64,7 +65,7 @@ public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegr
         var requestModel = new CreateOrganisationRequestModel("organisation-011", "Organisation Eleven");
         var response = await SendRequestAsync(HttpMethod.Post, "/api/internal/organisations", content: requestModel);
         
-        await response.Should().HaveStatusCode(201)
+        await response.Should().HaveStatusCode(HttpStatusCode.Created)
             .And.MatchPayloadAsync<SimpleOrganisationModel>(actual => 
                 actual.Id == requestModel.Id && 
                 actual.Name == requestModel.Name);
@@ -74,14 +75,14 @@ public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegr
     public async Task CreateOrganisation_ReturnsBadRequest_WhenApiVersionNotProvided()
     {
         var response = await SendRequestAsync(HttpMethod.Post, "/api/internal/organisations", null);
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
     }
     
     [Fact]
     public async Task CreateOrganisation_ReturnsBadRequest_WhenEndpointNotAvailableInVersion()
     {
         var response = await SendRequestAsync(HttpMethod.Post, "/api/internal/organisations", "0.9");
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
     }
     
     [Fact]
@@ -90,7 +91,7 @@ public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegr
         await InitializeDatabaseAsync();
         var requestModel = new CreateOrganisationRequestModel("organisation-001", "Organisation One");
         var response = await SendRequestAsync(HttpMethod.Post, "/api/internal/organisations", content: requestModel);
-        await response.Should().HaveStatusCode(409).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceConflict); 
+        await response.Should().HaveStatusCode(HttpStatusCode.Conflict).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceConflict); 
     }
     
     [Fact]
@@ -99,7 +100,7 @@ public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegr
         await InitializeDatabaseAsync();
         var requestModel = new CreateOrganisationRequestModel("organisation-011", new string('a', 1000));
         var response = await SendRequestAsync(HttpMethod.Post, "/api/internal/organisations", content: requestModel);
-        await response.Should().HaveStatusCode(422).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ValidationFailed); 
+        await response.Should().HaveStatusCode(HttpStatusCode.UnprocessableContent).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ValidationFailed); 
     }
     
     /*
@@ -113,21 +114,21 @@ public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegr
         const string id = "organisation-007";
         var requestModel = new UpdateOrganisationRequestModel("new name");
         var response = await SendRequestAsync(HttpMethod.Put, $"/api/internal/organisations/{id}", content: requestModel);
-        response.Should().HaveStatusCode(204);
+        response.Should().HaveStatusCode(HttpStatusCode.NoContent);
     }
     
     [Fact]
     public async Task UpdateOrganisation_ReturnsBadRequest_WhenApiVersionNotProvided()
     {
         var response = await SendRequestAsync(HttpMethod.Put, "/api/internal/organisations/any", null);
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
     }
     
     [Fact]
     public async Task UpdateOrganisation_ReturnsBadRequest_WhenEndpointNotAvailableInVersion()
     {
         var response = await SendRequestAsync(HttpMethod.Put, "/api/internal/organisations/any", "0.9");
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
     }
     
     [Fact]
@@ -137,7 +138,7 @@ public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegr
         const string id = "organisation-000";
         var requestModel = new UpdateOrganisationRequestModel("new name");
         var response = await SendRequestAsync(HttpMethod.Put, $"/api/internal/organisations/{id}", content: requestModel);
-        await response.Should().HaveStatusCode(404).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound);
+        await response.Should().HaveStatusCode(HttpStatusCode.NotFound).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound);
     }
     
     [Fact]
@@ -146,7 +147,7 @@ public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegr
         const string id = "organisation-000";
         var requestModel = new UpdateOrganisationRequestModel(new string('a', 1000));
         var response = await SendRequestAsync(HttpMethod.Put, $"/api/internal/organisations/{id}", content: requestModel);
-        await response.Should().HaveStatusCode(422).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ValidationFailed);
+        await response.Should().HaveStatusCode(HttpStatusCode.UnprocessableContent).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ValidationFailed);
     }
     
     /*
@@ -160,25 +161,25 @@ public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegr
         await InitializeDatabaseAsync();
         
         var response = await SendRequestAsync(HttpMethod.Delete, url);
-        response.Should().HaveStatusCode(204);
+        response.Should().HaveStatusCode(HttpStatusCode.NoContent);
 
-        // Following deletion, GET should return a 404
+        // Following deletion, GET should return a HttpStatusCode.NotFound
         var deleteCheck = await SendRequestAsync(HttpMethod.Get, url);
-        deleteCheck.Should().HaveStatusCode(404);
+        deleteCheck.Should().HaveStatusCode(HttpStatusCode.NotFound);
     }
 
     [Fact]
     public async Task DeleteOrganisationById_ReturnsBadRequest_WhenApiVersionNotProvided()
     {
         var response = await SendRequestAsync(HttpMethod.Delete, "/api/internal/organisations/any", null);
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
     }
     
     [Fact]
     public async Task DeleteOrganisationById_ReturnsBadRequest_WhenEndpointNotAvailableInVersion()
     {
         var response = await SendRequestAsync(HttpMethod.Delete, "/api/internal/organisations/any", "0.9");
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
     }
     
     [Fact]
@@ -186,7 +187,7 @@ public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegr
     {
         await InitializeDatabaseAsync();
         var response = await SendRequestAsync(HttpMethod.Delete, "/api/internal/organisations/organisation-000");
-        await response.Should().HaveStatusCode(404).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound);
+        await response.Should().HaveStatusCode(HttpStatusCode.NotFound).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound);
     }
     
     /*
@@ -202,21 +203,21 @@ public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegr
         
         await InitializeDatabaseAsync();
         var response = await SendRequestAsync(HttpMethod.Post, url, content: null);
-        response.Should().HaveStatusCode(204);
+        response.Should().HaveStatusCode(HttpStatusCode.NoContent);
     }
     
     [Fact]
     public async Task AddMember_ReturnsBadRequest_WhenApiVersionNotProvided()
     {
         var response = await SendRequestAsync(HttpMethod.Post, "/api/internal/organisations/any/members/any", null);
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
     }
     
     [Fact]
     public async Task AddMember_ReturnsBadRequest_WhenEndpointNotAvailableInVersion()
     {
         var response = await SendRequestAsync(HttpMethod.Post, "/api/internal/organisations/any/members/any", "0.9");
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
     }
     
     [Fact]
@@ -228,7 +229,7 @@ public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegr
         
         await InitializeDatabaseAsync();
         var response = await SendRequestAsync(HttpMethod.Post, url, content: null);
-        await response.Should().HaveStatusCode(404).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound);
+        await response.Should().HaveStatusCode(HttpStatusCode.NotFound).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound);
     }
     
     [Fact]
@@ -240,7 +241,7 @@ public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegr
         
         await InitializeDatabaseAsync();
         var response = await SendRequestAsync(HttpMethod.Post, url, content: null);
-        await response.Should().HaveStatusCode(404).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound);
+        await response.Should().HaveStatusCode(HttpStatusCode.NotFound).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound);
     }
     
     [Fact]
@@ -252,7 +253,7 @@ public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegr
         
         await InitializeDatabaseAsync();
         var response = await SendRequestAsync(HttpMethod.Post, url, content: null);
-        await response.Should().HaveStatusCode(409).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceConflict);
+        await response.Should().HaveStatusCode(HttpStatusCode.Conflict).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceConflict);
     }
 
     /*
@@ -268,21 +269,21 @@ public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegr
         
         await InitializeDatabaseAsync();
         var response = await SendRequestAsync(HttpMethod.Delete, url, content: null);
-        response.Should().HaveStatusCode(204);
+        response.Should().HaveStatusCode(HttpStatusCode.NoContent);
     }
     
     [Fact]
     public async Task DeleteMember_ReturnsBadRequest_WhenApiVersionNotProvided()
     {
         var response = await SendRequestAsync(HttpMethod.Delete, "/api/internal/organisations/any/members/any", null);
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
     }
     
     [Fact]
     public async Task DeleteMember_ReturnsBadRequest_WhenEndpointNotAvailableInVersion()
     {
         var response = await SendRequestAsync(HttpMethod.Delete, "/api/internal/organisations/any/members/any", "0.9");
-        await response.Should().HaveStatusCode(400).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
     }
     
     [Fact]
@@ -294,7 +295,7 @@ public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegr
         
         await InitializeDatabaseAsync();
         var response = await SendRequestAsync(HttpMethod.Delete, url, content: null);
-        await response.Should().HaveStatusCode(404).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound);
+        await response.Should().HaveStatusCode(HttpStatusCode.NotFound).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound);
     }
     
     [Fact]
@@ -306,7 +307,7 @@ public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegr
         
         await InitializeDatabaseAsync();
         var response = await SendRequestAsync(HttpMethod.Delete, url, content: null);
-        await response.Should().HaveStatusCode(404).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound);
+        await response.Should().HaveStatusCode(HttpStatusCode.NotFound).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound);
     }
     
     /*
