@@ -22,7 +22,6 @@
   
   <ItemGroup>
     <Folder Include="UseCases\Groups\DeleteGroup\" />
-    <Folder Include="UseCases\Groups\PatchGroup\" />
   </ItemGroup>
 
 </Project>

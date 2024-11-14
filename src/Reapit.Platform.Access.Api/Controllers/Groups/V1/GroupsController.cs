@@ -8,6 +8,7 @@ using Reapit.Platform.Access.Api.Controllers.Shared.Examples;
 using Reapit.Platform.Access.Core.UseCases.Groups.CreateGroup;
 using Reapit.Platform.Access.Core.UseCases.Groups.GetGroupById;
 using Reapit.Platform.Access.Core.UseCases.Groups.GetGroups;
+using Reapit.Platform.Access.Core.UseCases.Groups.PatchGroup;
 using Reapit.Platform.ApiVersioning.Attributes;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -54,11 +55,28 @@ public class GroupsController(IMapper mapper, ISender mediator) : ReapitApiContr
     [SwaggerRequestExample(typeof(CreateGroupRequestModel), typeof(CreateGroupRequestModelExample))]
     [SwaggerResponseExample(201, typeof(GroupModelExample))]
     [SwaggerResponseExample(422, typeof(ValidationFailedProblemDetailsExample))]
-    public async Task<IActionResult> CreateGroup(CreateGroupRequestModel model)
+    public async Task<IActionResult> CreateGroup([FromBody] CreateGroupRequestModel model)
     {
         var request = new CreateGroupCommand(model.Name, model.Description, model.OrganisationId);
         var result = await mediator.Send(request);
         var groupModel = mapper.Map<GroupModel>(result);
         return CreatedAtAction(nameof(GetGroupById), new { id = groupModel.Id }, groupModel);
+    }
+
+    /// <summary>Update a group.</summary>
+    /// <param name="id">The unique identifier of the group.</param>
+    /// <param name="model">Definition of the properties to update.</param>
+    [HttpPatch("{id}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType<ProblemDetails>(404)]
+    [ProducesResponseType<ProblemDetails>(422)]
+    [SwaggerRequestExample(typeof(PatchGroupRequestModel), typeof(PatchGroupRequestModelExample))]
+    [SwaggerResponseExample(404, typeof(NotFoundProblemDetailsExample))]
+    [SwaggerResponseExample(422, typeof(ValidationFailedProblemDetailsExample))]
+    public async Task<IActionResult> PatchGroup([FromRoute] string id, [FromBody] PatchGroupRequestModel model)
+    {
+        var request = new PatchGroupCommand(id, model.Name, model.Description);
+        _ = await mediator.Send(request);
+        return NoContent();
     }
 }

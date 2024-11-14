@@ -18,6 +18,7 @@ public interface IGroupRepository : IBaseRepository<Group>
     /// <param name="modifiedTo">Limit results to groups last modified before this date.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A collection of <see cref="Group"/> objects.</returns>
+    // TODO: consider creating a data-layer object (or objects) containing these values.  There are too many parameters here.
     Task<IEnumerable<Group>> GetGroupsAsync(
         long? cursor = null,
         int pageSize = 25,

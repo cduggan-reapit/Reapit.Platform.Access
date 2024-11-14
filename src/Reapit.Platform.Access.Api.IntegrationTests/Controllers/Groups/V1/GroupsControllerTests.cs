@@ -128,9 +128,70 @@ public class GroupsControllerTests(TestApiFactory apiFactory) : ApiIntegrationTe
     public async Task CreateGroup_ReturnsUnprocessable_WhenRequestInvalid()
     {
         await InitializeDatabaseAsync();
-        var requestModel = new CreateGroupRequestModel("user-011", new string('a', 1001), "organisation-01");
+        var requestModel = new CreateGroupRequestModel("group-011", new string('a', 1001), "organisation-01");
         var response = await SendRequestAsync(HttpMethod.Post, "/api/groups", content: requestModel);
         await response.Should().HaveStatusCode(HttpStatusCode.UnprocessableContent).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ValidationFailed); 
+    }
+    
+    /*
+     * PATCH /api/groups/{id}
+     */
+    
+    [Fact]
+    public async Task PatchGroup_ReturnsNoContent_WhenUserPatched()
+    {
+        const int id = 7;
+        var guid = $"{id:D32}";
+        var url = $"/api/groups/{guid}";
+        
+        await InitializeDatabaseAsync();
+        var requestModel = new PatchGroupRequestModel("new name", null);
+        var response = await SendRequestAsync(HttpMethod.Patch, url, content: requestModel);
+        response.Should().HaveStatusCode(HttpStatusCode.NoContent);
+
+        var check = await SendRequestAsync(HttpMethod.Get, url);
+        var checkContent = await check.Content.ReadFromJsonAsync<GroupModel>();
+        checkContent!.Name.Should().BeEquivalentTo("new name");
+    }
+    
+    [Fact]
+    public async Task PatchGroup_ReturnsBadRequest_WhenApiVersionNotProvided()
+    {
+        var response = await SendRequestAsync(HttpMethod.Patch, "/api/groups/any", null);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
+    }
+    
+    [Fact]
+    public async Task PatchGroup_ReturnsBadRequest_WhenEndpointNotAvailableInVersion()
+    {
+        var response = await SendRequestAsync(HttpMethod.Patch, "/api/groups/any", "0.9");
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
+    }
+    
+    [Fact]
+    public async Task PatchGroup_ReturnsUnprocessable_WhenRequestInvalid()
+    {
+        const int id = 6;
+        var guid = $"{id:D32}";
+        var url = $"/api/groups/{guid}";
+        
+        await InitializeDatabaseAsync();
+        var requestModel = new PatchGroupRequestModel("valid-name", new string('a', 1001));
+        var response = await SendRequestAsync(HttpMethod.Patch, url, content: requestModel);
+        await response.Should().HaveStatusCode(HttpStatusCode.UnprocessableContent).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ValidationFailed); 
+    }
+    
+    [Fact]
+    public async Task PatchGroup_ReturnsNotFound_WhenGroupDoesNotExist()
+    {
+        const int id = 11;
+        var guid = $"{id:D32}";
+        var url = $"/api/groups/{guid}";
+        
+        await InitializeDatabaseAsync();
+        var requestModel = new PatchGroupRequestModel("valid name", "valid description");
+        var response = await SendRequestAsync(HttpMethod.Patch, url, content: requestModel);
+        await response.Should().HaveStatusCode(HttpStatusCode.NotFound).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound); 
     }
     
     /*

@@ -46,18 +46,7 @@ public class CreateGroupCommandHandlerTests
         await _groupRepository.Received(1).CreateAsync(actual, Arg.Any<CancellationToken>());
         await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
-    
-    /*var validation = await _validator.ValidateAsync(request, cancellationToken);
-        if (!validation.IsValid)
-            throw new ValidationException(validation.Errors);
 
-        var group = new Group(request.Name, request.Description, request.OrganisationId);
-        _ = await _unitOfWork.Groups.CreateAsync(group, cancellationToken);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-        _logger.LogInformation("Group created: {id} ({blob})", group.Id, group.AsSerializable());
-        return group;*/
-    
     /*
      * Private methods
      */

@@ -5,6 +5,7 @@ using Reapit.Platform.Access.Api.Controllers.Shared;
 using Reapit.Platform.Access.Core.UseCases.Groups.CreateGroup;
 using Reapit.Platform.Access.Core.UseCases.Groups.GetGroupById;
 using Reapit.Platform.Access.Core.UseCases.Groups.GetGroups;
+using Reapit.Platform.Access.Core.UseCases.Groups.PatchGroup;
 using Reapit.Platform.Access.Domain.Entities;
 
 namespace Reapit.Platform.Access.Api.UnitTests.Controllers.Groups;
@@ -89,6 +90,24 @@ public class GroupsControllerTests
 
         response.ActionName.Should().Be(nameof(GroupsController.GetGroupById));
         response.RouteValues.Should().Contain(item => item.Key == "id" && group.Id.Equals(item.Value as string));
+    }
+    
+    /*
+     * PatchGroup
+     */
+    
+    [Fact]
+    public async Task PatchGroup_ReturnsNoContent()
+    {
+        var group = new Group("initial-name", "initial-description", "organisation-id");
+        var request = new PatchGroupRequestModel("new name", "new description");
+        var command = new PatchGroupCommand(group.Id, request.Name, request.Description);
+        
+        var sut = CreateSut();
+        var response = await sut.PatchGroup(group.Id, request) as NoContentResult;
+        response.Should().NotBeNull().And.Match((NoContentResult result) => result.StatusCode == 204);
+        
+        await _mediator.Received(1).Send(command, Arg.Any<CancellationToken>());
     }
     
     /*
