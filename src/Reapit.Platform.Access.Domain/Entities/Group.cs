@@ -28,6 +28,16 @@ public class Group : EntityBase
         Name = GetUpdateValue(Name, name);
         Description = GetUpdateValue(Description, description);
     }
+
+    /// <summary>Add a user to the members collection for this group.</summary>
+    /// <param name="user">The user to add.</param>
+    public void AddUser(User user)
+        => Users.Add(user);
+
+    /// <summary>Remove a user from the members collection for this group.</summary>
+    /// <param name="user">The user to remove.</param>
+    public void RemoveUser(User user)
+        => Users.Remove(user);
     
     /// <summary>The name of the group.</summary>
     public string Name { get; private set; }

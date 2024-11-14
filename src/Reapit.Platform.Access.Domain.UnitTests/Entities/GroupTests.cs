@@ -75,6 +75,36 @@ public class GroupTests
     }
     
     /*
+     * AddUser
+     */
+
+    [Fact]
+    public void AddUser_AddsUserToCollection()
+    {
+        var user = new User("user-id", "user-name", "user-email");
+        var sut = new Group("name", "description", "organisationId");
+        sut.AddUser(user);
+        sut.Users.Should().BeEquivalentTo([user]);
+    }
+    
+    /*
+     * RemoveUser
+     */
+    
+    [Fact]
+    public void RemoveUser_RemovesUserFromCollection()
+    {
+        var user = new User("user-id", "user-name", "user-email");
+        var sut = new Group("name", "description", "organisationId")
+        {
+            Users = [user]
+        };
+        
+        sut.RemoveUser(user);
+        sut.Users.Should().BeEmpty();
+    }
+    
+    /*
      * SoftDelete
      */
     
