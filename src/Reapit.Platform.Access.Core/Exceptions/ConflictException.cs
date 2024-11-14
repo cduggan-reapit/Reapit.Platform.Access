@@ -34,7 +34,7 @@ public class ConflictException : Exception
     public static ConflictException ResourceExists(
         string resourceType,
         string resourceIdentifier)
-        => new($"{resourceType} already exists with the identifier '{resourceIdentifier}'.");
+        => new($"{resourceType} already exists for '{resourceIdentifier}'.");
     
     /// <summary>Get an instance of <see cref="ProblemDetails"/> representing an Exception of type <see cref="ConflictException"/>.</summary>
     /// <param name="exception">The exception.</param>

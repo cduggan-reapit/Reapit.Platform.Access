@@ -14,7 +14,8 @@ public class UserGroupConfiguration : IEntityTypeConfiguration<Group>
     public void Configure(EntityTypeBuilder<Group> builder)
     {
         builder.ConfigureEntityBase()
-            .ToTable("groups");
+            .ToTable("groups")
+            .Navigation(group => group.Users).AutoInclude();
 
         // The same name cannot be re-used within an organisation (unless deleted)
         builder.HasIndex(entity => new { entity.OrganisationId, entity.Name, entity.DateDeleted })

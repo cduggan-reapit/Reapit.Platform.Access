@@ -42,7 +42,7 @@ public class ConflictExceptionTests
     {
         const string resourceType = "cake";
         const string resourceIdentifier = "sponge";
-        const string expected = $"{resourceType} already exists with the identifier '{resourceIdentifier}'.";
+        const string expected = $"{resourceType} already exists for '{resourceIdentifier}'.";
         var sut = ConflictException.ResourceExists(resourceType, resourceIdentifier);
         sut.Message.Should().Be(expected);
     }
