@@ -33,7 +33,12 @@ public class User : RemoteEntityBase
         Email = email;
         DateLastSynchronised = DateTimeOffsetProvider.Now;
     }
-    
+
+    /// <summary>Determines whether the user is a member of a given organisation.</summary>
+    /// <param name="organisationId">The unique identifier of the organisation.</param>
+    public bool IsMemberOfOrganisation(string organisationId) 
+        => OrganisationUsers.Any(o => o.OrganisationId == organisationId);
+
     /// <summary>The unique identifier of the User in the organisations service.</summary>
     public string Id { get; init; }
     

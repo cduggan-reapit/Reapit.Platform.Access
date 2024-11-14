@@ -23,8 +23,11 @@ public static class ExceptionRegistrar
         // Validation errors arising from read endpoints (400)
         factory.RegisterFactoryMethod<QueryValidationException>(QueryValidationException.CreateProblemDetails);
         
-        // Conflict errors - thing already exists (409)
+        // Conflict errors - thing already exists (409) 
         factory.RegisterFactoryMethod<ConflictException>(ConflictException.CreateProblemDetails);
+        
+        // Not sure what code this should have yet - 400 for now
+        factory.RegisterFactoryMethod<GroupMembershipException>(GroupMembershipException.CreateProblemDetails);
 
         return app;
     }
