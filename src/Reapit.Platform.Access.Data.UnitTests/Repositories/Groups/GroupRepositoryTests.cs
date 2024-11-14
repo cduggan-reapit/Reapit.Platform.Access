@@ -78,20 +78,21 @@ public class GroupRepositoryTests : DatabaseAwareTestBase
     [Fact]
     public async Task GetGroupsAsync_ReturnsFilteredResult_WhenOrganisationIdProvided()
     {
+        // We've got four groups per organisation
         const string organisationId = "organisation-02";
-
+        
         await using var context = await GetContextAsync();
         await PlantSeedDataAsync(context);
         var sut = CreateSut(context);
         var actual = await sut.GetGroupsAsync(organisationId: organisationId);
-        actual.Should().HaveCount(15)
+        actual.Should().HaveCount(4)
             .And.AllSatisfy(group => group.OrganisationId.Should().Be(organisationId));
     }
 
     [Fact]
     public async Task GetGroupsAsync_ReturnsFilteredResult_WhenNameProvided()
     {
-        const string name = "Group 08";
+        const string name = "Group 087";
         
         await using var context = await GetContextAsync();
         await PlantSeedDataAsync(context);
@@ -104,26 +105,28 @@ public class GroupRepositoryTests : DatabaseAwareTestBase
     [Fact]
     public async Task GetGroupsAsync_ReturnsFilteredResult_WhenDescriptionProvided()
     {
-        const string description = "Description of Group 1";
+        const string description = "Group 01";
+        // The filter is "contains" so if we filter for Group 01, we expect 10 results (010 - 019, inclusive)
         
         await using var context = await GetContextAsync();
         await PlantSeedDataAsync(context);
         var sut = CreateSut(context);
         var actual = await sut.GetGroupsAsync(description: description);
         actual.Should().HaveCount(10)
-            .And.AllSatisfy(group => group.Description.Should().StartWith(description));
+            .And.AllSatisfy(group => group.Description.Should().Contain(description));
     }
 
     [Fact]
     public async Task GetGroupsAsync_ReturnsFilteredResult_WhenCreatedFromProvided()
     {
-        var createdFrom = BaseDateTime.AddDays(15);
+        // Get the last 10 (skip 0-190, return 191-200)
+        var createdFrom = BaseDateTime.AddDays(190);
         
         await using var context = await GetContextAsync();
         await PlantSeedDataAsync(context);
         var sut = CreateSut(context);
         var actual = await sut.GetGroupsAsync(createdFrom: createdFrom);
-        actual.Should().HaveCount(15)
+        actual.Should().HaveCount(10)
             .And.AllSatisfy(group => group.DateCreated.Should().BeOnOrAfter(createdFrom));
     }
     
@@ -143,7 +146,8 @@ public class GroupRepositoryTests : DatabaseAwareTestBase
     [Fact]
     public async Task GetGroupsAsync_ReturnsFilteredResult_WhenModifiedFromProvided()
     {
-        var modifiedFrom = BaseDateTime.AddDays(15).AddYears(1);
+        // Get the last 15 (skip 0-185, return 186-200)
+        var modifiedFrom = BaseDateTime.AddDays(185).AddYears(1);
         
         await using var context = await GetContextAsync();
         await PlantSeedDataAsync(context);
@@ -264,66 +268,44 @@ public class GroupRepositoryTests : DatabaseAwareTestBase
     
     private static async Task PlantSeedDataAsync(AccessDbContext context)
     {
-        var users = Enumerable.Range(1, 60)
+        /*
+         * For the sake of the repository, we don't actually care which organisation users belong to.  The requirement
+         * for a user to be associated with the same organisation that their groups are is enforced by validation rather
+         * than by structure.
+         */
+        
+        var users = Enumerable.Range(0, 400)
             .Select(u => (Index: u, Entity: new User($"user-{u:D3}", $"User {u:D3}", $"user-{u:D3}@test.net")))
             .ToDictionary(item => item.Index, item => item.Entity);
         
-        var organisations = Enumerable.Range(1, 2)
+        var organisations = Enumerable.Range(0, 50)
             .Select(o => (Index: o, Entity: new Organisation($"organisation-{o:D2}", $"Organisation {o:D2}")))
             .ToDictionary(item => item.Index, item => item.Entity);
-        
-        var organisationUsers = Enumerable.Range(1, 2)
-            .SelectMany(o =>
-            {
-                var organisationId = $"organisation-{o:D2}";
-                var userIds = users.Where(u => u.Key % 2 + 1 == o)
-                    .Select(u => u.Value.Id)
-                    .ToArray();
 
-                return userIds.Select(userId => new OrganisationUser
+        var groups = Enumerable.Range(0, 200)
+            .Select(seed =>
+            {
+                var guidFixture = new Guid($"{seed:D32}");
+                using var guidContext = new GuidProviderContext(guidFixture);
+                
+                var timeFixture = DateTime.SpecifyKind(BaseDateTime.AddDays(seed), DateTimeKind.Utc);
+                using var timeContext = new DateTimeOffsetProviderContext(timeFixture);
+                
+                var organisation = organisations[seed % 50];
+                var group = new Group($"Group {seed:D3}", $"Description of Group {seed:D3}", organisation.Id)
                 {
-                    OrganisationId = organisationId, 
-                    UserId = userId 
-                });
-            });
-        
+                    DateModified = timeFixture.AddYears(1),
+                    Organisation = organisation,
+                    Users = [ users[seed], users[seed+200] ]
+                };
+
+                return group;
+            })
+            .ToList();
+
         await context.Organisations.AddRangeAsync(organisations.Values);
         await context.Users.AddRangeAsync(users.Values);
-        await context.OrganisationUsers.AddRangeAsync(organisationUsers);
-        
-        // Commit!
-        await context.SaveChangesAsync();
-        
-        /*
-         * Now make some groups!
-         */
-
-        var groups = Enumerable.Range(1, 30)
-            .Select(index =>
-            {
-                var time = BaseDateTime.AddDays(index - 1);
-                var guid = new Guid($"{index:D32}");
-                var organisationId = $"organisation-{index % 2 + 1:D2}";
-
-                using var timeFixture = new DateTimeOffsetProviderContext(time);
-                using var guidFixture = new GuidProviderContext(guid);
-                
-                // We'll infer the userIds from the index:
-                var firstOrganisationUser = context.OrganisationUsers.Single(ou => ou.UserId == $"user-{index:D3}");
-                var secondOrganisationUser = context.OrganisationUsers.Single(ou => ou.UserId == $"user-{index + 30:D3}");
-                
-                return new Group($"Group {index:D2}", $"Description of Group {index:D2}", organisationId)
-                {
-                    DateModified = time.AddYears(1),
-                    Users = [
-                        new User(firstOrganisationUser.UserId, "name", "email"),
-                        new User(secondOrganisationUser.UserId, "name", "email")
-                    ]
-                };
-            });
-        
         await context.Groups.AddRangeAsync(groups);
         await context.SaveChangesAsync();
-
     }
 }
