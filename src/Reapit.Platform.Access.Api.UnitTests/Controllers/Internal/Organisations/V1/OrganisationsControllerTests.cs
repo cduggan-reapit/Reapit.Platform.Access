@@ -9,7 +9,7 @@ using Reapit.Platform.Access.Core.UseCases.Organisations.RemoveOrganisationMembe
 using Reapit.Platform.Access.Core.UseCases.Organisations.UpdateOrganisation;
 using Reapit.Platform.Access.Domain.Entities;
 
-namespace Reapit.Platform.Access.Api.UnitTests.Controllers.Internal.Organisations;
+namespace Reapit.Platform.Access.Api.UnitTests.Controllers.Internal.Organisations.V1;
 
 public class OrganisationsControllerTests
 {

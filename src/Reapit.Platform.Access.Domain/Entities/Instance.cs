@@ -16,9 +16,7 @@ public class Instance : EntityBase
     
     public string OrganisationId { get; set; }
     public Organisation Organisation { get; set; }
-
-    public ICollection<InstanceUserGroup> InstanceUserGroups { get; set; } = new List<InstanceUserGroup>();
-
+    
     public override object AsSerializable()
     {
         throw new NotImplementedException();

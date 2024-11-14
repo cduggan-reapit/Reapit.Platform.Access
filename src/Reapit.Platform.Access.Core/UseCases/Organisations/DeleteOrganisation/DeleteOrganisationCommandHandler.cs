@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Reapit.Platform.Access.Core.Extensions;
 using Reapit.Platform.Access.Data.Services;
 using Reapit.Platform.Access.Domain.Entities;
-using Reapit.Platform.Common.Exceptions;
 
 namespace Reapit.Platform.Access.Core.UseCases.Organisations.DeleteOrganisation;
 

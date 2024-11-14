@@ -4,7 +4,6 @@ using Reapit.Platform.Access.Core.UseCases.Users.UpdateUser;
 using Reapit.Platform.Access.Data.Repositories.Users;
 using Reapit.Platform.Access.Data.Services;
 using Reapit.Platform.Access.Domain.Entities;
-using Reapit.Platform.Common.Exceptions;
 using Reapit.Platform.Common.Providers.Temporal;
 
 namespace Reapit.Platform.Access.Core.UnitTests.UseCases.Users.UpdateUser;

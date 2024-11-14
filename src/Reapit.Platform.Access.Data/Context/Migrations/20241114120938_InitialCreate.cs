@@ -152,7 +152,7 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "organisation_users",
+                name: "OrganisationUsers",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -165,15 +165,15 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_organisation_users", x => x.Id);
+                    table.PrimaryKey("PK_OrganisationUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_organisation_users_organisations_organisation_id",
+                        name: "FK_OrganisationUsers_organisations_organisation_id",
                         column: x => x.organisation_id,
                         principalTable: "organisations",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_organisation_users_users_user_id",
+                        name: "FK_OrganisationUsers_users_user_id",
                         column: x => x.user_id,
                         principalTable: "users",
                         principalColumn: "id",
@@ -182,7 +182,7 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "user_roles",
+                name: "UserRole",
                 columns: table => new
                 {
                     user_id = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false)
@@ -192,15 +192,15 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_user_roles", x => new { x.user_id, x.role_id });
+                    table.PrimaryKey("PK_UserRole", x => new { x.user_id, x.role_id });
                     table.ForeignKey(
-                        name: "FK_user_roles_roles_role_id",
+                        name: "FK_UserRole_roles_role_id",
                         column: x => x.role_id,
                         principalTable: "roles",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_user_roles_users_user_id",
+                        name: "FK_UserRole_users_user_id",
                         column: x => x.user_id,
                         principalTable: "users",
                         principalColumn: "id",
@@ -209,54 +209,28 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "instance_user_groups",
+                name: "groupUsers",
                 columns: table => new
                 {
-                    instance_id = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false)
+                    groupId = table.Column<string>(type: "varchar(36)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    user_group_id = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false)
+                    userId = table.Column<string>(type: "varchar(100)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_instance_user_groups", x => new { x.instance_id, x.user_group_id });
+                    table.PrimaryKey("PK_groupUsers", x => new { x.groupId, x.userId });
                     table.ForeignKey(
-                        name: "FK_instance_user_groups_groups_user_group_id",
-                        column: x => x.user_group_id,
+                        name: "FK_groupUsers_groups_groupId",
+                        column: x => x.groupId,
                         principalTable: "groups",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_instance_user_groups_instances_instance_id",
-                        column: x => x.instance_id,
-                        principalTable: "instances",
+                        name: "FK_groupUsers_users_userId",
+                        column: x => x.userId,
+                        principalTable: "users",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "user_group_users",
-                columns: table => new
-                {
-                    user_group_id = table.Column<string>(type: "varchar(36)", maxLength: 36, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    organisation_user_id = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_user_group_users", x => new { x.user_group_id, x.organisation_user_id });
-                    table.ForeignKey(
-                        name: "FK_user_group_users_groups_user_group_id",
-                        column: x => x.user_group_id,
-                        principalTable: "groups",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_user_group_users_organisation_users_organisation_user_id",
-                        column: x => x.organisation_user_id,
-                        principalTable: "organisation_users",
-                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -289,9 +263,9 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_instance_user_groups_user_group_id",
-                table: "instance_user_groups",
-                column: "user_group_id");
+                name: "IX_groupUsers_userId",
+                table: "groupUsers",
+                column: "userId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_instances_cursor",
@@ -325,13 +299,13 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 column: "product_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_organisation_users_organisation_id",
-                table: "organisation_users",
+                name: "IX_OrganisationUsers_organisation_id",
+                table: "OrganisationUsers",
                 column: "organisation_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_organisation_users_user_id_organisation_id",
-                table: "organisation_users",
+                name: "IX_OrganisationUsers_user_id_organisation_id",
+                table: "OrganisationUsers",
                 columns: new[] { "user_id", "organisation_id" },
                 unique: true);
 
@@ -378,13 +352,8 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 column: "deleted");
 
             migrationBuilder.CreateIndex(
-                name: "IX_user_group_users_organisation_user_id",
-                table: "user_group_users",
-                column: "organisation_user_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_user_roles_role_id",
-                table: "user_roles",
+                name: "IX_UserRole_role_id",
+                table: "UserRole",
                 column: "role_id");
         }
 
@@ -392,34 +361,31 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "instance_user_groups");
-
-            migrationBuilder.DropTable(
-                name: "user_group_users");
-
-            migrationBuilder.DropTable(
-                name: "user_roles");
+                name: "groupUsers");
 
             migrationBuilder.DropTable(
                 name: "instances");
 
             migrationBuilder.DropTable(
+                name: "OrganisationUsers");
+
+            migrationBuilder.DropTable(
+                name: "UserRole");
+
+            migrationBuilder.DropTable(
                 name: "groups");
-
-            migrationBuilder.DropTable(
-                name: "organisation_users");
-
-            migrationBuilder.DropTable(
-                name: "roles");
 
             migrationBuilder.DropTable(
                 name: "products");
 
             migrationBuilder.DropTable(
-                name: "organisations");
+                name: "roles");
 
             migrationBuilder.DropTable(
                 name: "users");
+
+            migrationBuilder.DropTable(
+                name: "organisations");
         }
     }
 }

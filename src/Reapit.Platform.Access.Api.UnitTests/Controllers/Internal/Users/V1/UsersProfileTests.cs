@@ -3,7 +3,7 @@ using Reapit.Platform.Access.Api.Controllers.Internal.Users.V1.Models;
 using Reapit.Platform.Access.Domain.Entities;
 using Reapit.Platform.Common.Providers.Temporal;
 
-namespace Reapit.Platform.Access.Api.UnitTests.Controllers.Internal.Users;
+namespace Reapit.Platform.Access.Api.UnitTests.Controllers.Internal.Users.V1;
 
 public class UsersProfileTests
 {

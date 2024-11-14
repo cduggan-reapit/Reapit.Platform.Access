@@ -1,0 +1,1 @@
+﻿global using Reapit.Platform.Common.Exceptions;

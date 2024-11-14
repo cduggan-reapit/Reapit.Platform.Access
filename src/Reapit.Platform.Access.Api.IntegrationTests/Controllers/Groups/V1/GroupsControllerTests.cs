@@ -195,6 +195,51 @@ public class GroupsControllerTests(TestApiFactory apiFactory) : ApiIntegrationTe
     }
     
     /*
+     * DELETE /api/groups/{id}
+     */
+    
+    [Fact]
+    public async Task DeleteGroup_ReturnsNoContent_WhenUserDeleted()
+    {
+        const int id = 7;
+        var guid = $"{id:D32}";
+        var url = $"/api/groups/{guid}";
+        
+        await InitializeDatabaseAsync();
+        var response = await SendRequestAsync(HttpMethod.Delete, url);
+        response.Should().HaveStatusCode(HttpStatusCode.NoContent);
+
+        var check = await SendRequestAsync(HttpMethod.Get, url);
+        check.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+    
+    [Fact]
+    public async Task DeleteGroup_ReturnsBadRequest_WhenApiVersionNotProvided()
+    {
+        var response = await SendRequestAsync(HttpMethod.Delete, "/api/groups/any", null);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
+    }
+    
+    [Fact]
+    public async Task DeleteGroup_ReturnsBadRequest_WhenEndpointNotAvailableInVersion()
+    {
+        var response = await SendRequestAsync(HttpMethod.Delete, "/api/groups/any", "0.9");
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
+    }
+    
+    [Fact]
+    public async Task DeleteGroup_ReturnsNotFound_WhenGroupDoesNotExist()
+    {
+        const int id = 11;
+        var guid = $"{id:D32}";
+        var url = $"/api/groups/{guid}";
+        
+        await InitializeDatabaseAsync();
+        var response = await SendRequestAsync(HttpMethod.Delete, url);
+        await response.Should().HaveStatusCode(HttpStatusCode.NotFound).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound); 
+    }
+    
+    /*
      * Private methods
      */
 
@@ -226,26 +271,11 @@ public class GroupsControllerTests(TestApiFactory apiFactory) : ApiIntegrationTe
         var group = new Group($"Group {seed:D2}", $"Description of Group {seed:D2}", $"organisation-{seed:D2}")
         {
             Organisation = new Organisation($"organisation-{seed:D2}", $"Organisation {seed:D2}"),
-            GroupUsers = [
-                new GroupUser
-                {
-                    GroupId = groupId,
-                    OrganisationUser = new OrganisationUser
-                    {
-                        OrganisationId = $"organisation-{seed:D2}",
-                        User = new User($"user-{seed:D2}-01", $"User {seed:D2} 01",$"user-01@{seed:D2}.net")
-                    }
-                },
-                new GroupUser
-                {
-                    GroupId = groupId,
-                    OrganisationUser = new OrganisationUser
-                    {
-                        OrganisationId = $"organisation-{seed:D2}",
-                        User = new User($"user-{seed:D2}-02", $"User {seed:D2} 02",$"user-02@{seed:D2}.net")
-                    }
-                }
-            ]
+            Users = new [] 
+            {
+                new User($"user-{seed:D2}-01", $"User {seed:D2} 01",$"user-01@{seed:D2}.net"),
+                new User($"user-{seed:D2}-02", $"User {seed:D2} 02",$"user-02@{seed:D2}.net")
+            }
         };
 
         return group;

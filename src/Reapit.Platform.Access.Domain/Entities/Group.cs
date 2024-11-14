@@ -42,12 +42,9 @@ public class Group : EntityBase
     [ForeignKey(nameof(OrganisationId))]
     public Organisation? Organisation { get; init; }
 
-    /// <summary>The collection of group-to-organisation-user relationships associated with this group.</summary>
-    public ICollection<GroupUser> GroupUsers { get; set; } = new List<GroupUser>();
+    /// <summary>The collection of users associated with this group.</summary>
+    public ICollection<User> Users { get; set; } = new List<User>();
     
-    /// <summary>The collection of product instances that this group is able to access.</summary>
-    public ICollection<InstanceUserGroup> InstanceUserGroups { get; set; } = new List<InstanceUserGroup>();
-
     /// <inheritdoc/>
     public override object AsSerializable()
         => new { Id, Name, Description, OrganisationId, DateCreated, DateModified };

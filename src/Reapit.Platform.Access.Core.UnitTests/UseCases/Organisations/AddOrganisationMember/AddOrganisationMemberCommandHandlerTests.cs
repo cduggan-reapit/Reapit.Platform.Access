@@ -4,7 +4,6 @@ using Reapit.Platform.Access.Data.Repositories.Organisations;
 using Reapit.Platform.Access.Data.Repositories.Users;
 using Reapit.Platform.Access.Data.Services;
 using Reapit.Platform.Access.Domain.Entities;
-using Reapit.Platform.Common.Exceptions;
 
 namespace Reapit.Platform.Access.Core.UnitTests.UseCases.Organisations.AddOrganisationMember;
 

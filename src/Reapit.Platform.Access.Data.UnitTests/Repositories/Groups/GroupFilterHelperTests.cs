@@ -232,15 +232,8 @@ public class GroupFilterHelperTests
         return new Group($"Group {seedValue:D3}", $"Group {seedValue:D3} Description", $"organisation-{organisationSeed:D3}")
         {
             DateModified = time.UtcDateTime.AddYears(1),
-            GroupUsers = Enumerable.Range(0, 2)
-                .Select(u 
-                    => new GroupUser
-                    {
-                        OrganisationUser = new OrganisationUser
-                        {
-                            UserId = $"user-{organisationSeed + u:D3}"
-                        }
-                    })
+            Users = Enumerable.Range(0, 2)
+                .Select(u => new User($"user-{organisationSeed + u:D3}", "name", "email"))
                 .ToList()
         };
     }

@@ -6,6 +6,7 @@ using Reapit.Platform.Access.Api.Controllers.Groups.V1.Models;
 using Reapit.Platform.Access.Api.Controllers.Shared;
 using Reapit.Platform.Access.Api.Controllers.Shared.Examples;
 using Reapit.Platform.Access.Core.UseCases.Groups.CreateGroup;
+using Reapit.Platform.Access.Core.UseCases.Groups.DeleteGroup;
 using Reapit.Platform.Access.Core.UseCases.Groups.GetGroupById;
 using Reapit.Platform.Access.Core.UseCases.Groups.GetGroups;
 using Reapit.Platform.Access.Core.UseCases.Groups.PatchGroup;
@@ -76,6 +77,19 @@ public class GroupsController(IMapper mapper, ISender mediator) : ReapitApiContr
     public async Task<IActionResult> PatchGroup([FromRoute] string id, [FromBody] PatchGroupRequestModel model)
     {
         var request = new PatchGroupCommand(id, model.Name, model.Description);
+        _ = await mediator.Send(request);
+        return NoContent();
+    }
+
+    /// <summary>Delete a group.</summary>
+    /// <param name="id">The unique identifier of the group.</param>
+    [HttpDelete("{id}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType<ProblemDetails>(404)]
+    [SwaggerResponseExample(404, typeof(NotFoundProblemDetailsExample))]
+    public async Task<IActionResult> DeleteGroup([FromRoute] string id)
+    {
+        var request = new SoftDeleteGroupCommand(id);
         _ = await mediator.Send(request);
         return NoContent();
     }

@@ -7,7 +7,7 @@ using Reapit.Platform.Access.Core.UseCases.Users.GetUserById;
 using Reapit.Platform.Access.Core.UseCases.Users.UpdateUser;
 using Reapit.Platform.Access.Domain.Entities;
 
-namespace Reapit.Platform.Access.Api.UnitTests.Controllers.Internal.Users;
+namespace Reapit.Platform.Access.Api.UnitTests.Controllers.Internal.Users.V1;
 
 // Most tests for controllers will be integration tests, this is _really_ just to check that we're mapping responses and
 // building mediator request objects correctly.

@@ -1,6 +1,5 @@
 ﻿using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
-using Reapit.Platform.Common.Exceptions;
 
 namespace Reapit.Platform.Access.Core.Exceptions;
 

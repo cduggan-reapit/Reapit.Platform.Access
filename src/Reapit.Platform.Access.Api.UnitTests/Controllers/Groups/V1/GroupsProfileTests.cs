@@ -6,7 +6,7 @@ using Reapit.Platform.Access.Domain.Entities;
 using Reapit.Platform.Common.Providers.Identifiers;
 using Reapit.Platform.Common.Providers.Temporal;
 
-namespace Reapit.Platform.Access.Api.UnitTests.Controllers.Groups;
+namespace Reapit.Platform.Access.Api.UnitTests.Controllers.Groups.V1;
 
 public class GroupsProfileTests
 {

@@ -1,6 +1,5 @@
 ﻿using FluentValidation.Results;
 using Reapit.Platform.Access.Core.Exceptions;
-using Reapit.Platform.Common.Exceptions;
 
 namespace Reapit.Platform.Access.Core.UnitTests.Exceptions;
 

@@ -72,7 +72,7 @@ public class GroupRepositoryTests : DatabaseAwareTestBase
         var sut = CreateSut(context);
         var actual = await sut.GetGroupsAsync(userId: userId);
         actual.Should().HaveCount(1)
-            .And.AllSatisfy(group => group.GroupUsers.Should().Contain(groupUser => groupUser.OrganisationUser.UserId == userId));
+            .And.AllSatisfy(group => group.Users.Should().Contain(groupUser => groupUser.Id == userId));
     }
     
     [Fact]
@@ -315,9 +315,9 @@ public class GroupRepositoryTests : DatabaseAwareTestBase
                 return new Group($"Group {index:D2}", $"Description of Group {index:D2}", organisationId)
                 {
                     DateModified = time.AddYears(1),
-                    GroupUsers = [
-                        new GroupUser { GroupId = $"{guid:N}", OrganisationUser = firstOrganisationUser },
-                        new GroupUser { GroupId = $"{guid:N}", OrganisationUser = secondOrganisationUser }
+                    Users = [
+                        new User(firstOrganisationUser.UserId, "name", "email"),
+                        new User(secondOrganisationUser.UserId, "name", "email")
                     ]
                 };
             });

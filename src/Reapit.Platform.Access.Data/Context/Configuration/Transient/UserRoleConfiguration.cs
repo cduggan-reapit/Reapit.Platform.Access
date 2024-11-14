@@ -12,8 +12,6 @@ public class UserRoleConfiguration : IEntityTypeConfiguration<UserRole>
     /// <inheritdoc />
     public void Configure(EntityTypeBuilder<UserRole> builder)
     {
-        builder.ToTable("user_roles");
-
         builder.HasQueryFilter(entity => entity.Role.DateDeleted == null);
 
         builder.HasKey(entity => new { entity.UserId, entity.RoleId });

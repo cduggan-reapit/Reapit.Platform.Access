@@ -42,8 +42,6 @@ public class OrganisationUser : RemoteEntityBase
     [ForeignKey(nameof(OrganisationId))]
     public Organisation? Organisation { get; set; }
     
-    public ICollection<GroupUser> GroupUsers { get; set; } = new List<GroupUser>();
-    
     /// <inheritdoc /> 
     public override object AsSerializable()
         => new { Id, User = UserId, Organisation = OrganisationId, Sync = DateLastSynchronised.UtcDateTime };

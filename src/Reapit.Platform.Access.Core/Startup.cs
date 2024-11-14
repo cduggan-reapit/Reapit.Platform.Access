@@ -2,7 +2,6 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Reapit.Platform.Common;
 
 namespace Reapit.Platform.Access.Core;
 

@@ -3,12 +3,13 @@ using Reapit.Platform.Access.Api.Controllers.Groups.V1;
 using Reapit.Platform.Access.Api.Controllers.Groups.V1.Models;
 using Reapit.Platform.Access.Api.Controllers.Shared;
 using Reapit.Platform.Access.Core.UseCases.Groups.CreateGroup;
+using Reapit.Platform.Access.Core.UseCases.Groups.DeleteGroup;
 using Reapit.Platform.Access.Core.UseCases.Groups.GetGroupById;
 using Reapit.Platform.Access.Core.UseCases.Groups.GetGroups;
 using Reapit.Platform.Access.Core.UseCases.Groups.PatchGroup;
 using Reapit.Platform.Access.Domain.Entities;
 
-namespace Reapit.Platform.Access.Api.UnitTests.Controllers.Groups;
+namespace Reapit.Platform.Access.Api.UnitTests.Controllers.Groups.V1;
 
 // These tests really just check that we're creating our queries/commands correctly
 public class GroupsControllerTests
@@ -105,6 +106,23 @@ public class GroupsControllerTests
         
         var sut = CreateSut();
         var response = await sut.PatchGroup(group.Id, request) as NoContentResult;
+        response.Should().NotBeNull().And.Match((NoContentResult result) => result.StatusCode == 204);
+        
+        await _mediator.Received(1).Send(command, Arg.Any<CancellationToken>());
+    }
+    
+    /*
+     * PatchGroup
+     */
+    
+    [Fact]
+    public async Task DeleteGroup_ReturnsNoContent()
+    {
+        var group = new Group("initial-name", "initial-description", "organisation-id");
+        var command = new SoftDeleteGroupCommand(group.Id);
+        
+        var sut = CreateSut();
+        var response = await sut.DeleteGroup(group.Id) as NoContentResult;
         response.Should().NotBeNull().And.Match((NoContentResult result) => result.StatusCode == 204);
         
         await _mediator.Received(1).Send(command, Arg.Any<CancellationToken>());

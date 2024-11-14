@@ -21,7 +21,7 @@ public static class GroupFilterHelper
     public static IQueryable<Group> ApplyUserIdFilter(this IQueryable<Group> queryable, string? value)
         => value == null
             ? queryable
-            : queryable.Where(group => group.GroupUsers.Any(ou => ou.OrganisationUser.UserId == value));
+            : queryable.Where(group => group.Users.Any(user => user.Id == value));
     
     /// <summary>Filters a collection of <see cref="Group"/> objects by <see cref="Organisation"/> association.</summary>
     /// <param name="queryable">The collection to filter.</param>

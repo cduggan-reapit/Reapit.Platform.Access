@@ -46,6 +46,9 @@ public class User : RemoteEntityBase
     /// <summary>The user-organisation relationships associated with this user.</summary>
     public ICollection<OrganisationUser> OrganisationUsers { get; set; } = new List<OrganisationUser>();
 
+    /// <summary>The collection of groups with which the user is associated.</summary>
+    public ICollection<Group> Groups { get; set; }
+    
     /// <summary>The user-role relationships associated with this user.</summary>
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     

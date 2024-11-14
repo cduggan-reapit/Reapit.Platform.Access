@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Reapit.Platform.Access.Data.Services;
 using Reapit.Platform.Access.Domain.Entities;
-using Reapit.Platform.Common.Exceptions;
 
 namespace Reapit.Platform.Access.Core.UseCases.Groups.GetGroupById;
 

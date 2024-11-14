@@ -35,5 +35,13 @@ public class UserGroupConfiguration : IEntityTypeConfiguration<Group>
         builder.HasOne(instance => instance.Organisation)
             .WithMany(organisation => organisation.Groups)
             .HasForeignKey(instance => instance.OrganisationId);
+        
+        builder.HasMany(group => group.Users)
+            .WithMany(user => user.Groups)
+            .UsingEntity(joinEntityName: "groupUsers",
+                configureLeft: l => l.HasOne(typeof(Group)).WithMany().HasForeignKey("groupId").HasPrincipalKey(nameof(Group.Id)),
+                configureRight: r => r.HasOne(typeof(User)).WithMany().HasForeignKey("userId").HasPrincipalKey(nameof(Group.Id)),
+                configureJoinEntityType: j => j.HasKey("groupId", "userId"));
+
     }
 }

@@ -13,8 +13,7 @@ public class OrganisationUserConfiguration : IEntityTypeConfiguration<Organisati
     /// <inheritdoc />
     public void Configure(EntityTypeBuilder<OrganisationUser> builder)
     {
-        builder.ConfigureRemoteEntityBase()
-            .ToTable("organisation_users");
+        builder.ConfigureRemoteEntityBase();
 
         builder.HasKey(entity => entity.Id);
 
