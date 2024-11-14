@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Reapit.Platform.Access.Data.Repositories.Groups;
 using Reapit.Platform.Access.Domain.Entities;
-using Reapit.Platform.Access.Domain.Entities.Transient;
 using Reapit.Platform.Common.Providers.Identifiers;
 using Reapit.Platform.Common.Providers.Temporal;
 

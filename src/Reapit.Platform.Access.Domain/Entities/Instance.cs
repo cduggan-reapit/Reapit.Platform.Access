@@ -1,5 +1,4 @@
 ﻿using Reapit.Platform.Access.Domain.Entities.Abstract;
-using Reapit.Platform.Access.Domain.Entities.Transient;
 
 namespace Reapit.Platform.Access.Domain.Entities;
 

@@ -25,5 +25,12 @@ public class OrganisationConfiguration : IEntityTypeConfiguration<Organisation>
         builder.Property(entity => entity.Name)
             .HasColumnName("name")
             .HasMaxLength(100);
+        
+        builder.HasMany(group => group.Users)
+            .WithMany(user => user.Organisations)
+            .UsingEntity(joinEntityName: "organisationUsers",
+                configureLeft: l => l.HasOne(typeof(Organisation)).WithMany().HasForeignKey("organisationId").HasPrincipalKey(nameof(Organisation.Id)),
+                configureRight: r => r.HasOne(typeof(User)).WithMany().HasForeignKey("userId").HasPrincipalKey(nameof(User.Id)),
+                configureJoinEntityType: j => j.HasKey("organisationId", "userId"));
     }
 }

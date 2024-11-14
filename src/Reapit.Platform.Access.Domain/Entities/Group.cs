@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Reapit.Platform.Access.Domain.Entities.Abstract;
-using Reapit.Platform.Access.Domain.Entities.Transient;
 using Reapit.Platform.Common.Providers.Identifiers;
 
 namespace Reapit.Platform.Access.Domain.Entities;

@@ -1,5 +1,4 @@
 ﻿using Reapit.Platform.Access.Domain.Entities.Abstract;
-using Reapit.Platform.Access.Domain.Entities.Transient;
 using Reapit.Platform.Common.Providers.Temporal;
 
 namespace Reapit.Platform.Access.Domain.Entities;
@@ -37,7 +36,7 @@ public class User : RemoteEntityBase
     /// <summary>Determines whether the user is a member of a given organisation.</summary>
     /// <param name="organisationId">The unique identifier of the organisation.</param>
     public bool IsMemberOfOrganisation(string organisationId) 
-        => OrganisationUsers.Any(o => o.OrganisationId == organisationId);
+        => Organisations.Any(o => o.Id == organisationId);
 
     /// <summary>The unique identifier of the User in the organisations service.</summary>
     public string Id { get; init; }
@@ -48,14 +47,11 @@ public class User : RemoteEntityBase
     /// <summary>The email address of the User in the organisations service.</summary>
     public string Email { get; private set; }
 
-    /// <summary>The user-organisation relationships associated with this user.</summary>
-    public ICollection<OrganisationUser> OrganisationUsers { get; set; } = new List<OrganisationUser>();
+    /// <summary>The organisations that this user is associated with.</summary>
+    public ICollection<Organisation> Organisations { get; set; } = new List<Organisation>();
 
     /// <summary>The collection of groups with which the user is associated.</summary>
-    public ICollection<Group> Groups { get; set; }
-    
-    /// <summary>The user-role relationships associated with this user.</summary>
-    public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+    public ICollection<Group> Groups { get; set; } = new List<Group>();
     
     /// <inheritdoc /> 
     public override object AsSerializable()

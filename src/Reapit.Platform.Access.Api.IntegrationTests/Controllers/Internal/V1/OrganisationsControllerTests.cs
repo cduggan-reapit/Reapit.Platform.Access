@@ -336,15 +336,11 @@ public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegr
                 var organisationId = $"organisation-{i:D3}";
                 return new Organisation(organisationId, $"Organisation {i:D3}")
                 {
-                    OrganisationUsers = Enumerable.Range(1, 3)
-                        .Select(j => new OrganisationUser
-                        {
-                            OrganisationId = organisationId,
-                            User = new User(
-                                $"user-{i:D3}-{j:D3}", 
+                    Users = Enumerable.Range(1, 3)
+                        .Select(j => 
+                            new User($"user-{i:D3}-{j:D3}", 
                                 $"Organisation {i:D3} - User {j:D3}", 
-                                $"user-{j:D3}@organisation-{i:D3}.net")
-                        })
+                                $"user-{j:D3}@organisation-{i:D3}.net"))
                         .ToList()
                 };
             })

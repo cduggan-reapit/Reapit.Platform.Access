@@ -33,10 +33,7 @@ public class RemoveOrganisationMemberCommandHandlerTests
     {
         const string organisationId = "orgId", userId = "userId";
 
-        var organisation = new Organisation(organisationId, "name")
-        {
-            OrganisationUsers = new List<OrganisationUser>()
-        };
+        var organisation = new Organisation(organisationId, "name");
         
         _organisationRepository.GetOrganisationByIdAsync(organisationId, Arg.Any<CancellationToken>())
             .Returns(organisation);
@@ -48,14 +45,13 @@ public class RemoveOrganisationMemberCommandHandlerTests
     }
     
     [Fact]
-    public async Task Handle_ReturnsRelationship_WhenDeleted()
+    public async Task Handle_RemovesRelationship_WhenSuccessful()
     {
         const string organisationId = "orgId", userId = "userId";
-
-        var relationship = new OrganisationUser { OrganisationId = organisationId, UserId = userId };
+        
         var organisation = new Organisation(organisationId, "name")
         {
-            OrganisationUsers = [relationship]
+            Users = [new User { Id = userId }]
         };
         
         _organisationRepository.GetOrganisationByIdAsync(organisationId, Arg.Any<CancellationToken>())
@@ -63,10 +59,9 @@ public class RemoveOrganisationMemberCommandHandlerTests
 
         var request = GetRequest(organisationId, userId);
         var sut = CreateSut();
-        var actual = await sut.Handle(request, default);
-        actual.Should().BeEquivalentTo(relationship);
+        await sut.Handle(request, default);
 
-        await _organisationRepository.Received(1).RemoveMemberAsync(relationship, Arg.Any<CancellationToken>());
+        await _organisationRepository.Received(1).UpdateOrganisationAsync(Arg.Is<Organisation>(o => o.Users.Count == 0), Arg.Any<CancellationToken>());
     }
     
     /*

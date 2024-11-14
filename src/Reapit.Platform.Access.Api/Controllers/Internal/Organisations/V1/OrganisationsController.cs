@@ -108,7 +108,7 @@ public class OrganisationsController : InternalApiController
     public async Task<IActionResult> AddOrganisationMember([FromRoute] string id, [FromRoute] string userId)
     {
         var request = new AddOrganisationMemberCommand(id, userId);
-        _ = await _mediator.Send(request);
+        await _mediator.Send(request);
         return NoContent();
     }
     
@@ -122,7 +122,7 @@ public class OrganisationsController : InternalApiController
     public async Task<IActionResult> RemoveOrganisationMember([FromRoute] string id, [FromRoute] string userId)
     {
         var request = new RemoveOrganisationMemberCommand(id, userId);
-        _ = await _mediator.Send(request);
+        await _mediator.Send(request);
         return NoContent();
     }
 }

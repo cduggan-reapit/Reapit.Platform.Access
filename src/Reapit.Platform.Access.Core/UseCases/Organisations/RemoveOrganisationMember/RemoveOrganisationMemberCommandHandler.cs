@@ -6,7 +6,7 @@ using Reapit.Platform.Access.Domain.Entities;
 namespace Reapit.Platform.Access.Core.UseCases.Organisations.RemoveOrganisationMember;
 
 /// <summary>Request handler for the <see cref="RemoveOrganisationMemberCommand"/> command.</summary>
-public class RemoveOrganisationMemberCommandHandler : IRequestHandler<RemoveOrganisationMemberCommand, OrganisationUser>
+public class RemoveOrganisationMemberCommandHandler : IRequestHandler<RemoveOrganisationMemberCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<RemoveOrganisationMemberCommandHandler> _logger;
@@ -23,18 +23,19 @@ public class RemoveOrganisationMemberCommandHandler : IRequestHandler<RemoveOrga
     }
 
     // <inheritdoc/>
-    public async Task<OrganisationUser> Handle(RemoveOrganisationMemberCommand request, CancellationToken cancellationToken)
+    public async Task Handle(RemoveOrganisationMemberCommand request, CancellationToken cancellationToken)
     {
         var organisation = await _unitOfWork.Organisations.GetOrganisationByIdAsync(request.OrganisationId, cancellationToken)
             ?? throw new NotFoundException(typeof(Organisation), request.OrganisationId);
 
-        var relationship = organisation.OrganisationUsers.SingleOrDefault(membership => membership.UserId == request.UserId)
+        var user = organisation.Users.SingleOrDefault(user => user.Id == request.UserId)
                    ?? throw new NotFoundException("Member", request.UserId);
         
-        _ = await _unitOfWork.Organisations.RemoveMemberAsync(relationship, cancellationToken);
+        organisation.RemoveUser(user);
+        
+        _ = await _unitOfWork.Organisations.UpdateOrganisationAsync(organisation, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         
         _logger.LogInformation("User {userId} removed from organisation {organisationId}", request.UserId, request.OrganisationId);
-        return relationship;
     }
 }

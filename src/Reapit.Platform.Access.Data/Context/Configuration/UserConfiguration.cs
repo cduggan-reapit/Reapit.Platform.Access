@@ -13,8 +13,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.ConfigureRemoteEntityBase()
-            .ToTable("users")
-            .Navigation(user => user.OrganisationUsers).AutoInclude();
+            .ToTable("users");
         
         builder.HasKey(entity => entity.Id);
 

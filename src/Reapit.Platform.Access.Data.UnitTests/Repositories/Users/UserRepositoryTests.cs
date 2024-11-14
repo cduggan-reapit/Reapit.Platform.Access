@@ -115,29 +115,27 @@ public class UserRepositoryTests : DatabaseAwareTestBase
             .Select(o =>
             {
                 using var timeContext = new DateTimeOffsetProviderContext(BaseDateTime.AddDays(o - 1));
-                return new Organisation($"organisation-{o}", $"Test Organisation {o}");
+                return (Index: o, Value: new Organisation($"organisation-{o}", $"Test Organisation {o}"));
             })
-            .ToList();
+            .ToDictionary(tuple => tuple.Index, tuple => tuple.Value);
         
         // Ninety users:
         var users = Enumerable.Range(1, 90)
             .Select(u =>
             {
                 var userId = $"user-{u:D2}";
-                var organisationId = $"organisation-{u % 3 + 1}"; // Allocate evenly between the three organisations
                 var time = BaseDateTime.AddDays(u - 1);
                 using var timeContext = new DateTimeOffsetProviderContext(time);
                 return new User(userId, $"User {u:D2}", $"user-{u:D2}@example.net")
                 {
-                    OrganisationUsers = new List<OrganisationUser>
-                    {
-                        new() { UserId = userId, OrganisationId = organisationId }
-                    }
+                    Organisations = [
+                        organisations[u % 3 + 1]
+                    ]
                 };
             })
             .ToList();
 
-        await context.Organisations.AddRangeAsync(organisations);
+        await context.Organisations.AddRangeAsync(organisations.Values);
         await context.Users.AddRangeAsync(users);
         await context.SaveChangesAsync();
     }

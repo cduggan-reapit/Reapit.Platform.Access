@@ -8,7 +8,7 @@ using NotFoundException = Reapit.Platform.Common.Exceptions.NotFoundException;
 namespace Reapit.Platform.Access.Core.UseCases.Organisations.AddOrganisationMember;
 
 /// <summary>Request handler for the <see cref="AddOrganisationMemberCommand"/> command.</summary>
-public class AddOrganisationMemberCommandHandler : IRequestHandler<AddOrganisationMemberCommand, OrganisationUser>
+public class AddOrganisationMemberCommandHandler : IRequestHandler<AddOrganisationMemberCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<AddOrganisationMemberCommandHandler> _logger;
@@ -25,23 +25,22 @@ public class AddOrganisationMemberCommandHandler : IRequestHandler<AddOrganisati
     }
 
     // <inheritdoc/>
-    public async Task<OrganisationUser> Handle(AddOrganisationMemberCommand request, CancellationToken cancellationToken)
+    public async Task Handle(AddOrganisationMemberCommand request, CancellationToken cancellationToken)
     {
         var organisation = await _unitOfWork.Organisations.GetOrganisationByIdAsync(request.OrganisationId, cancellationToken)
             ?? throw new NotFoundException(typeof(Organisation), request.OrganisationId);
 
-        if (organisation.OrganisationUsers.Any(ou => ou.UserId == request.UserId))
+        if (organisation.Users.Any(ou => ou.Id == request.UserId))
             throw ConflictException.ResourceExists("Member", request.UserId);
         
         var user = await _unitOfWork.Users.GetUserByIdAsync(request.UserId, cancellationToken)
                    ?? throw new NotFoundException(typeof(User), request.UserId);
 
-        var organisationUser = new OrganisationUser(organisation, user);
+        organisation.AddUser(user);
 
-        _ = await _unitOfWork.Organisations.AddMemberAsync(organisationUser, cancellationToken);
+        _ = await _unitOfWork.Organisations.UpdateOrganisationAsync(organisation, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         
         _logger.LogInformation("User {userId} added to organisation {organisationId}", request.UserId, request.OrganisationId);
-        return organisationUser;
     }
 }

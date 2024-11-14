@@ -100,52 +100,6 @@ public class OrganisationRepositoryTests : DatabaseAwareTestBase
     }
  
     /*
-     * AddMemberAsync
-     */
-
-    [Fact]
-    public async Task AddMemberAsync_AddsOrganisationUser_ToChangeTracker()
-    {
-        await using var context = await GetContextAsync();
-        await PlantSeedDataAsync(context);
-        var user = await context.Users.SingleAsync(u => u.Id == "user-001-2");
-        var organisation = await context.Organisations.SingleAsync(o => o.Id == "organisation-002");
-
-        var member = new OrganisationUser(organisation, user);
-
-        var sut = CreateSut(context);
-        await sut.AddMemberAsync(member, default);
-
-        context.ChangeTracker.Entries<OrganisationUser>()
-            .Where(entry => entry.State == EntityState.Added)
-            .Should().HaveCount(1);
-    }
-    
-    /*
-     * RemoveMemberAsync
-     */
-    
-    [Fact]
-    public async Task RemoveMemberAsync_MarksMemberAsDeleted_InChangeTracker()
-    {
-        await using var context = await GetContextAsync();
-        await PlantSeedDataAsync(context);
-        
-        var organisation = await context.Organisations
-            .Include(o => o.OrganisationUsers)
-            .SingleAsync(o => o.Id == "organisation-002");
-        
-        var member = organisation.OrganisationUsers.Single(ou => ou.UserId == "user-002-2");
-
-        var sut = CreateSut(context);
-        await sut.RemoveMemberAsync(member, default);
-
-        context.ChangeTracker.Entries<OrganisationUser>()
-            .Where(entry => entry.State == EntityState.Deleted)
-            .Should().HaveCount(1);
-    }
-    
-    /*
      * Private methods
      */
 
@@ -167,19 +121,14 @@ public class OrganisationRepositoryTests : DatabaseAwareTestBase
                 
                 return new Organisation(organisationId, $"Organisation {i:D3}")
                 {
-                    OrganisationUsers = Enumerable.Range(1, 3).Select(u =>
+                    Users = Enumerable.Range(1, 3).Select(u =>
                     {
                         // Offset the user times so they don't conflict with one another
                         var userTime = time.AddHours(u - 1);
                         using var userTimeFixture = new DateTimeOffsetProviderContext(userTime);
                         
                         var userId = $"user-{i:D3}-{u}";
-                        return new OrganisationUser
-                        {
-                            OrganisationId = organisationId,
-                            UserId = userId,
-                            User = new User(userId, $"User {i:D3}-{u}", "test@example.net")
-                        };
+                        return new User(userId, $"User {i:D3}-{u}", "test@example.net");
                     }).ToList()
                 };
             });

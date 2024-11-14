@@ -5,7 +5,6 @@ using Reapit.Platform.Access.Data.Repositories.Groups;
 using Reapit.Platform.Access.Data.Repositories.Users;
 using Reapit.Platform.Access.Data.Services;
 using Reapit.Platform.Access.Domain.Entities;
-using Reapit.Platform.Common.Providers.Identifiers;
 using NotFoundException = Reapit.Platform.Common.Exceptions.NotFoundException;
 
 namespace Reapit.Platform.Access.Core.UnitTests.UseCases.GroupMembership.AddGroupMember;
@@ -77,10 +76,10 @@ public class AddGroupMemberCommandHandlerTests
         _userRepository.GetUserByIdAsync(request.UserId, Arg.Any<CancellationToken>())
             .Returns(new User(request.UserId, "name", "email")
             {
-                OrganisationUsers = [ 
-                    new OrganisationUser { OrganisationId = "different-organisation-1"},
-                    new OrganisationUser { OrganisationId = "different-organisation-2"},
-                    new OrganisationUser { OrganisationId = "different-organisation-3"}
+                Organisations = [
+                    new Organisation("different-organisation-1", string.Empty),
+                    new Organisation("different-organisation-2", string.Empty),
+                    new Organisation("different-organisation-3", string.Empty)
                 ]
             });
         
@@ -101,10 +100,10 @@ public class AddGroupMemberCommandHandlerTests
         _userRepository.GetUserByIdAsync(request.UserId, Arg.Any<CancellationToken>())
             .Returns(new User(request.UserId, "name", "email")
             {
-                OrganisationUsers = [ 
-                    new OrganisationUser { OrganisationId = "different-organisation-1"},
-                    new OrganisationUser { OrganisationId = "same-organisation"},
-                    new OrganisationUser { OrganisationId = "different-organisation-2"}
+                Organisations = [
+                    new Organisation("different-organisation-1", string.Empty),
+                    new Organisation("same-organisation", string.Empty),
+                    new Organisation("different-organisation-3", string.Empty)
                 ]
             });
         
@@ -128,15 +127,4 @@ public class AddGroupMemberCommandHandlerTests
 
     private static AddGroupMemberCommand GetRequest(int groupId = 1, string userId = "user-id")
         => new(new Guid($"{groupId:D32}").ToString("N"), userId);
-
-    private static Group GetEntity(int groupId = 1, string? userId = "user-id")
-    {
-        using var _ = new GuidProviderContext(new Guid($"{groupId:D32}"));
-        var group = new Group("name", "description", "organisationId");
-        
-        if(userId != null)
-            group.AddUser(new User(userId, "name", "email"));
-
-        return group;
-    }
 }

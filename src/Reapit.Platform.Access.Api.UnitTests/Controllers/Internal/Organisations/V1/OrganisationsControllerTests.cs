@@ -120,9 +120,6 @@ public class OrganisationsControllerTests
     public async Task AddOrganisationMember_ReturnsNoContent()
     {
         const string organisationId = "organisation-id", userId = "user-id";
-        
-        _mediator.Send(Arg.Any<AddOrganisationMemberCommand>(), Arg.Any<CancellationToken>())
-            .Returns(new OrganisationUser());
 
         var sut = CreateSut();
         var actual = await sut.AddOrganisationMember(organisationId, userId) as NoContentResult;
@@ -143,9 +140,6 @@ public class OrganisationsControllerTests
     {
         const string organisationId = "organisation-id", userId = "user-id";
         
-        _mediator.Send(Arg.Any<RemoveOrganisationMemberCommand>(), Arg.Any<CancellationToken>())
-            .Returns(new OrganisationUser());
-
         var sut = CreateSut();
         var actual = await sut.RemoveOrganisationMember(organisationId, userId) as NoContentResult;
         actual.Should().NotBeNull();

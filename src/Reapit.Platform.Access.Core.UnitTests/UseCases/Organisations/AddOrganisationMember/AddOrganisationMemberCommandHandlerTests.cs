@@ -38,8 +38,8 @@ public class AddOrganisationMemberCommandHandlerTests
         _organisationRepository.GetOrganisationByIdAsync(organisationId, Arg.Any<CancellationToken>())
             .Returns(new Organisation(organisationId, "name")
             {
-                OrganisationUsers = [
-                    new OrganisationUser { UserId = userId}
+                Users = [
+                    new User { Id = userId }
                 ]
             });
 
@@ -66,7 +66,7 @@ public class AddOrganisationMemberCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_ReturnsRelationship_WhenCreated()
+    public async Task Handle_AddsRelationship_WhenSuccessful()
     {
         const string organisationId = "orgId", userId = "userId";
 
@@ -80,11 +80,10 @@ public class AddOrganisationMemberCommandHandlerTests
 
         var request = GetRequest(organisationId, userId);
         var sut = CreateSut();
-        var actual = await sut.Handle(request, default);
-        actual.OrganisationId.Should().Be(organisationId);
-        actual.UserId.Should().Be(userId);
-
-        await _organisationRepository.Received(1).AddMemberAsync(actual, Arg.Any<CancellationToken>());
+        await sut.Handle(request, default);
+        
+        await _organisationRepository.Received(1).UpdateOrganisationAsync(Arg.Is<Organisation>(org => org.Users.Count == 1), Arg.Any<CancellationToken>());
+        await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
     
     /*

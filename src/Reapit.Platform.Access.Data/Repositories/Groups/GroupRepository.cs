@@ -33,4 +33,9 @@ public class GroupRepository(AccessDbContext context) : BaseRepository<Group>(co
             .OrderBy(entity => entity.Cursor)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
+
+    /// <inheritdoc />
+    public override async Task<Group?> GetByIdAsync(string id, CancellationToken cancellationToken)
+        => await context.Groups
+            .FindAsync(keyValues: [id], cancellationToken: cancellationToken);
 }

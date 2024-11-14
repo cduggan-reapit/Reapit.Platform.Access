@@ -28,6 +28,16 @@ public class Organisation : RemoteEntityBase
         Name = name;
         DateLastSynchronised = DateTimeOffsetProvider.Now;
     }
+
+    /// <summary>Add a user to the organisation users collection.</summary>
+    /// <param name="user">The user to add.</param>
+    public void AddUser(User user)
+        => Users.Add(user);
+    
+    /// <summary>Remove a user from the organisation users collection.</summary>
+    /// <param name="user">The user to remove.</param>
+    public void RemoveUser(User user)
+        => Users.Remove(user);
     
     /// <summary>The unique identifier of the organisation in the organisations service.</summary>
     public string Id { get; init; }
@@ -41,7 +51,8 @@ public class Organisation : RemoteEntityBase
     /// <summary>The user groups associated with the organisation.</summary>
     public ICollection<Group> Groups { get; set; } = new List<Group>();
 
-    public ICollection<OrganisationUser> OrganisationUsers { get; set; } = new List<OrganisationUser>();
+    /// <summary>The users associated with this organisation.</summary>
+    public ICollection<User> Users { get; set; } = new List<User>();
     
     /// <inheritdoc /> 
     public override object AsSerializable()

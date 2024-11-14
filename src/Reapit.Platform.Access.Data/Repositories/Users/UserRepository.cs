@@ -17,6 +17,7 @@ public class UserRepository : IUserRepository
     /// <inheritdoc/>
     public async Task<User?> GetUserByIdAsync(string id, CancellationToken cancellationToken) 
         => await _context.Users
+            .Include(u => u.Organisations)
             .SingleOrDefaultAsync(user => user.Id == id, cancellationToken);
 
     /// <inheritdoc/>

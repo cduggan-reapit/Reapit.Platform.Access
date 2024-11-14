@@ -5,7 +5,6 @@ using Reapit.Platform.Access.Api.Controllers.Groups.V1.Models;
 using Reapit.Platform.Access.Api.Controllers.Shared;
 using Reapit.Platform.Access.Data.Context;
 using Reapit.Platform.Access.Domain.Entities;
-using Reapit.Platform.Access.Domain.Entities.Transient;
 using Reapit.Platform.Common.Providers.Identifiers;
 using Reapit.Platform.Common.Providers.Temporal;
 

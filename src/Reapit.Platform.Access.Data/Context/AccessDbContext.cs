@@ -15,9 +15,6 @@ public class AccessDbContext(DbContextOptions<AccessDbContext> options) : DbCont
     /// <summary>The collection of users.</summary>
     public DbSet<User> Users { get; init; }
     
-    /// <summary>The collection of user-organisation relationships.</summary>
-    public DbSet<OrganisationUser> OrganisationUsers { get; init; }
-    
     /// <summary>The collection of organisations.</summary>
     public DbSet<Organisation> Organisations { get; init; }
 

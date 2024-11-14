@@ -14,8 +14,7 @@ public class UserGroupConfiguration : IEntityTypeConfiguration<Group>
     public void Configure(EntityTypeBuilder<Group> builder)
     {
         builder.ConfigureEntityBase()
-            .ToTable("groups")
-            .Navigation(group => group.Users).AutoInclude();
+            .ToTable("groups");
 
         // The same name cannot be re-used within an organisation (unless deleted)
         builder.HasIndex(entity => new { entity.OrganisationId, entity.Name, entity.DateDeleted })
@@ -41,7 +40,7 @@ public class UserGroupConfiguration : IEntityTypeConfiguration<Group>
             .WithMany(user => user.Groups)
             .UsingEntity(joinEntityName: "groupUsers",
                 configureLeft: l => l.HasOne(typeof(Group)).WithMany().HasForeignKey("groupId").HasPrincipalKey(nameof(Group.Id)),
-                configureRight: r => r.HasOne(typeof(User)).WithMany().HasForeignKey("userId").HasPrincipalKey(nameof(Group.Id)),
+                configureRight: r => r.HasOne(typeof(User)).WithMany().HasForeignKey("userId").HasPrincipalKey(nameof(User.Id)),
                 configureJoinEntityType: j => j.HasKey("groupId", "userId"));
 
     }

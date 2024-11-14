@@ -27,6 +27,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <Folder Include="Context\Configuration\Transient\" />
     <Folder Include="Context\Migrations\" />
   </ItemGroup>
 </Project>
