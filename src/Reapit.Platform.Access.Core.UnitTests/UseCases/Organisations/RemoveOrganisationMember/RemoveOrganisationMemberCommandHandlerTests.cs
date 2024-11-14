@@ -51,7 +51,7 @@ public class RemoveOrganisationMemberCommandHandlerTests
         
         var organisation = new Organisation(organisationId, "name")
         {
-            Users = [new User { Id = userId }]
+            Users = [new User(userId, "name", "email")]
         };
         
         _organisationRepository.GetOrganisationByIdAsync(organisationId, Arg.Any<CancellationToken>())

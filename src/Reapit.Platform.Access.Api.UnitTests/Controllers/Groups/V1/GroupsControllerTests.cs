@@ -2,6 +2,8 @@
 using Reapit.Platform.Access.Api.Controllers.Groups.V1;
 using Reapit.Platform.Access.Api.Controllers.Groups.V1.Models;
 using Reapit.Platform.Access.Api.Controllers.Shared;
+using Reapit.Platform.Access.Core.UseCases.GroupMembership.AddGroupMember;
+using Reapit.Platform.Access.Core.UseCases.GroupMembership.RemoveGroupMember;
 using Reapit.Platform.Access.Core.UseCases.Groups.CreateGroup;
 using Reapit.Platform.Access.Core.UseCases.Groups.DeleteGroup;
 using Reapit.Platform.Access.Core.UseCases.Groups.GetGroupById;
@@ -112,7 +114,7 @@ public class GroupsControllerTests
     }
     
     /*
-     * PatchGroup
+     * DeleteGroup
      */
     
     [Fact]
@@ -123,6 +125,40 @@ public class GroupsControllerTests
         
         var sut = CreateSut();
         var response = await sut.DeleteGroup(group.Id) as NoContentResult;
+        response.Should().NotBeNull().And.Match((NoContentResult result) => result.StatusCode == 204);
+        
+        await _mediator.Received(1).Send(command, Arg.Any<CancellationToken>());
+    }
+    
+    /*
+     * AddMember
+     */
+
+    [Fact]
+    public async Task AddMember_ReturnsNoContent()
+    {
+        const string groupId = "group-id", userId = "user-id";
+        var command = new AddGroupMemberCommand(groupId, userId);
+        
+        var sut = CreateSut();
+        var response = await sut.AddMember(groupId, userId) as NoContentResult;
+        response.Should().NotBeNull().And.Match((NoContentResult result) => result.StatusCode == 204);
+        
+        await _mediator.Received(1).Send(command, Arg.Any<CancellationToken>());
+    }
+    
+    /*
+     * RemoveMember
+     */
+
+    [Fact]
+    public async Task RemoveMember_ReturnsNoContent()
+    {
+        const string groupId = "group-id", userId = "user-id";
+        var command = new RemoveGroupMemberCommand(groupId, userId);
+        
+        var sut = CreateSut();
+        var response = await sut.RemoveMember(groupId, userId) as NoContentResult;
         response.Should().NotBeNull().And.Match((NoContentResult result) => result.StatusCode == 204);
         
         await _mediator.Received(1).Send(command, Arg.Any<CancellationToken>());

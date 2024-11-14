@@ -5,6 +5,8 @@ using Reapit.Platform.Access.Api.Controllers.Groups.V1.Examples;
 using Reapit.Platform.Access.Api.Controllers.Groups.V1.Models;
 using Reapit.Platform.Access.Api.Controllers.Shared;
 using Reapit.Platform.Access.Api.Controllers.Shared.Examples;
+using Reapit.Platform.Access.Core.UseCases.GroupMembership.AddGroupMember;
+using Reapit.Platform.Access.Core.UseCases.GroupMembership.RemoveGroupMember;
 using Reapit.Platform.Access.Core.UseCases.Groups.CreateGroup;
 using Reapit.Platform.Access.Core.UseCases.Groups.DeleteGroup;
 using Reapit.Platform.Access.Core.UseCases.Groups.GetGroupById;
@@ -93,4 +95,40 @@ public class GroupsController(IMapper mapper, ISender mediator) : ReapitApiContr
         _ = await mediator.Send(request);
         return NoContent();
     }
+
+    #region Membership
+
+    /// <summary>Add a user to a group.</summary>
+    /// <param name="id">The unique identifier of the group.</param>
+    /// <param name="userId">The unique identifier of the user.</param>
+    [HttpPost("{id}/members/{userId}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType<ProblemDetails>(404)]
+    [ProducesResponseType<ProblemDetails>(409)]
+    [ProducesResponseType<ProblemDetails>(422)]
+    [SwaggerResponseExample(404, typeof(NotFoundProblemDetailsExample))]
+    [SwaggerResponseExample(409, typeof(ConflictProblemDetailsExample))]
+    [SwaggerResponseExample(422, typeof(ValidationFailedProblemDetailsExample))]
+    public async Task<IActionResult> AddMember([FromRoute] string id, [FromRoute] string userId)
+    {
+        var request = new AddGroupMemberCommand(GroupId: id, UserId: userId);
+        await mediator.Send(request);
+        return NoContent();
+    }
+    
+    /// <summary>Remove a user from a group.</summary>
+    /// <param name="id">The unique identifier of the group.</param>
+    /// <param name="userId">The unique identifier of the user.</param>
+    [HttpDelete("{id}/members/{userId}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType<ProblemDetails>(404)]
+    [SwaggerResponseExample(404, typeof(NotFoundProblemDetailsExample))]
+    public async Task<IActionResult> RemoveMember([FromRoute] string id, [FromRoute] string userId)
+    {
+        var request = new RemoveGroupMemberCommand(GroupId: id, UserId: userId);
+        await mediator.Send(request);
+        return NoContent();
+    }
+
+    #endregion
 }

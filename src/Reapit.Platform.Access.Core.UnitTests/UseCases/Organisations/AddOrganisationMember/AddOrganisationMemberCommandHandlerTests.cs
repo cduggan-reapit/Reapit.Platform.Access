@@ -39,7 +39,7 @@ public class AddOrganisationMemberCommandHandlerTests
             .Returns(new Organisation(organisationId, "name")
             {
                 Users = [
-                    new User { Id = userId }
+                    new User(userId, "name", "email")
                 ]
             });
 

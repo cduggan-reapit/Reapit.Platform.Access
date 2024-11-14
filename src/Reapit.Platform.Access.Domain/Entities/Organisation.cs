@@ -7,11 +7,6 @@ namespace Reapit.Platform.Access.Domain.Entities;
 public class Organisation : RemoteEntityBase
 {
     /// <summary>Initializes a new instance of the <see cref="Organisation"/> class.</summary>
-    public Organisation()
-    {
-    }
-    
-    /// <summary>Initializes a new instance of the <see cref="Organisation"/> class.</summary>
     /// <param name="id">The unique identifier of the organisation.</param>
     /// <param name="name">The name of the organisation.</param>
     public Organisation(string id, string name)

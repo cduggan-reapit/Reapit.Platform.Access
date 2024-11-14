@@ -16,4 +16,6 @@ public static class ProblemDetailsTypes
     public const string QueryStringInvalid = "Bad Request";
 
     public const string ResourceConflict = "Resource Conflict";
+
+    public const string InvalidGroup = "Bad Request";
 }

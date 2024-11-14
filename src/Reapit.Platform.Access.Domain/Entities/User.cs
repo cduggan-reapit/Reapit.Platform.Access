@@ -7,11 +7,6 @@ namespace Reapit.Platform.Access.Domain.Entities;
 public class User : RemoteEntityBase
 {
     /// <summary>Initializes a new instance of the <see cref="User"/> class.</summary>
-    public User()
-    {
-    }
-    
-    /// <summary>Initializes a new instance of the <see cref="User"/> class.</summary>
     /// <param name="id">The unique identifier of the user.</param>
     /// <param name="name">The name of the user.</param>
     /// <param name="email">The email address of the user.</param>

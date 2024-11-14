@@ -46,6 +46,32 @@ public class OrganisationTests
     }
     
     /*
+     * AddUser
+     */
+
+    [Fact]
+    public void AddUser_AddsUser_ToUserCollection()
+    {
+        var sut = new Organisation("id", "name");
+        var user = new User("id", "name", "email");
+        sut.AddUser(user);
+        sut.Users.Should().HaveCount(1).And.AllSatisfy(actual => actual.Should().BeEquivalentTo(user));
+    }
+    
+    /*
+     * RemoveUser
+     */
+    
+    [Fact]
+    public void RemoveUser_RemovesUser_FromUserCollection()
+    {
+        var user = new User("id", "name", "email");
+        var sut = new Organisation("id", "name") { Users = [user] };
+        sut.RemoveUser(user);
+        sut.Users.Should().BeEmpty();
+    }
+    
+    /*
      * AsSerializable
      */
 

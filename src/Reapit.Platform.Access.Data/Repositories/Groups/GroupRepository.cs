@@ -37,5 +37,6 @@ public class GroupRepository(AccessDbContext context) : BaseRepository<Group>(co
     /// <inheritdoc />
     public override async Task<Group?> GetByIdAsync(string id, CancellationToken cancellationToken)
         => await context.Groups
-            .FindAsync(keyValues: [id], cancellationToken: cancellationToken);
+            .Include(group => group.Users)
+            .SingleOrDefaultAsync(group => group.Id  == id, cancellationToken);
 }
