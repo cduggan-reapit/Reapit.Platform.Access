@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Reapit.Platform.Access.Data.Context;
+using Reapit.Platform.Access.Data.Repositories;
 using Reapit.Platform.Access.Data.Repositories.Groups;
 using Reapit.Platform.Access.Data.UnitTests.TestHelpers;
 using Reapit.Platform.Access.Domain.Entities;
@@ -31,7 +32,7 @@ public class GroupRepositoryTests : DatabaseAwareTestBase
         actual.Should().HaveCount(pageSize)
             .And.AllSatisfy(group => expectedGroupIds.Should().Contain(group.Id));
     }
-    
+
     [Fact]
     public async Task GetGroupsAsync_ReturnsPagedResult_WhenCursorProvided()
     {
@@ -55,7 +56,7 @@ public class GroupRepositoryTests : DatabaseAwareTestBase
             .ToList();
         
         var sut = CreateSut(context);
-        var actual = await sut.GetGroupsAsync(pageSize: pageSize, cursor: cursor);
+        var actual = await sut.GetGroupsAsync(pagination: new PaginationFilter(cursor, pageSize));
         actual.Should().HaveCount(pageSize)
             .And.AllSatisfy(group => expectedGroupIds.Should().Contain(group.Id));
     }
@@ -123,7 +124,7 @@ public class GroupRepositoryTests : DatabaseAwareTestBase
         await using var context = await GetContextAsync();
         await PlantSeedDataAsync(context);
         var sut = CreateSut(context);
-        var actual = await sut.GetGroupsAsync(createdFrom: createdFrom);
+        var actual = await sut.GetGroupsAsync(dateFilter: new TimestampFilter(CreatedFrom: createdFrom));
         actual.Should().HaveCount(10)
             .And.AllSatisfy(group => group.DateCreated.Should().BeOnOrAfter(createdFrom));
     }
@@ -136,7 +137,7 @@ public class GroupRepositoryTests : DatabaseAwareTestBase
         await using var context = await GetContextAsync();
         await PlantSeedDataAsync(context);
         var sut = CreateSut(context);
-        var actual = await sut.GetGroupsAsync(createdTo: createdTo);
+        var actual = await sut.GetGroupsAsync(dateFilter: new TimestampFilter(CreatedTo: createdTo));
         actual.Should().HaveCount(15)
             .And.AllSatisfy(group => group.DateCreated.Should().BeBefore(createdTo));
     }
@@ -150,7 +151,7 @@ public class GroupRepositoryTests : DatabaseAwareTestBase
         await using var context = await GetContextAsync();
         await PlantSeedDataAsync(context);
         var sut = CreateSut(context);
-        var actual = await sut.GetGroupsAsync(modifiedFrom: modifiedFrom);
+        var actual = await sut.GetGroupsAsync(dateFilter: new TimestampFilter(ModifiedFrom: modifiedFrom));
         actual.Should().HaveCount(15)
             .And.AllSatisfy(group => group.DateModified.Should().BeOnOrAfter(modifiedFrom));
     }
@@ -163,7 +164,7 @@ public class GroupRepositoryTests : DatabaseAwareTestBase
         await using var context = await GetContextAsync();
         await PlantSeedDataAsync(context);
         var sut = CreateSut(context);
-        var actual = await sut.GetGroupsAsync(modifiedTo: modifiedTo);
+        var actual = await sut.GetGroupsAsync(dateFilter: new TimestampFilter(ModifiedTo: modifiedTo));
         actual.Should().HaveCount(15)
             .And.AllSatisfy(group => group.DateModified.Should().BeBefore(modifiedTo));
     }

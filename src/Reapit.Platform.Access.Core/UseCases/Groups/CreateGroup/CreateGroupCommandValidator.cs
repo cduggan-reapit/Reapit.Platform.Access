@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Reapit.Platform.Access.Data.Repositories;
 using Reapit.Platform.Access.Data.Services;
 
 namespace Reapit.Platform.Access.Core.UseCases.Groups.CreateGroup;
@@ -44,7 +45,7 @@ public class CreateGroupCommandValidator : AbstractValidator<CreateGroupCommand>
 
     private async Task<bool> IsNameAvailable(string organisationId, string name, CancellationToken cancellationToken)
     {
-        var groups = await _unitOfWork.Groups.GetGroupsAsync(pageSize: 1, organisationId: organisationId, name: name, cancellationToken: cancellationToken);
+        var groups = await _unitOfWork.Groups.GetGroupsAsync(pagination: new PaginationFilter(PageSize: 1), organisationId: organisationId, name: name, cancellationToken: cancellationToken);
         return !groups.Any();
     }
 }

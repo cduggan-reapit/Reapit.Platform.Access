@@ -9,29 +9,25 @@ public class GroupRepository(AccessDbContext context) : BaseRepository<Group>(co
 {
     // <inheritdoc/>
     public async Task<IEnumerable<Group>> GetGroupsAsync(
-        long? cursor = null,
-        int pageSize = 25,
         string? userId = null,
         string? organisationId = null,
         string? name = null,
         string? description = null,
-        DateTime? createdFrom = null,
-        DateTime? createdTo = null,
-        DateTime? modifiedFrom = null,
-        DateTime? modifiedTo = null,
+        PaginationFilter? pagination = null,
+        TimestampFilter? dateFilter = null,
         CancellationToken cancellationToken = default)
         => await context.Groups
-            .ApplyCursorFilter(cursor)
+            .ApplyCursorFilter(pagination?.Cursor)
             .ApplyUserIdFilter(userId)
             .ApplyOrganisationIdFilter(organisationId)
             .ApplyNameFilter(name)
             .ApplyDescriptionFilter(description)
-            .ApplyCreatedFromFilter(createdFrom)
-            .ApplyCreatedToFilter(createdTo)
-            .ApplyModifiedFromFilter(modifiedFrom)
-            .ApplyModifiedToFilter(modifiedTo)
+            .ApplyCreatedFromFilter(dateFilter?.CreatedFrom)
+            .ApplyCreatedToFilter(dateFilter?.CreatedTo)
+            .ApplyModifiedFromFilter(dateFilter?.ModifiedFrom)
+            .ApplyModifiedToFilter(dateFilter?.ModifiedTo)
             .OrderBy(entity => entity.Cursor)
-            .Take(pageSize)
+            .Take(pagination?.PageSize ?? 25)
             .ToListAsync(cancellationToken);
 
     /// <inheritdoc />

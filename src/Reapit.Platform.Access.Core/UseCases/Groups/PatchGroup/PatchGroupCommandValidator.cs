@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Reapit.Platform.Access.Data.Repositories;
 using Reapit.Platform.Access.Data.Services;
 
 namespace Reapit.Platform.Access.Core.UseCases.Groups.PatchGroup;
@@ -47,7 +48,7 @@ public class PatchGroupCommandValidator : AbstractValidator<PatchGroupCommand>
         var others = await _unitOfWork.Groups.GetGroupsAsync(
             organisationId: subject.OrganisationId, 
             name: command.Name, 
-            pageSize: 1,
+            pagination: new PaginationFilter(PageSize: 1),
             cancellationToken: cancellationToken);
 
         return !others.Any();

@@ -1,6 +1,7 @@
 ﻿using Reapit.Platform.Access.Core.UnitTests.TestHelpers;
 using Reapit.Platform.Access.Core.UseCases.Groups;
 using Reapit.Platform.Access.Core.UseCases.Groups.PatchGroup;
+using Reapit.Platform.Access.Data.Repositories;
 using Reapit.Platform.Access.Data.Repositories.Groups;
 using Reapit.Platform.Access.Data.Services;
 using Reapit.Platform.Access.Domain.Entities;
@@ -41,16 +42,12 @@ public class PatchGroupValidatorTests
             .Returns(group);
 
         _groupRepository.GetGroupsAsync(
-                cursor: null, 
-                pageSize: 1, 
                 userId: null, 
                 organisationId: group.OrganisationId, 
                 name: command.Name, 
-                description: null, 
-                createdFrom: null, 
-                createdTo: null, 
-                modifiedFrom: null, 
-                modifiedTo: null,
+                description: null,
+                pagination: new PaginationFilter(PageSize: 1),
+                dateFilter: null,
                 cancellationToken: Arg.Any<CancellationToken>())
             .Returns([new Group("other group", "which would cause failure", "if it sent this")]);
         
@@ -59,16 +56,12 @@ public class PatchGroupValidatorTests
         result.Should().Pass();
 
         await _groupRepository.DidNotReceive().GetGroupsAsync(
-            Arg.Any<long?>(), 
-            Arg.Any<int>(), 
             Arg.Any<string?>(),
             Arg.Any<string?>(), 
             Arg.Any<string?>(), 
             Arg.Any<string?>(), 
-            Arg.Any<DateTime?>(), 
-            Arg.Any<DateTime?>(),
-            Arg.Any<DateTime?>(), 
-            Arg.Any<DateTime?>(), 
+            Arg.Any<PaginationFilter>(),
+            Arg.Any<TimestampFilter>(),
             Arg.Any<CancellationToken>());
     }
     
@@ -83,16 +76,12 @@ public class PatchGroupValidatorTests
             .Returns(group);
 
         _groupRepository.GetGroupsAsync(
-                cursor: null, 
-                pageSize: 1, 
                 userId: null, 
                 organisationId: group.OrganisationId, 
                 name: command.Name, 
                 description: null, 
-                createdFrom: null, 
-                createdTo: null, 
-                modifiedFrom: null, 
-                modifiedTo: null,
+                pagination: new PaginationFilter(PageSize: 1),
+                dateFilter: null,
                 cancellationToken: Arg.Any<CancellationToken>())
             .Returns(Array.Empty<Group>());
         
@@ -125,16 +114,12 @@ public class PatchGroupValidatorTests
             .Returns(group);
 
         _groupRepository.GetGroupsAsync(
-                cursor: null, 
-                pageSize: 1, 
                 userId: null, 
                 organisationId: group.OrganisationId, 
                 name: command.Name, 
                 description: null, 
-                createdFrom: null, 
-                createdTo: null, 
-                modifiedFrom: null, 
-                modifiedTo: null,
+                pagination: new PaginationFilter(PageSize: 1),
+                dateFilter: null,
                 cancellationToken: Arg.Any<CancellationToken>())
             .Returns([new Group("other group", "which will cause failure", "when returned")]);
         

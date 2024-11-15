@@ -2,6 +2,7 @@
 using FluentValidation.Results;
 using Reapit.Platform.Access.Core.Exceptions;
 using Reapit.Platform.Access.Core.UseCases.Groups.GetGroups;
+using Reapit.Platform.Access.Data.Repositories;
 using Reapit.Platform.Access.Data.Repositories.Groups;
 using Reapit.Platform.Access.Data.Services;
 using Reapit.Platform.Access.Domain.Entities;
@@ -45,16 +46,12 @@ public class GetGroupsQueryHandlerTests
         // Two-birds, one stone.  Make sure the query parameters are passed correctly by only returning the value if they are.
         var groups = new[] { new Group("name", "description", "organisationId") };
         _groupRepository.GetGroupsAsync(
-                request.Cursor, 
-                request.PageSize, 
                 request.UserId, 
                 request.OrganisationId,
                 request.Name, 
                 request.Description, 
-                request.CreatedFrom, 
-                request.CreatedTo, 
-                request.ModifiedFrom,
-                request.ModifiedTo, 
+                new PaginationFilter(request.Cursor, request.PageSize),
+                new TimestampFilter(request.CreatedFrom, request.CreatedTo, request.ModifiedFrom, request.ModifiedTo),
                 Arg.Any<CancellationToken>())
             .Returns(groups);
 

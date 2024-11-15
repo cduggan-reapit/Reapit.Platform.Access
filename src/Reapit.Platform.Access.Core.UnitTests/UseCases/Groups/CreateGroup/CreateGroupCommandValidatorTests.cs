@@ -2,6 +2,7 @@
 using Reapit.Platform.Access.Core.UseCases;
 using Reapit.Platform.Access.Core.UseCases.Groups;
 using Reapit.Platform.Access.Core.UseCases.Groups.CreateGroup;
+using Reapit.Platform.Access.Data.Repositories;
 using Reapit.Platform.Access.Data.Repositories.Groups;
 using Reapit.Platform.Access.Data.Repositories.Organisations;
 using Reapit.Platform.Access.Data.Services;
@@ -66,7 +67,7 @@ public class CreateGroupCommandValidatorTests
         _organisationRepository.GetOrganisationByIdAsync(request.OrganisationId, Arg.Any<CancellationToken>())
             .Returns(new Organisation(request.OrganisationId, "name"));
         
-        _groupRepository.GetGroupsAsync(null, 1, null, request.OrganisationId, request.Name, null, null, null, null, null, Arg.Any<CancellationToken>())
+        _groupRepository.GetGroupsAsync(null, request.OrganisationId, request.Name, null, new PaginationFilter(PageSize: 1), null, Arg.Any<CancellationToken>())
             .Returns([new Group("name", "description", "organisationId")]);
         
         var sut = CreateSut();
