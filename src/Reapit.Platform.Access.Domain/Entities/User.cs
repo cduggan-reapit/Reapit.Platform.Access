@@ -43,10 +43,13 @@ public class User : RemoteEntityBase
     public string Email { get; private set; }
 
     /// <summary>The organisations that this user is associated with.</summary>
-    public ICollection<Organisation> Organisations { get; set; } = new List<Organisation>();
+    public ICollection<Organisation> Organisations { get; init; } = new List<Organisation>();
 
     /// <summary>The collection of groups with which the user is associated.</summary>
-    public ICollection<Group> Groups { get; set; } = new List<Group>();
+    public IEnumerable<Group> Groups { get; } = new List<Group>();
+
+    /// <summary>The collection of roles assigned to the user.</summary>
+    public IEnumerable<Role> Roles { get; } = new List<Role>();
     
     /// <inheritdoc /> 
     public override object AsSerializable()

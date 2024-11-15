@@ -11,7 +11,7 @@ public class Group : EntityBase
     /// <param name="name">The name of the group.</param>
     /// <param name="description">A description of the group.</param>
     /// <param name="organisationId">The unique identifier of the organisation with which the group is associated.</param>
-    public Group(string name, string description, string organisationId) 
+    public Group(string name, string? description, string organisationId) 
         : base(GuidProvider.New.ToString("N"))
     {
         Name = name;
@@ -42,7 +42,7 @@ public class Group : EntityBase
     public string Name { get; private set; }
     
     /// <summary>A description of the group.</summary>
-    public string Description { get; private set; }
+    public string? Description { get; private set; }
     
     /// <summary>The unique identifier of the organisation with which the group is associated.</summary>
     public string OrganisationId { get; init; }
@@ -52,7 +52,7 @@ public class Group : EntityBase
     public Organisation? Organisation { get; init; }
 
     /// <summary>The collection of users associated with this group.</summary>
-    public ICollection<User> Users { get; set; } = new List<User>();
+    public ICollection<User> Users { get; init; } = new List<User>();
     
     /// <inheritdoc/>
     public override object AsSerializable()

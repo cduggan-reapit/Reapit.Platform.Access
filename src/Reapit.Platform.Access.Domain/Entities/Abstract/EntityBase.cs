@@ -39,12 +39,20 @@ public abstract class EntityBase
     /// <typeparam name="T">The type of the field.</typeparam>
     /// <returns>The new value when `proposed` is not equal to `current`, otherwise current.</returns>
     internal T GetUpdateValue<T>(T current, T? updated)
-        where T: notnull
     {
-        // If current is equal to updated or updated is null, return current.
-        if (current.Equals(updated) || updated == null)
+        // No matter what, return current if updated is null 
+        if (updated == null)
             return current;
         
+        // If current is null and updated is not null, return updated.
+        if (current == null)
+            return updated;
+        
+        // Return current if both have values and the values are equal.
+        if (current.Equals(updated))
+            return current;
+        
+        // Return updated if both have values and the values are not equal. 
         IsDirty = true;
         SetDateModified();
         return updated;
