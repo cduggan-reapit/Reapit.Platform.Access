@@ -8,5 +8,5 @@ namespace Reapit.Platform.Access.Api.Controllers.Groups.V1.Models;
 /// <param name="OrganisationId">The organisation to which the group belongs.</param>
 public record CreateGroupRequestModel(
     [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("description")] string Description, 
+    [property: JsonPropertyName("description")] string? Description, 
     [property: JsonPropertyName("organisationId")] string OrganisationId);

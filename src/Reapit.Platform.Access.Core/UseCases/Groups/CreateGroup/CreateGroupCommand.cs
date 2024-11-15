@@ -9,6 +9,6 @@ namespace Reapit.Platform.Access.Core.UseCases.Groups.CreateGroup;
 /// <param name="OrganisationId">The unique identifier of the organisation to which the group belongs.</param>
 public record CreateGroupCommand(
     string Name, 
-    string Description, 
+    string? Description, 
     string OrganisationId) 
     : IRequest<Group>;
