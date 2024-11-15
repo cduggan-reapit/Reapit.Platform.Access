@@ -28,5 +28,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(entity => entity.Email)
             .HasColumnName("email")
             .HasMaxLength(1000);
+        
+        builder.Property(entity => entity.Cursor)
+            .HasColumnName("cursor");
     }
 }

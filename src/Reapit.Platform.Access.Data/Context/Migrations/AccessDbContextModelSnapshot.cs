@@ -261,6 +261,10 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                         .HasColumnType("varchar(100)")
                         .HasColumnName("id");
 
+                    b.Property<long>("Cursor")
+                        .HasColumnType("bigint")
+                        .HasColumnName("cursor");
+
                     b.Property<DateTimeOffset>("DateLastSynchronised")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("last_sync");

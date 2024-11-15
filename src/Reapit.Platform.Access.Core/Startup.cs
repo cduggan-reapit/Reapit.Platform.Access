@@ -12,9 +12,9 @@ public static class Startup
     {
         // These can't reference static classes (like Startup) so just needs to point at any class in this assembly
         builder.Services.AddMediatR(cfg => 
-            cfg.RegisterServicesFromAssemblyContaining<UseCases.Users.UpdateUser.UpdateUserCommandValidator>());
+            cfg.RegisterServicesFromAssemblyContaining<UseCases.Groups.CreateGroup.CreateGroupCommandHandler>());
 
-        builder.Services.AddValidatorsFromAssemblyContaining(typeof(UseCases.Users.UpdateUser.UpdateUserCommandValidator));
+        builder.Services.AddValidatorsFromAssemblyContaining(typeof(UseCases.Groups.CreateGroup.CreateGroupCommandValidator));
         
         return builder;
     }

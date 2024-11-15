@@ -80,6 +80,7 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     email = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    cursor = table.Column<long>(type: "bigint", nullable: false),
                     last_sync = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>

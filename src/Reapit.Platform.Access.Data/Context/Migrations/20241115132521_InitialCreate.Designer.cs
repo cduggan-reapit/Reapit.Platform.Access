@@ -12,7 +12,7 @@ using Reapit.Platform.Access.Data.Context;
 namespace Reapit.Platform.Access.Data.Context.Migrations
 {
     [DbContext(typeof(AccessDbContext))]
-    [Migration("20241115082014_InitialCreate")]
+    [Migration("20241115132521_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -263,6 +263,10 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)")
                         .HasColumnName("id");
+
+                    b.Property<long>("Cursor")
+                        .HasColumnType("bigint")
+                        .HasColumnName("cursor");
 
                     b.Property<DateTimeOffset>("DateLastSynchronised")
                         .HasColumnType("datetime(6)")

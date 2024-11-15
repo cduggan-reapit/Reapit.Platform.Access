@@ -4,11 +4,11 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace Reapit.Platform.Access.Api.Controllers.Internal.Users.V1.Examples;
 
-/// <summary>Example provider for the <see cref="CreateUserRequestModel"/> type.</summary>
+/// <summary>Example provider for the <see cref="SynchroniseUserRequestModel"/> type.</summary>
 [ExcludeFromCodeCoverage]
-public class UpdateUserRequestModelExample : IExamplesProvider<UpdateUserRequestModel>
+public class UpdateUserRequestModelExample : IExamplesProvider<SynchroniseUserRequestModel>
 {
     /// <inheritdoc />
-    public UpdateUserRequestModel GetExamples()
+    public SynchroniseUserRequestModel GetExamples()
         => new("Joe Bloggs", "jbloggs@reapit.com");
 }

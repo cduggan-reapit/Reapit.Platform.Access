@@ -1,20 +1,12 @@
 ﻿using FluentValidation;
 
-namespace Reapit.Platform.Access.Core.UseCases.Users.CreateUser;
+namespace Reapit.Platform.Access.Core.UseCases.Users.SynchroniseUser;
 
-/// <summary>Validator for the <see cref="CreateUserCommand"/> type.</summary>
-public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
+/// <summary>Validator for the <see cref="SynchroniseUserCommand"/> request.</summary>
+public class SynchroniseUserCommandValidator : AbstractValidator<SynchroniseUserCommand>
 {
-    /*
-     * | Property | Constraints               |
-     * | -------- | ------------------------- |
-     * | Id       | Required, MaxLength(100)  |
-     * | Name     | Required, MaxLength(500)  |
-     * | Email    | Required, MaxLength(1000) |
-    */
-
-    /// <summary>Initializes a new instance of the <see cref="CreateUserCommandValidator"/> class.</summary>
-    public CreateUserCommandValidator()
+    /// <summary>Initializes an instance of the <see cref="SynchroniseUserCommandValidator"/> class.</summary>
+    public SynchroniseUserCommandValidator()
     {
         RuleFor(request => request.Id)
             .NotEmpty()

@@ -15,7 +15,10 @@ public class User : RemoteEntityBase
         Id = id;
         Name = name;
         Email = email;
-        DateLastSynchronised = DateTimeOffsetProvider.Now;
+
+        var now = DateTimeOffsetProvider.Now;
+        Cursor = (long)(now - DateTimeOffset.UnixEpoch).TotalMicroseconds;
+        DateLastSynchronised = now;
     }
 
     /// <summary>Update the user.</summary>
@@ -41,6 +44,9 @@ public class User : RemoteEntityBase
     
     /// <summary>The email address of the User in the organisations service.</summary>
     public string Email { get; private set; }
+    
+    /// <summary>The cursor used for paging the user collection.</summary>
+    public long Cursor { get; private init; }
 
     /// <summary>The organisations that this user is associated with.</summary>
     public ICollection<Organisation> Organisations { get; init; } = new List<Organisation>();

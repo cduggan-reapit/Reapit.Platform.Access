@@ -2,7 +2,7 @@
 using Reapit.Platform.Access.Domain.Entities;
 using Reapit.Platform.Common.Providers.Temporal;
 
-namespace Reapit.Platform.Access.Domain.UnitTests.Entities.Internal;
+namespace Reapit.Platform.Access.Domain.UnitTests.Entities;
 
 public class UserTests
 {
@@ -22,6 +22,9 @@ public class UserTests
         sut.Name.Should().Be(name);
         sut.Email.Should().Be(email);
         sut.DateLastSynchronised.Should().Be(timeFixture);
+
+        var expectedCursor = (long)(sut.DateLastSynchronised - DateTimeOffset.UnixEpoch).TotalMicroseconds;
+        sut.Cursor.Should().Be(expectedCursor);
     }
     
     /*

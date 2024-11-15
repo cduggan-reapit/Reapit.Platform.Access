@@ -2,7 +2,7 @@
 using Reapit.Platform.Access.Domain.Entities;
 using Reapit.Platform.Common.Providers.Temporal;
 
-namespace Reapit.Platform.Access.Domain.UnitTests.Entities.Internal;
+namespace Reapit.Platform.Access.Domain.UnitTests.Entities;
 
 public class OrganisationTests
 {
