@@ -39,7 +39,7 @@ public static class RoleFilterHelper
     public static IQueryable<Role> ApplyDescriptionFilter(this IQueryable<Role> queryable, string? value)
         => value == null
             ? queryable
-            : queryable.Where(group => group.Description.Contains(value));
+            : queryable.Where(group => group.Description != null && group.Description.Contains(value));
     
     /// <summary>Filters a collection of <see cref="Role" /> objects by minimum creation date (inclusive).</summary>
     /// <param name="queryable">The collection to filter.</param>

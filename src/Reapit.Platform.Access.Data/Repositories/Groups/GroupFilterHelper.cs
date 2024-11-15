@@ -48,7 +48,7 @@ public static class GroupFilterHelper
     public static IQueryable<Group> ApplyDescriptionFilter(this IQueryable<Group> queryable, string? value)
         => value == null
             ? queryable
-            : queryable.Where(group => group.Description.Contains(value));
+            : queryable.Where(group => group.Description != null && group.Description.Contains(value));
     
     /// <summary>Filters a collection of <see cref="Group" /> objects by minimum creation date (inclusive).</summary>
     /// <param name="queryable">The collection to filter.</param>

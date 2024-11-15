@@ -22,7 +22,6 @@ public class RoleTests
         
         const string name = "this is the name";
         const string description = "this is the description";
-        const string organisationId = "this is the organisation identifier";
         
         var expectedEpochTime = (long)(fixedDate - DateTimeOffset.UnixEpoch).TotalMicroseconds;
 

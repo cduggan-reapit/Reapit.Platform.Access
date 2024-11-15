@@ -25,9 +25,4 @@
     </PackageReference>
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="Context\Configuration\Transient\" />
-    <Folder Include="Context\Migrations\" />
-  </ItemGroup>
 </Project>
