@@ -91,6 +91,16 @@ public class RolesProfileTests
         actual.Count.Should().Be(expectedPageSize);
     }
     
+    [Fact]
+    public void RolesProfile_PopulatesPagedResult_FromEmptyCollection()
+    {
+        var input = Array.Empty<Role>();
+        var expected = new ResultPage<RoleModel>(_mapper.Map<IEnumerable<RoleModel>>(input), 0, 0);
+
+        var actual = _mapper.Map<ResultPage<RoleModel>>(input);
+        actual.Should().BeEquivalentTo(expected);
+    }
+    
     /*
      * Private methods
      */

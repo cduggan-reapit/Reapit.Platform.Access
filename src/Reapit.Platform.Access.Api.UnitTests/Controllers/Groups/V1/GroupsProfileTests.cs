@@ -93,6 +93,16 @@ public class GroupsProfileTests
         actual.Count.Should().Be(expectedPageSize);
     }
     
+    [Fact]
+    public void GroupsProfile_PopulatesGroupModelResultPage_FromEmptyCollection()
+    {
+        var input = Array.Empty<Group>();
+        var expected = new ResultPage<GroupModel>(_mapper.Map<IEnumerable<GroupModel>>(input), 0, 0);
+
+        var actual = _mapper.Map<ResultPage<GroupModel>>(input);
+        actual.Should().BeEquivalentTo(expected);
+    }
+    
     /*
      * Private methods
      */

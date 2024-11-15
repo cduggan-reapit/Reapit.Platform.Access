@@ -30,12 +30,12 @@ Get-Childitem -Include TestResults -Recurse -Force | Remove-Item -Force -Recurse
 
 - Run the following command to run the tests with code coverage analysis:
 ```sh
-dotnet test .\src\Reapit.Platform.Organisations.sln --collect:"XPlat Code Coverage"
+dotnet test .\src\Reapit.Platform.Access.sln --collect:"XPlat Code Coverage"
 ```
 
 - Run the following command to create the code coverage report in `./coverage`
 ```sh
-reportgenerator -reports:./src/**/coverage.cobertura.xml -targetdir:coverage -reporttypes:Html -filefilters:-*Migrations* -classfilters:-Reapit.Platform.Organisations.Data.Migrations
+reportgenerator -reports:./src/**/coverage.cobertura.xml -targetdir:coverage -reporttypes:Html -filefilters:-*Migrations*
 ```
 
 - Open the report (`./coverage/index.html`) in a browser
