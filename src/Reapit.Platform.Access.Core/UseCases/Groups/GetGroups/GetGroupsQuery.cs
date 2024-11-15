@@ -3,7 +3,7 @@ using Reapit.Platform.Access.Domain.Entities;
 
 namespace Reapit.Platform.Access.Core.UseCases.Groups.GetGroups;
 
-/// <summary>Request model used when fetching a collection of groups.</summary>
+/// <summary>Request for a collection of groups.</summary>
 /// <param name="Cursor">The offset cursor; default 0.</param>
 /// <param name="PageSize">The maximum number of results to return; default 25.</param>
 /// <param name="UserId">Limit results to groups associated with the user with this unique identifier.</param>

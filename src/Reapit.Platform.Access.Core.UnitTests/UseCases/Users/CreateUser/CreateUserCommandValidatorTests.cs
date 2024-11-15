@@ -1,4 +1,5 @@
-﻿using Reapit.Platform.Access.Core.UseCases;
+﻿using Reapit.Platform.Access.Core.UnitTests.TestHelpers;
+using Reapit.Platform.Access.Core.UseCases;
 using Reapit.Platform.Access.Core.UseCases.Users;
 using Reapit.Platform.Access.Core.UseCases.Users.CreateUser;
 

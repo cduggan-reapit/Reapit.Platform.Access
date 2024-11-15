@@ -1,10 +1,10 @@
 ﻿using Reapit.Platform.Access.Core.UnitTests.TestHelpers;
 using Reapit.Platform.Access.Core.UseCases;
-using Reapit.Platform.Access.Core.UseCases.Groups.GetGroups;
+using Reapit.Platform.Access.Core.UseCases.Roles.GetRoles;
 
-namespace Reapit.Platform.Access.Core.UnitTests.UseCases.Groups.GetGroups;
+namespace Reapit.Platform.Access.Core.UnitTests.UseCases.Roles.GetRoles;
 
-public class GetGroupsQueryValidatorTests
+public class GetRolesQueryValidatorTests
 {
     [Fact]
     public async Task Validate_Succeeds_WhenRequestValid()
@@ -25,7 +25,7 @@ public class GetGroupsQueryValidatorTests
         var request = GetRequest(-1);
         var sut = CreateSut();
         var result = await sut.ValidateAsync(request);
-        result.Should().Fail(nameof(GetGroupsQuery.Cursor), CommonValidationMessages.CursorOutOfRange);
+        result.Should().Fail(nameof(GetRolesQuery.Cursor), CommonValidationMessages.CursorOutOfRange);
     }
     
     /*
@@ -40,15 +40,15 @@ public class GetGroupsQueryValidatorTests
         var request = GetRequest(pageSize: pageSize);
         var sut = CreateSut();
         var result = await sut.ValidateAsync(request);
-        result.Should().Fail(nameof(GetGroupsQuery.PageSize), CommonValidationMessages.PageSizeOutOfRange);
+        result.Should().Fail(nameof(GetRolesQuery.PageSize), CommonValidationMessages.PageSizeOutOfRange);
     }
     
     /*
      * Private methods
      */
 
-    private static GetGroupsQueryValidator CreateSut() => new();
+    private static GetRolesQueryValidator CreateSut() => new();
 
-    private static GetGroupsQuery GetRequest(long? cursor = null, int pageSize = 25)
+    private static GetRolesQuery GetRequest(long? cursor = null, int pageSize = 25)
         => new(cursor, pageSize);
 }
