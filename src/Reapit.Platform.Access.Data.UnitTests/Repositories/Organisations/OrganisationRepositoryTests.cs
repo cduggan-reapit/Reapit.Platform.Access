@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Reapit.Platform.Access.Data.Context;
 using Reapit.Platform.Access.Data.Repositories.Organisations;
 using Reapit.Platform.Access.Data.UnitTests.TestHelpers;

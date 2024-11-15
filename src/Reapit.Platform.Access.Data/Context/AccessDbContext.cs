@@ -10,15 +10,14 @@ public class AccessDbContext(DbContextOptions<AccessDbContext> options) : DbCont
     /// <summary>The collection of user groups.</summary>
     public DbSet<Group> Groups { get; init; }
     
-    #region Organisations Service Entities
+    /// <summary>The collection of user roles.</summary>
+    public DbSet<Role> Roles { get; init; }
     
     /// <summary>The collection of users.</summary>
     public DbSet<User> Users { get; init; }
     
     /// <summary>The collection of organisations.</summary>
     public DbSet<Organisation> Organisations { get; init; }
-
-    #endregion
     
     /// <summary>Configures the Entity Framework model.</summary>
     /// <param name="builder">The model builder.</param>

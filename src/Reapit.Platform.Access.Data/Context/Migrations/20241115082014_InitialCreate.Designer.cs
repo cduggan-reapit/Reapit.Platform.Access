@@ -12,7 +12,7 @@ using Reapit.Platform.Access.Data.Context;
 namespace Reapit.Platform.Access.Data.Context.Migrations
 {
     [DbContext(typeof(AccessDbContext))]
-    [Migration("20241114120938_InitialCreate")]
+    [Migration("20241115082014_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -49,7 +49,6 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                         .HasColumnName("date_modified");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)")
                         .HasColumnName("description");
@@ -164,40 +163,6 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                     b.ToTable("organisations", (string)null);
                 });
 
-            modelBuilder.Entity("Reapit.Platform.Access.Domain.Entities.OrganisationUser", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTimeOffset>("DateLastSynchronised")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("last_sync");
-
-                    b.Property<string>("OrganisationId")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("organisation_id");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrganisationId");
-
-                    b.HasIndex("UserId", "OrganisationId")
-                        .IsUnique();
-
-                    b.ToTable("OrganisationUsers");
-                });
-
             modelBuilder.Entity("Reapit.Platform.Access.Domain.Entities.Product", b =>
                 {
                     b.Property<string>("Id")
@@ -264,6 +229,11 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("date_modified");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)")
+                        .HasColumnName("description");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -281,26 +251,10 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
 
                     b.HasIndex("DateModified");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("roles", (string)null);
-                });
-
-            modelBuilder.Entity("Reapit.Platform.Access.Domain.Entities.Transient.UserRole", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasMaxLength(36)
-                        .HasColumnType("varchar(36)")
-                        .HasColumnName("user_id");
-
-                    b.Property<string>("RoleId")
-                        .HasMaxLength(36)
-                        .HasColumnType("varchar(36)")
-                        .HasColumnName("role_id");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("UserRole");
                 });
 
             modelBuilder.Entity("Reapit.Platform.Access.Domain.Entities.User", b =>
@@ -346,6 +300,36 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                     b.ToTable("groupUsers");
                 });
 
+            modelBuilder.Entity("organisationUsers", b =>
+                {
+                    b.Property<string>("organisationId")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("userId")
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("organisationId", "userId");
+
+                    b.HasIndex("userId");
+
+                    b.ToTable("organisationUsers");
+                });
+
+            modelBuilder.Entity("userRoles", b =>
+                {
+                    b.Property<string>("roleId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("userId")
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("roleId", "userId");
+
+                    b.HasIndex("userId");
+
+                    b.ToTable("userRoles");
+                });
+
             modelBuilder.Entity("Reapit.Platform.Access.Domain.Entities.Group", b =>
                 {
                     b.HasOne("Reapit.Platform.Access.Domain.Entities.Organisation", "Organisation")
@@ -376,44 +360,6 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Reapit.Platform.Access.Domain.Entities.OrganisationUser", b =>
-                {
-                    b.HasOne("Reapit.Platform.Access.Domain.Entities.Organisation", "Organisation")
-                        .WithMany("OrganisationUsers")
-                        .HasForeignKey("OrganisationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Reapit.Platform.Access.Domain.Entities.User", "User")
-                        .WithMany("OrganisationUsers")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Organisation");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Reapit.Platform.Access.Domain.Entities.Transient.UserRole", b =>
-                {
-                    b.HasOne("Reapit.Platform.Access.Domain.Entities.Role", "Role")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Reapit.Platform.Access.Domain.Entities.User", "User")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("groupUsers", b =>
                 {
                     b.HasOne("Reapit.Platform.Access.Domain.Entities.Group", null)
@@ -429,30 +375,46 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("organisationUsers", b =>
+                {
+                    b.HasOne("Reapit.Platform.Access.Domain.Entities.Organisation", null)
+                        .WithMany()
+                        .HasForeignKey("organisationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reapit.Platform.Access.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("userId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("userRoles", b =>
+                {
+                    b.HasOne("Reapit.Platform.Access.Domain.Entities.Role", null)
+                        .WithMany()
+                        .HasForeignKey("roleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reapit.Platform.Access.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("userId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Reapit.Platform.Access.Domain.Entities.Organisation", b =>
                 {
                     b.Navigation("Groups");
 
                     b.Navigation("Instances");
-
-                    b.Navigation("OrganisationUsers");
                 });
 
             modelBuilder.Entity("Reapit.Platform.Access.Domain.Entities.Product", b =>
                 {
                     b.Navigation("Instances");
-                });
-
-            modelBuilder.Entity("Reapit.Platform.Access.Domain.Entities.Role", b =>
-                {
-                    b.Navigation("UserRoles");
-                });
-
-            modelBuilder.Entity("Reapit.Platform.Access.Domain.Entities.User", b =>
-                {
-                    b.Navigation("OrganisationUsers");
-
-                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

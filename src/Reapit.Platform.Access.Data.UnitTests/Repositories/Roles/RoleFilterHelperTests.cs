@@ -1,11 +1,11 @@
-﻿using Reapit.Platform.Access.Data.Repositories.Groups;
+﻿using Reapit.Platform.Access.Data.Repositories.Roles;
 using Reapit.Platform.Access.Domain.Entities;
 using Reapit.Platform.Common.Providers.Identifiers;
 using Reapit.Platform.Common.Providers.Temporal;
 
-namespace Reapit.Platform.Access.Data.UnitTests.Repositories.Groups;
+namespace Reapit.Platform.Access.Data.UnitTests.Repositories.Roles;
 
-public class GroupFilterHelperTests
+public class RoleFilterHelperTests
 {
     /*
      * ApplyCursor
@@ -54,27 +54,6 @@ public class GroupFilterHelperTests
     }
     
     /*
-     * ApplyOrganisationIdFilter
-     */
-    
-    [Fact]
-    public void ApplyOrganisationIdFilter_DoesNotApplyFilter_WhenOrganisationIdIsNull()
-    {
-        var data = SeedData;
-        var actual = data.ApplyOrganisationIdFilter(null);
-        actual.Should().BeSameAs(data);
-    }
-    
-    [Fact]
-    public void ApplyOrganisationIdFilter_AppliesFilter_WhenOrganisationIdProvided()
-    {
-        const string organisationId = "organisation-002";
-        var data = SeedData;
-        var actual = data.ApplyOrganisationIdFilter(organisationId);
-        actual.Should().HaveCount(30);
-    }
-    
-    /*
      * ApplyNameFilter
      */
     
@@ -89,7 +68,7 @@ public class GroupFilterHelperTests
     [Fact]
     public void ApplyNameFilter_AppliesFilter_WhenNameProvided()
     {
-        const string name = "Group 042";
+        const string name = "Role 042";
         var data = SeedData;
         var actual = data.ApplyNameFilter(name);
         actual.Should().HaveCount(1);
@@ -210,28 +189,22 @@ public class GroupFilterHelperTests
 
     private static readonly DateTime BaseDateTime = new(2020, 1, 1, 0, 0, 0);
 
-    private static IQueryable<Group> SeedData 
-        => Enumerable.Range(1, 90).Select(GetSeedGroup).AsQueryable();
+    private static IQueryable<Role> SeedData 
+        => Enumerable.Range(1, 90).Select(GetSeedRole).AsQueryable();
     
-    private static Group GetSeedGroup(int seedValue)
+    private static Role GetSeedRole(int seedValue)
     {
         var guid = new Guid($"{seedValue:D32}");
         var time = new DateTimeOffset(BaseDateTime, TimeSpan.Zero).AddDays(seedValue - 1);
         
         using var guidFixture = new GuidProviderContext(guid);
         using var timeFixture = new DateTimeOffsetProviderContext(time);
-
-        // Spread groups across three organisations (organisation-001, organisation-002, organisation-003).
-        // Each with two users:
-        // 001 => 001 & 002
-        // 002 => 002 & 003
-        // 003 => 003 & 004
-        var organisationSeed = seedValue % 3 + 1;
-        return new Group($"Group {seedValue:D3}", $"Group {seedValue:D3} Description", $"organisation-{organisationSeed:D3}")
+        var userSeed = seedValue % 3 + 1;
+        return new Role($"Role {seedValue:D3}", $"Role {seedValue:D3} Description")
         {
             DateModified = time.UtcDateTime.AddYears(1),
             Users = Enumerable.Range(0, 2)
-                .Select(u => new User($"user-{organisationSeed + u:D3}", "name", "email"))
+                .Select(u => new User($"user-{userSeed + u:D3}", "name", "email"))
                 .ToList()
         };
     }

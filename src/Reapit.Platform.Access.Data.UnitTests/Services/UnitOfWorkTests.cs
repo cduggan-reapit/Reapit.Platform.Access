@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Reapit.Platform.Access.Data.Context;
 using Reapit.Platform.Access.Data.Services;

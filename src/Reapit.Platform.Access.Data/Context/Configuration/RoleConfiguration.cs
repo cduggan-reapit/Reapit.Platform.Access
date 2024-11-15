@@ -16,8 +16,24 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
         builder.ConfigureEntityBase()
             .ToTable("roles");
         
+        // Role name must be unique
+        builder.HasIndex(entity => entity.Name)
+            .IsUnique();
+        
         builder.Property(entity => entity.Name)
             .HasColumnName("name")
             .HasMaxLength(100);
+        
+        builder.Property(entity => entity.Description)
+            .HasColumnName("description")
+            .HasMaxLength(1000);
+        
+        builder.HasMany(role => role.Users)
+            .WithMany(user => user.Roles)
+            .UsingEntity(joinEntityName: "userRoles",
+                configureLeft: l => l.HasOne(typeof(Role)).WithMany().HasForeignKey("roleId").HasPrincipalKey(nameof(Role.Id)),
+                configureRight: r => r.HasOne(typeof(User)).WithMany().HasForeignKey("userId").HasPrincipalKey(nameof(User.Id)),
+                configureJoinEntityType: j => j.HasKey("roleId", "userId"));
+            
     }
 }
