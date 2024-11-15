@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Reapit.Platform.Access.Api.Controllers.Roles.V1.Models;
 using Reapit.Platform.Access.Api.Controllers.Shared;
+using Reapit.Platform.Access.Core.Extensions;
 using Reapit.Platform.Access.Core.UseCases.Roles.GetRoles;
 using Reapit.Platform.Access.Domain.Entities;
 
@@ -23,7 +24,7 @@ public class RolesProfile : Profile
         CreateMap<IEnumerable<Role>, ResultPage<RoleModel>>()
             .ForCtorParam(nameof(ResultPage<RoleModel>.Data), ops => ops.MapFrom(collection => collection))
             .ForCtorParam(nameof(ResultPage<RoleModel>.Count), ops => ops.MapFrom(collection => collection.Count()))
-            .ForCtorParam(nameof(ResultPage<RoleModel>.Cursor), ops => ops.MapFrom(collection => GetCursor(ref collection)));
+            .ForCtorParam(nameof(ResultPage<RoleModel>.Cursor), ops => ops.MapFrom(collection => collection.GetMaximumCursor()));
         
         // GetRolesRequestModel => GetRolesQuery
         CreateMap<GetRolesRequestModel, GetRolesQuery>()
@@ -36,16 +37,5 @@ public class RolesProfile : Profile
             .ForCtorParam(nameof(GetRolesQuery.CreatedTo), ops => ops.MapFrom(request => request.CreatedTo))
             .ForCtorParam(nameof(GetRolesQuery.ModifiedFrom), ops => ops.MapFrom(request => request.ModifiedFrom))
             .ForCtorParam(nameof(GetRolesQuery.ModifiedTo), ops => ops.MapFrom(request => request.ModifiedTo));
-    }
-
-    /// <summary>Gets the maximum cursor value from a collection of objects.</summary>
-    /// <param name="set">The collection.</param>
-    /// <returns>The maximum Cursor value from the collection if it contains any items; otherwise zero.</returns>
-    private static long GetCursor(ref IEnumerable<Role> set)
-    {
-        var list = set.ToList();
-        return list.Any()
-            ? list.Max(item => item.Cursor)
-            : 0;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Reapit.Platform.Access.Api.Controllers.Groups.V1.Models;
 using Reapit.Platform.Access.Api.Controllers.Shared;
+using Reapit.Platform.Access.Core.Extensions;
 using Reapit.Platform.Access.Core.UseCases.Groups.GetGroups;
 using Reapit.Platform.Access.Domain.Entities;
 
@@ -37,17 +38,6 @@ public class GroupsProfile : Profile
         CreateMap<IEnumerable<Group>, ResultPage<GroupModel>>()
             .ForCtorParam(nameof(ResultPage<GroupModel>.Data), ops => ops.MapFrom(collection => collection))
             .ForCtorParam(nameof(ResultPage<GroupModel>.Count), ops => ops.MapFrom(collection => collection.Count()))
-            .ForCtorParam(nameof(ResultPage<GroupModel>.Cursor), ops => ops.MapFrom(collection => GetCursor(ref collection)));
-    }
-
-    /// <summary>Gets the maximum cursor value from a collection of objects.</summary>
-    /// <param name="set">The collection.</param>
-    /// <returns>The maximum Cursor value from the collection if it contains any items; otherwise zero.</returns>
-    private static long GetCursor(ref IEnumerable<Group> set)
-    {
-        var list = set.ToList();
-        return list.Any()
-            ? list.Max(item => item.Cursor)
-            : 0;
+            .ForCtorParam(nameof(ResultPage<GroupModel>.Cursor), ops => ops.MapFrom(collection => collection.GetMaximumCursor()));
     }
 }
