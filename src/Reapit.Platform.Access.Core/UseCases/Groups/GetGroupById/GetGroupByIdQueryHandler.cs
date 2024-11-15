@@ -16,6 +16,6 @@ public class GetGroupByIdQueryHandler : IRequestHandler<GetGroupByIdQuery, Group
 
     /// <inheritdoc />
     public async Task<Group> Handle(GetGroupByIdQuery request, CancellationToken cancellationToken)
-        => await _unitOfWork.Groups.GetByIdAsync(request.Id, cancellationToken)
+        => await _unitOfWork.Groups.GetGroupByIdAsync(request.Id, cancellationToken)
            ?? throw new NotFoundException(nameof(Group), request.Id);
 }

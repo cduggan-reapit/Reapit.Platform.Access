@@ -10,6 +10,6 @@ public class GetRoleByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<G
 {
     /// <inheritdoc/>
     public async Task<Role> Handle(GetRoleByIdQuery request, CancellationToken cancellationToken)
-        => await unitOfWork.Roles.GetByIdAsync(request.Id, cancellationToken)
+        => await unitOfWork.Roles.GetRoleByIdAsync(request.Id, cancellationToken)
            ?? throw new NotFoundException(typeof(Role), request.Id);
 }

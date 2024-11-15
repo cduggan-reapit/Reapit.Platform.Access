@@ -11,141 +11,50 @@ namespace Reapit.Platform.Access.Api.IntegrationTests.Controllers.Internal.V1;
 public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegrationTestBase(apiFactory)
 {
     private static readonly DateTimeOffset BaseDate = DateTime.Parse("2020-01-01T12:00:00Z");
-    private readonly IMapper _mapper = new MapperConfiguration(
-            cfg => cfg.AddProfile<OrganisationsProfile>())
-        .CreateMapper();
-    
-    /*
-     * GET /api/internal/organisations/{id}
-     */
 
-    [Fact]
-    public async Task GetOrganisationById_ReturnsOk_WithOrganisationModel()
-    {
-        const string id = "organisation-006";
-        await InitializeDatabaseAsync();
-        
-        var organisation = SeedOrganisations.Single(u => u.Id == id);
-        var expected = _mapper.Map<SimpleOrganisationModel>(organisation);
-
-        var response = await SendRequestAsync(HttpMethod.Get, $"/api/internal/organisations/{id}");
-        await response.Should().HaveStatusCode(HttpStatusCode.OK).And.HavePayloadAsync(expected);
-    }
-
-    [Fact]
-    public async Task GetOrganisationById_ReturnsBadRequest_WhenApiVersionNotProvided()
-    {
-        var response = await SendRequestAsync(HttpMethod.Get, "/api/internal/organisations/any", null);
-        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync();
-    }
-    
-    [Fact]
-    public async Task GetOrganisationById_ReturnsBadRequest_WhenEndpointNotAvailableInVersion()
-    {
-        var response = await SendRequestAsync(HttpMethod.Get, "/api/internal/organisations/any", "0.9");
-        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync();
-    }
-    
-    [Fact]
-    public async Task GetOrganisationById_ReturnsNotFound_WhenOrganisationDoesNotExist()
-    {
-        await InitializeDatabaseAsync();
-        var response = await SendRequestAsync(HttpMethod.Get, "/api/internal/organisations/organisation-000");
-        await response.Should().HaveStatusCode(HttpStatusCode.NotFound).And.BeProblemDescriptionAsync();
-    }
-    
-    /*
-     * POST /api/internal/organisations
-     */
-
-    [Fact]
-    public async Task CreateOrganisation_ReturnsCreated_WhenOrganisationCreated()
-    {
-        await InitializeDatabaseAsync();
-        var requestModel = new CreateOrganisationRequestModel("organisation-011", "Organisation Eleven");
-        var response = await SendRequestAsync(HttpMethod.Post, "/api/internal/organisations", content: requestModel);
-        
-        await response.Should().HaveStatusCode(HttpStatusCode.Created)
-            .And.MatchPayloadAsync<SimpleOrganisationModel>(actual => 
-                actual.Id == requestModel.Id && 
-                actual.Name == requestModel.Name);
-    }
-    
-    [Fact]
-    public async Task CreateOrganisation_ReturnsBadRequest_WhenApiVersionNotProvided()
-    {
-        var response = await SendRequestAsync(HttpMethod.Post, "/api/internal/organisations", null);
-        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
-    }
-    
-    [Fact]
-    public async Task CreateOrganisation_ReturnsBadRequest_WhenEndpointNotAvailableInVersion()
-    {
-        var response = await SendRequestAsync(HttpMethod.Post, "/api/internal/organisations", "0.9");
-        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
-    }
-    
-    [Fact]
-    public async Task CreateOrganisation_ReturnsConflict_WhenOrganisationAlreadyExists()
-    {
-        await InitializeDatabaseAsync();
-        var requestModel = new CreateOrganisationRequestModel("organisation-001", "Organisation One");
-        var response = await SendRequestAsync(HttpMethod.Post, "/api/internal/organisations", content: requestModel);
-        await response.Should().HaveStatusCode(HttpStatusCode.Conflict).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceConflict); 
-    }
-    
-    [Fact]
-    public async Task CreateOrganisation_ReturnsUnprocessable_WhenRequestInvalid()
-    {
-        await InitializeDatabaseAsync();
-        var requestModel = new CreateOrganisationRequestModel("organisation-011", new string('a', 1000));
-        var response = await SendRequestAsync(HttpMethod.Post, "/api/internal/organisations", content: requestModel);
-        await response.Should().HaveStatusCode(HttpStatusCode.UnprocessableContent).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ValidationFailed); 
-    }
-    
     /*
      * PUT /api/internal/organisations/{id}
      */
 
     [Fact]
-    public async Task UpdateOrganisation_ReturnsNoContent_WhenOrganisationUpdates()
+    public async Task SynchroniseOrganisation_ReturnsNoContent_WhenOrganisationUpdates()
     {
         await InitializeDatabaseAsync();
         const string id = "organisation-007";
-        var requestModel = new UpdateOrganisationRequestModel("new name");
+        var requestModel = new SynchroniseOrganisationRequestModel("new name");
         var response = await SendRequestAsync(HttpMethod.Put, $"/api/internal/organisations/{id}", content: requestModel);
         response.Should().HaveStatusCode(HttpStatusCode.NoContent);
     }
     
     [Fact]
-    public async Task UpdateOrganisation_ReturnsBadRequest_WhenApiVersionNotProvided()
+    public async Task SynchroniseOrganisation_ReturnsNotFound_WhenOrganisationCreated()
+    {
+        await InitializeDatabaseAsync();
+        const string id = "organisation-000";
+        var requestModel = new SynchroniseOrganisationRequestModel("new name");
+        var response = await SendRequestAsync(HttpMethod.Put, $"/api/internal/organisations/{id}", content: requestModel);
+        response.Should().HaveStatusCode(HttpStatusCode.NoContent);
+    }
+    
+    [Fact]
+    public async Task SynchroniseOrganisation_ReturnsBadRequest_WhenApiVersionNotProvided()
     {
         var response = await SendRequestAsync(HttpMethod.Put, "/api/internal/organisations/any", null);
         await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
     }
     
     [Fact]
-    public async Task UpdateOrganisation_ReturnsBadRequest_WhenEndpointNotAvailableInVersion()
+    public async Task SynchroniseOrganisation_ReturnsBadRequest_WhenEndpointNotAvailableInVersion()
     {
         var response = await SendRequestAsync(HttpMethod.Put, "/api/internal/organisations/any", "0.9");
         await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
     }
     
     [Fact]
-    public async Task UpdateOrganisation_ReturnsNotFound_WhenOrganisationDoesNotExist()
-    {
-        await InitializeDatabaseAsync();
-        const string id = "organisation-000";
-        var requestModel = new UpdateOrganisationRequestModel("new name");
-        var response = await SendRequestAsync(HttpMethod.Put, $"/api/internal/organisations/{id}", content: requestModel);
-        await response.Should().HaveStatusCode(HttpStatusCode.NotFound).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound);
-    }
-    
-    [Fact]
-    public async Task UpdateOrganisation_ReturnsUnprocessable_WhenRequestInvalid()
+    public async Task SynchroniseOrganisation_ReturnsUnprocessable_WhenRequestInvalid()
     {
         const string id = "organisation-000";
-        var requestModel = new UpdateOrganisationRequestModel(new string('a', 1000));
+        var requestModel = new SynchroniseOrganisationRequestModel(new string('a', 1000));
         var response = await SendRequestAsync(HttpMethod.Put, $"/api/internal/organisations/{id}", content: requestModel);
         await response.Should().HaveStatusCode(HttpStatusCode.UnprocessableContent).And.BeProblemDescriptionAsync(ProblemDetailsTypes.ValidationFailed);
     }
@@ -162,10 +71,6 @@ public class OrganisationsControllerTests(TestApiFactory apiFactory) : ApiIntegr
         
         var response = await SendRequestAsync(HttpMethod.Delete, url);
         response.Should().HaveStatusCode(HttpStatusCode.NoContent);
-
-        // Following deletion, GET should return a HttpStatusCode.NotFound
-        var deleteCheck = await SendRequestAsync(HttpMethod.Get, url);
-        deleteCheck.Should().HaveStatusCode(HttpStatusCode.NotFound);
     }
 
     [Fact]

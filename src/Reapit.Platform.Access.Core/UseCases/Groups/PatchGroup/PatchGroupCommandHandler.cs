@@ -34,7 +34,7 @@ public class PatchGroupCommandHandler : IRequestHandler<PatchGroupCommand, Group
         if (!validation.IsValid)
             throw new ValidationException(validation.Errors);
 
-        var entity = await _unitOfWork.Groups.GetByIdAsync(request.Id, cancellationToken)
+        var entity = await _unitOfWork.Groups.GetGroupByIdAsync(request.Id, cancellationToken)
             ?? throw new NotFoundException(nameof(Group), request.Id);
         
         // Update the group and return early if there are no changes to apply...

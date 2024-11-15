@@ -2,11 +2,9 @@
 using Reapit.Platform.Access.Api.Controllers.Internal.Organisations.V1;
 using Reapit.Platform.Access.Api.Controllers.Internal.Organisations.V1.Models;
 using Reapit.Platform.Access.Core.UseCases.Organisations.AddOrganisationMember;
-using Reapit.Platform.Access.Core.UseCases.Organisations.CreateOrganisation;
 using Reapit.Platform.Access.Core.UseCases.Organisations.DeleteOrganisation;
-using Reapit.Platform.Access.Core.UseCases.Organisations.GetOrganisationById;
 using Reapit.Platform.Access.Core.UseCases.Organisations.RemoveOrganisationMember;
-using Reapit.Platform.Access.Core.UseCases.Organisations.UpdateOrganisation;
+using Reapit.Platform.Access.Core.UseCases.Organisations.SynchroniseOrganisation;
 using Reapit.Platform.Access.Domain.Entities;
 
 namespace Reapit.Platform.Access.Api.UnitTests.Controllers.Internal.Organisations.V1;
@@ -14,60 +12,9 @@ namespace Reapit.Platform.Access.Api.UnitTests.Controllers.Internal.Organisation
 public class OrganisationsControllerTests
 {
     private readonly IMediator _mediator = Substitute.For<IMediator>();
-    private readonly IMapper _mapper = new MapperConfiguration(
-            cfg => cfg.AddProfile(typeof(OrganisationsProfile)))
-        .CreateMapper();
-
-    /*
-     * GetOrganisationById
-     */
-
-    [Fact]
-    public async Task GetOrganisationById_ReturnsOk_WithSimpleOrganisationModel()
-    {
-        const string id = "id";
-        var organisation = new Organisation(id, "name");
-        var expected = _mapper.Map<SimpleOrganisationModel>(organisation);
-
-        _mediator.Send(Arg.Is<GetOrganisationByIdQuery>(query => query.Id == id), Arg.Any<CancellationToken>())
-            .Returns(organisation);
-
-        var sut = CreateSut();
-        var actual = await sut.GetOrganisationById(id) as OkObjectResult;
-        actual.Should().NotBeNull();
-        actual!.StatusCode.Should().Be(200);
-        actual.Value.Should().BeEquivalentTo(expected);
-    }
     
     /*
-     * CreateOrganisation
-     */
-
-    [Fact]
-    public async Task CreateOrganisation_ReturnsCreated_WithSimpleOrganisationModel()
-    {
-        const string id = "id", name = "name";
-        var organisation = new Organisation(id, name);
-        var expected = _mapper.Map<SimpleOrganisationModel>(organisation);
-        
-        _mediator.Send(
-                request: Arg.Is<CreateOrganisationCommand>(command => command.Id == id && command.Name == name), 
-                cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(organisation);
-
-        var sut = CreateSut();
-        var actual = await sut.CreateOrganisation(new CreateOrganisationRequestModel(id, name)) as CreatedAtActionResult;
-        actual.Should().NotBeNull();
-        actual!.StatusCode.Should().Be(201);
-        actual.Value.Should().BeEquivalentTo(expected);
-        
-        // Check the routing
-        actual.ActionName.Should().Be(nameof(OrganisationsController.GetOrganisationById));
-        actual.RouteValues.Should().BeEquivalentTo(new Dictionary<string, string> { { "id", id } });
-    }
-    
-    /*
-     * UpdateOrganisation
+     * SynchroniseOrganisation
      */
     
     [Fact]
@@ -76,16 +23,16 @@ public class OrganisationsControllerTests
         const string id = "id", name = "name";
         var organisation = new Organisation(id, name);
         
-        _mediator.Send(Arg.Any<UpdateOrganisationCommand>(), Arg.Any<CancellationToken>())
+        _mediator.Send(Arg.Any<SynchroniseOrganisationCommand>(), Arg.Any<CancellationToken>())
             .Returns(organisation);
 
         var sut = CreateSut();
-        var actual = await sut.UpdateOrganisation(id, new UpdateOrganisationRequestModel(name)) as NoContentResult;
+        var actual = await sut.SynchroniseOrganisation(id, new SynchroniseOrganisationRequestModel(name)) as NoContentResult;
         actual.Should().NotBeNull();
         actual!.StatusCode.Should().Be(204);
         
         await _mediator.Received(1).Send(
-            request: Arg.Is<UpdateOrganisationCommand>(command => command.Id == id && command.Name == name),
+            request: Arg.Is<SynchroniseOrganisationCommand>(command => command.Id == id && command.Name == name),
             cancellationToken: Arg.Any<CancellationToken>());
     }
     
@@ -155,5 +102,5 @@ public class OrganisationsControllerTests
      */
 
     private OrganisationsController CreateSut()
-        => new(_mapper, _mediator);
+        => new(_mediator);
 }

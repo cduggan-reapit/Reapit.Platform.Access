@@ -36,7 +36,7 @@ public class PatchRoleCommandHandlerTests
         
         ConfigureValidation(true);
 
-        _roleRepository.GetByIdAsync(id, Arg.Any<CancellationToken>())
+        _roleRepository.GetRoleByIdAsync(id, Arg.Any<CancellationToken>())
             .Returns(Task.FromResult<Role?>(null));
 
         var request = GetRequest(id: id);
@@ -52,7 +52,7 @@ public class PatchRoleCommandHandlerTests
         
         ConfigureValidation(true);
 
-        _roleRepository.GetByIdAsync(role.Id, Arg.Any<CancellationToken>())
+        _roleRepository.GetRoleByIdAsync(role.Id, Arg.Any<CancellationToken>())
             .Returns(role);
 
         var request = GetRequest(id: role.Id, name: role.Name, description: role.Description);
@@ -71,7 +71,7 @@ public class PatchRoleCommandHandlerTests
         
         ConfigureValidation(true);
 
-        _roleRepository.GetByIdAsync(role.Id, Arg.Any<CancellationToken>())
+        _roleRepository.GetRoleByIdAsync(role.Id, Arg.Any<CancellationToken>())
             .Returns(role);
 
         var request = GetRequest(id: role.Id, name: "new name", description: null);

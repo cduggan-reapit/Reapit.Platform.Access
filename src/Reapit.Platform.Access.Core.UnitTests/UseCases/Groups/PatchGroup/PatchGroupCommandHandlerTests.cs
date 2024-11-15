@@ -36,7 +36,7 @@ public class PatchGroupCommandHandlerTests
         
         ConfigureValidation(true);
 
-        _groupRepository.GetByIdAsync(id, Arg.Any<CancellationToken>())
+        _groupRepository.GetGroupByIdAsync(id, Arg.Any<CancellationToken>())
             .Returns(Task.FromResult<Group?>(null));
 
         var request = GetRequest(id: id);
@@ -52,7 +52,7 @@ public class PatchGroupCommandHandlerTests
         
         ConfigureValidation(true);
 
-        _groupRepository.GetByIdAsync(group.Id, Arg.Any<CancellationToken>())
+        _groupRepository.GetGroupByIdAsync(group.Id, Arg.Any<CancellationToken>())
             .Returns(group);
 
         var request = GetRequest(id: group.Id, name: group.Name, description: group.Description);
@@ -71,7 +71,7 @@ public class PatchGroupCommandHandlerTests
         
         ConfigureValidation(true);
 
-        _groupRepository.GetByIdAsync(group.Id, Arg.Any<CancellationToken>())
+        _groupRepository.GetGroupByIdAsync(group.Id, Arg.Any<CancellationToken>())
             .Returns(group);
 
         var request = GetRequest(id: group.Id, name: "new name", description: null);

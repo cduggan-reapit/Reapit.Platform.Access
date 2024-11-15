@@ -28,7 +28,7 @@ public class SoftDeleteRoleCommandHandlerTests
     {
         var role = new Role("old name", "old description");
 
-        _roleRepository.GetByIdAsync(role.Id, Arg.Any<CancellationToken>())
+        _roleRepository.GetRoleByIdAsync(role.Id, Arg.Any<CancellationToken>())
             .Returns(role);
         
         var sut = CreateSut();

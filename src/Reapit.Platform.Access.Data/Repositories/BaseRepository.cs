@@ -10,10 +10,6 @@ public abstract class BaseRepository<T>(DbContext context) : IBaseRepository<T>
     where T : EntityBase
 {
     /// <inheritdoc />
-    public virtual async Task<T?> GetByIdAsync(string id, CancellationToken cancellationToken) 
-        => await context.Set<T>().FindAsync(keyValues: [id], cancellationToken: cancellationToken);
-
-    /// <inheritdoc />
     public async Task<T> CreateAsync(T entity, CancellationToken cancellationToken)
     {
         await context.Set<T>().AddAsync(entity, cancellationToken);

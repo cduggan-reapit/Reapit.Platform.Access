@@ -22,7 +22,7 @@ public class RemoveGroupMemberCommandHandlerTests
         const int groupNumber = 7;
         var request = GetRequest(groupNumber);
         
-        _groupRepository.GetByIdAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+        _groupRepository.GetGroupByIdAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult<Group?>(null));
 
         var sut = CreateSut();
@@ -37,7 +37,7 @@ public class RemoveGroupMemberCommandHandlerTests
         var request = GetRequest(groupNumber);
         var group = GetEntity(groupNumber, null);
         
-        _groupRepository.GetByIdAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+        _groupRepository.GetGroupByIdAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(group);
 
         var sut = CreateSut();
@@ -52,7 +52,7 @@ public class RemoveGroupMemberCommandHandlerTests
         var request = GetRequest(groupNumber);
         var group = GetEntity(groupNumber, request.UserId);
         
-        _groupRepository.GetByIdAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+        _groupRepository.GetGroupByIdAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(group);
 
         var sut = CreateSut();

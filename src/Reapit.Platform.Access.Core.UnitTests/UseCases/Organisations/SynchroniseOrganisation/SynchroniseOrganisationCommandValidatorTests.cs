@@ -1,11 +1,11 @@
 ﻿using Reapit.Platform.Access.Core.UnitTests.TestHelpers;
 using Reapit.Platform.Access.Core.UseCases;
 using Reapit.Platform.Access.Core.UseCases.Organisations;
-using Reapit.Platform.Access.Core.UseCases.Organisations.CreateOrganisation;
+using Reapit.Platform.Access.Core.UseCases.Organisations.SynchroniseOrganisation;
 
-namespace Reapit.Platform.Access.Core.UnitTests.UseCases.Organisations.CreateOrganisation;
+namespace Reapit.Platform.Access.Core.UnitTests.UseCases.Organisations.SynchroniseOrganisation;
 
-public class CreateOrganisationCommandValidatorTests
+public class SynchroniseOrganisationCommandValidatorTests
 {
     /*
      * Validate
@@ -30,21 +30,21 @@ public class CreateOrganisationCommandValidatorTests
         var request = GetRequest(id: string.Empty);
         var sut = CreateSut();
         var actual = await sut.ValidateAsync(request);
-        actual.Should().Fail(nameof(CreateOrganisationCommand.Id), CommonValidationMessages.Required);
+        actual.Should().Fail(nameof(SynchroniseOrganisationCommand.Id), CommonValidationMessages.Required);
     }
-    
-    [Fact]
-    public async Task Validate_Fails_WhenIdTooLong()
-    {
-        var request = GetRequest(id: new string('a', 101));
-        var sut = CreateSut();
-        var actual = await sut.ValidateAsync(request);
-        actual.Should().Fail(nameof(CreateOrganisationCommand.Id), OrganisationValidationMessages.IdExceedsMaxLength);
-    }
-    
+
     /*
      * Name
      */
+    
+    [Fact]
+    public async Task Validate_Fails_WhenNameIsEmpty()
+    {
+        var request = GetRequest(name: string.Empty);
+        var sut = CreateSut();
+        var actual = await sut.ValidateAsync(request);
+        actual.Should().Fail(nameof(SynchroniseOrganisationCommand.Name), CommonValidationMessages.Required);
+    }
     
     [Fact]
     public async Task Validate_Fails_WhenNameTooLong()
@@ -52,15 +52,15 @@ public class CreateOrganisationCommandValidatorTests
         var request = GetRequest(name: new string('b', 101));
         var sut = CreateSut();
         var actual = await sut.ValidateAsync(request);
-        actual.Should().Fail(nameof(CreateOrganisationCommand.Name), OrganisationValidationMessages.NameExceedsMaxLength);
+        actual.Should().Fail(nameof(SynchroniseOrganisationCommand.Name), OrganisationValidationMessages.NameExceedsMaxLength);
     }
     
     /*
      * Private methods
      */
 
-    private static CreateOrganisationCommandValidator CreateSut() => new();
+    private static SynchroniseOrganisationCommandValidator CreateSut() => new();
 
-    private static CreateOrganisationCommand GetRequest(string id = "valid-id", string name = "valid-name")
+    private static SynchroniseOrganisationCommand GetRequest(string id = "valid-id", string name = "valid-name")
         => new(id, name);
 }

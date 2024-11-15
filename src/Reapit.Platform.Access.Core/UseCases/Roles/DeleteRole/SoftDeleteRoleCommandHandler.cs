@@ -13,7 +13,7 @@ public class SoftDeleteRoleCommandHandler(IUnitOfWork unitOfWork, ILogger<SoftDe
     /// <inheritdoc />
     public async Task<Role> Handle(SoftDeleteRoleCommand request, CancellationToken cancellationToken)
     {
-        var role = await unitOfWork.Roles.GetByIdAsync(request.Id, cancellationToken)
+        var role = await unitOfWork.Roles.GetRoleByIdAsync(request.Id, cancellationToken)
                     ?? throw new NotFoundException(typeof(Group), request.Id);
         
         role.SoftDelete();

@@ -13,7 +13,7 @@ public class SoftDeleteGroupCommandHandler(IUnitOfWork unitOfWork, ILogger<SoftD
     /// <inheritdoc />
     public async Task<Group> Handle(SoftDeleteGroupCommand request, CancellationToken cancellationToken)
     {
-        var group = await unitOfWork.Groups.GetByIdAsync(request.Id, cancellationToken)
+        var group = await unitOfWork.Groups.GetGroupByIdAsync(request.Id, cancellationToken)
                     ?? throw new NotFoundException(typeof(Group), request.Id);
         
         group.SoftDelete();

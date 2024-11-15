@@ -36,7 +36,7 @@ public class PatchRoleCommandValidator : AbstractValidator<PatchRoleCommand>
     private async Task<bool> IsNameUnique(PatchRoleCommand command, CancellationToken cancellationToken)
     {
         // If the role doesn't exist, return true. Validation should pass and allow the handler to throw NotFound.
-        var subject = await _unitOfWork.Roles.GetByIdAsync(command.Id, cancellationToken);
+        var subject = await _unitOfWork.Roles.GetRoleByIdAsync(command.Id, cancellationToken);
         if (subject is null)
             return true;
 

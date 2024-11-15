@@ -178,7 +178,7 @@ public class GroupRepositoryTests : DatabaseAwareTestBase
         await using var context = await GetContextAsync();
         await PlantSeedDataAsync(context);
         var sut = CreateSut(context);
-        var actual = await sut.GetByIdAsync("does not exist", default);
+        var actual = await sut.GetGroupByIdAsync("does not exist", default);
         actual.Should().BeNull();
     }
     
@@ -190,7 +190,7 @@ public class GroupRepositoryTests : DatabaseAwareTestBase
         await using var context = await GetContextAsync();
         await PlantSeedDataAsync(context);
         var sut = CreateSut(context);
-        var actual = await sut.GetByIdAsync(id, default);
+        var actual = await sut.GetGroupByIdAsync(id, default);
         actual.Should().NotBeNull()
             .And.Match((Group group) => group.Id == id);
     }

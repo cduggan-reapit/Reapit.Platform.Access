@@ -37,7 +37,7 @@ public class PatchGroupValidatorTests
         var group = new Group("same name", "old description", "organisation-id");
         
         // The group is found, the name is different, and it doesn't call GetGroups because it's unchanged.
-        _groupRepository.GetByIdAsync(command.Id, Arg.Any<CancellationToken>())
+        _groupRepository.GetGroupByIdAsync(command.Id, Arg.Any<CancellationToken>())
             .Returns(group);
 
         _groupRepository.GetGroupsAsync(
@@ -79,7 +79,7 @@ public class PatchGroupValidatorTests
         var group = new Group("old name", "old description", "organisation-id");
         
         // The group is found, the name is different, and nothing else exists with the same name.
-        _groupRepository.GetByIdAsync(command.Id, Arg.Any<CancellationToken>())
+        _groupRepository.GetGroupByIdAsync(command.Id, Arg.Any<CancellationToken>())
             .Returns(group);
 
         _groupRepository.GetGroupsAsync(
@@ -121,7 +121,7 @@ public class PatchGroupValidatorTests
         var group = new Group("old name", "old description", "organisation-id");
         
         // The group is found, the name is different, and something else exists with the same name.
-        _groupRepository.GetByIdAsync(command.Id, Arg.Any<CancellationToken>())
+        _groupRepository.GetGroupByIdAsync(command.Id, Arg.Any<CancellationToken>())
             .Returns(group);
 
         _groupRepository.GetGroupsAsync(

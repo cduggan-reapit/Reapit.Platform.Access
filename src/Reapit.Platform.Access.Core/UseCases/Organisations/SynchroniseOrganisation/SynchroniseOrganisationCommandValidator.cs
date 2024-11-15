@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
 
-namespace Reapit.Platform.Access.Core.UseCases.Organisations.UpdateOrganisation;
+namespace Reapit.Platform.Access.Core.UseCases.Organisations.SynchroniseOrganisation;
 
-/// <summary>Validator for the <see cref="UpdateOrganisationCommand"/> type.</summary>
-public class UpdateOrganisationCommandValidator : AbstractValidator<UpdateOrganisationCommand>
+/// <summary>Validator for the <see cref="SynchroniseOrganisationCommand"/> type.</summary>
+public class SynchroniseOrganisationCommandValidator : AbstractValidator<SynchroniseOrganisationCommand>
 {
     /*
      * | Property | Constraints    |
@@ -12,8 +12,8 @@ public class UpdateOrganisationCommandValidator : AbstractValidator<UpdateOrgani
      * | Name     | MaxLength(100) |
     */
 
-    /// <summary>Initializes a new instance of the <see cref="UpdateOrganisationCommandValidator"/> class.</summary>
-    public UpdateOrganisationCommandValidator()
+    /// <summary>Initializes a new instance of the <see cref="SynchroniseOrganisationCommandValidator"/> class.</summary>
+    public SynchroniseOrganisationCommandValidator()
     {
         RuleFor(request => request.Id)
             .NotEmpty()

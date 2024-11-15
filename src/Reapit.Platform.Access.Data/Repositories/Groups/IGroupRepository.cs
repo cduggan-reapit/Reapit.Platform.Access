@@ -31,4 +31,9 @@ public interface IGroupRepository : IBaseRepository<Group>
         DateTime? modifiedFrom = null,
         DateTime? modifiedTo = null,
         CancellationToken cancellationToken = default);
+    
+    /// <summary>Get a group by its unique identifier.</summary>
+    /// <param name="id">The unique identifier of the entity.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    public Task<Group?> GetGroupByIdAsync(string id, CancellationToken cancellationToken);
 }

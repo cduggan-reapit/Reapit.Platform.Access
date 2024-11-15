@@ -17,7 +17,7 @@ namespace Reapit.Platform.Access.Api.Controllers.Internal.Users.V1;
 [SwaggerResponseExample(400, typeof(ApiVersionProblemDetailsExample))]
 public class UsersController(ISender mediator) : InternalApiController
 {
-    /// <summary>Delete a user from the user collection.</summary>
+    /// <summary>Delete a user.</summary>
     /// <param name="id">the unique identifier of the user.</param>
     /// <remarks>Not advertised in Swagger.</remarks>
     [HttpDelete("{id}")]
@@ -31,7 +31,7 @@ public class UsersController(ISender mediator) : InternalApiController
         return NoContent();
     }
     
-    /// <summary>Upsert a user in the user collection.</summary>
+    /// <summary>Upsert a user.</summary>
     /// <param name="id">The unique identifier of the user.</param>
     /// <param name="model">The notification user model.</param>
     /// <remarks>Not advertised in Swagger.</remarks>

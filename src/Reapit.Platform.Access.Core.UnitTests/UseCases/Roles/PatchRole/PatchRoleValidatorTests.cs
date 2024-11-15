@@ -38,7 +38,7 @@ public class PatchRoleValidatorTests
         var role = new Role("same name", "old description");
         
         // The role is found, the name is different, and it doesn't call GetRoles because it's unchanged.
-        _roleRepository.GetByIdAsync(command.Id, Arg.Any<CancellationToken>())
+        _roleRepository.GetRoleByIdAsync(command.Id, Arg.Any<CancellationToken>())
             .Returns(role);
 
         _roleRepository.GetRolesAsync(
@@ -70,7 +70,7 @@ public class PatchRoleValidatorTests
         var role = new Role("old name", "old description");
         
         // The role is found, the name is different, and nothing else exists with the same name.
-        _roleRepository.GetByIdAsync(command.Id, Arg.Any<CancellationToken>())
+        _roleRepository.GetRoleByIdAsync(command.Id, Arg.Any<CancellationToken>())
             .Returns(role);
 
         _roleRepository.GetRolesAsync(
@@ -107,7 +107,7 @@ public class PatchRoleValidatorTests
         var role = new Role("old name", "old description");
         
         // The role is found, the name is different, and something else exists with the same name.
-        _roleRepository.GetByIdAsync(command.Id, Arg.Any<CancellationToken>())
+        _roleRepository.GetRoleByIdAsync(command.Id, Arg.Any<CancellationToken>())
             .Returns(role);
 
         _roleRepository.GetRolesAsync(

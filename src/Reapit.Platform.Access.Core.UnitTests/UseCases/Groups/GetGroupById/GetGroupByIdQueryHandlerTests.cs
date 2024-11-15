@@ -18,7 +18,7 @@ public class GetGroupByIdQueryHandlerTests
     public async Task Handle_ThrowsNotFound_WhenRepositoryReturnsNull()
     {
         const string id = "test-id";
-        _groupRepository.GetByIdAsync(id, Arg.Any<CancellationToken>())
+        _groupRepository.GetGroupByIdAsync(id, Arg.Any<CancellationToken>())
             .Returns(Task.FromResult<Group?>(null));
 
         var request = GetRequest(id);
@@ -32,7 +32,7 @@ public class GetGroupByIdQueryHandlerTests
     {
         const string id = "test-id";
         var group = new Group("name", "description", "organisation-id");
-        _groupRepository.GetByIdAsync(id, Arg.Any<CancellationToken>())
+        _groupRepository.GetGroupByIdAsync(id, Arg.Any<CancellationToken>())
             .Returns(group);
 
         var request = GetRequest(id);

@@ -22,7 +22,7 @@ public class AddUserRoleCommandHandlerTests
     [Fact]
     public async Task Handle_ThrowsNotFound_WhenRoleNotFound()
     {
-        _roleRepository.GetByIdAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+        _roleRepository.GetRoleByIdAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult<Role?>(null));
 
         var request = GetRequest();
@@ -38,7 +38,7 @@ public class AddUserRoleCommandHandlerTests
         var role = new Role("name", "description");
         role.AddUser(new User(request.UserId, "name", "email"));
         
-        _roleRepository.GetByIdAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+        _roleRepository.GetRoleByIdAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(role);
         
         var sut = CreateSut();
@@ -52,7 +52,7 @@ public class AddUserRoleCommandHandlerTests
         var request = GetRequest();
         var role = new Role("name", "description");
         
-        _roleRepository.GetByIdAsync(request.RoleId, Arg.Any<CancellationToken>())
+        _roleRepository.GetRoleByIdAsync(request.RoleId, Arg.Any<CancellationToken>())
             .Returns(role);
 
         _userRepository.GetUserByIdAsync(request.UserId, Arg.Any<CancellationToken>())
@@ -69,7 +69,7 @@ public class AddUserRoleCommandHandlerTests
         var request = GetRequest();
         var role = new Role("name", "description");
         
-        _roleRepository.GetByIdAsync(request.RoleId, Arg.Any<CancellationToken>())
+        _roleRepository.GetRoleByIdAsync(request.RoleId, Arg.Any<CancellationToken>())
             .Returns(role);
 
         _userRepository.GetUserByIdAsync(request.UserId, Arg.Any<CancellationToken>())

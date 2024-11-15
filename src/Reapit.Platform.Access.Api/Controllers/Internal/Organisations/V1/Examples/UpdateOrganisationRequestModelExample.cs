@@ -4,11 +4,11 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace Reapit.Platform.Access.Api.Controllers.Internal.Organisations.V1.Examples;
 
-/// <summary>Example provider for the <see cref="UpdateOrganisationRequestModel"/> type.</summary>
+/// <summary>Example provider for the <see cref="SynchroniseOrganisationRequestModel"/> type.</summary>
 [ExcludeFromCodeCoverage]
-public class UpdateOrganisationRequestModelExample : IExamplesProvider<UpdateOrganisationRequestModel>
+public class UpdateOrganisationRequestModelExample : IExamplesProvider<SynchroniseOrganisationRequestModel>
 {
     /// <inheritdoc />
-    public UpdateOrganisationRequestModel GetExamples()
+    public SynchroniseOrganisationRequestModel GetExamples()
         => new("Reapit");
 }

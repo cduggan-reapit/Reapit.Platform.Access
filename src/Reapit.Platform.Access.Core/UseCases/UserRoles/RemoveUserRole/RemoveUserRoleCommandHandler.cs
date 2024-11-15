@@ -14,7 +14,7 @@ public class RemoveUserRoleCommandHandler(IUnitOfWork unitOfWork, ILogger<Remove
     public async Task Handle(RemoveUserRoleCommand request, CancellationToken cancellationToken)
     {
         // Get Role (there'll be fewer roles than users so this _should_ be marginally cheaper)
-        var role = await unitOfWork.Roles.GetByIdAsync(request.RoleId, cancellationToken)
+        var role = await unitOfWork.Roles.GetRoleByIdAsync(request.RoleId, cancellationToken)
                     ?? throw new NotFoundException(typeof(Role), request.RoleId);
         
         // If the user's not in the role, throw not found

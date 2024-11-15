@@ -16,7 +16,7 @@ public class AddUserRoleCommandHandler(IUnitOfWork unitOfWork, ILogger<AddUserRo
     public async Task Handle(AddUserRoleCommand request, CancellationToken cancellationToken)
     {
         // Get Role (there'll be fewer roles than users so this _should_ be marginally cheaper)
-        var role = await unitOfWork.Roles.GetByIdAsync(request.RoleId, cancellationToken)
+        var role = await unitOfWork.Roles.GetRoleByIdAsync(request.RoleId, cancellationToken)
                     ?? throw new NotFoundException(typeof(Role), request.RoleId);
         
         // If the user's already in the role, throw conflict

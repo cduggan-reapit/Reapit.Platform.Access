@@ -23,7 +23,7 @@ public class AddGroupMemberCommandHandlerTests
     [Fact]
     public async Task Handle_ThrowsNotFound_WhenGroupNotFound()
     {
-        _groupRepository.GetByIdAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+        _groupRepository.GetGroupByIdAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult<Group?>(null));
 
         var request = GetRequest();
@@ -39,7 +39,7 @@ public class AddGroupMemberCommandHandlerTests
         var group = new Group("name", "description", "organisation");
         group.AddUser(new User(request.UserId, "name", "email"));
         
-        _groupRepository.GetByIdAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+        _groupRepository.GetGroupByIdAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(group);
         
         var sut = CreateSut();
@@ -53,7 +53,7 @@ public class AddGroupMemberCommandHandlerTests
         var request = GetRequest();
         var group = new Group("name", "description", "organisation");
         
-        _groupRepository.GetByIdAsync(request.GroupId, Arg.Any<CancellationToken>())
+        _groupRepository.GetGroupByIdAsync(request.GroupId, Arg.Any<CancellationToken>())
             .Returns(group);
 
         _userRepository.GetUserByIdAsync(request.UserId, Arg.Any<CancellationToken>())
@@ -70,7 +70,7 @@ public class AddGroupMemberCommandHandlerTests
         var request = GetRequest();
         var group = new Group("name", "description", "same-organisation");
         
-        _groupRepository.GetByIdAsync(request.GroupId, Arg.Any<CancellationToken>())
+        _groupRepository.GetGroupByIdAsync(request.GroupId, Arg.Any<CancellationToken>())
             .Returns(group);
 
         _userRepository.GetUserByIdAsync(request.UserId, Arg.Any<CancellationToken>())
@@ -94,7 +94,7 @@ public class AddGroupMemberCommandHandlerTests
         var request = GetRequest();
         var group = new Group("name", "description", "same-organisation");
         
-        _groupRepository.GetByIdAsync(request.GroupId, Arg.Any<CancellationToken>())
+        _groupRepository.GetGroupByIdAsync(request.GroupId, Arg.Any<CancellationToken>())
             .Returns(group);
 
         _userRepository.GetUserByIdAsync(request.UserId, Arg.Any<CancellationToken>())

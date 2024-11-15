@@ -165,7 +165,7 @@ public class RoleRepositoryTests : DatabaseAwareTestBase
         await using var context = await GetContextAsync();
         await PlantSeedDataAsync(context);
         var sut = CreateSut(context);
-        var actual = await sut.GetByIdAsync("does not exist", default);
+        var actual = await sut.GetRoleByIdAsync("does not exist", default);
         actual.Should().BeNull();
     }
     
@@ -177,7 +177,7 @@ public class RoleRepositoryTests : DatabaseAwareTestBase
         await using var context = await GetContextAsync();
         await PlantSeedDataAsync(context);
         var sut = CreateSut(context);
-        var actual = await sut.GetByIdAsync(id, default);
+        var actual = await sut.GetRoleByIdAsync(id, default);
         actual.Should().NotBeNull()
             .And.Match((Role role) => role.Id == id);
     }

@@ -29,7 +29,7 @@ public class RoleRepository(AccessDbContext context) : BaseRepository<Role>(cont
             .ToListAsync(cancellationToken);
 
     /// <inheritdoc />
-    public override async Task<Role?> GetByIdAsync(string id, CancellationToken cancellationToken)
+    public async Task<Role?> GetRoleByIdAsync(string id, CancellationToken cancellationToken)
         => await context.Roles
             .Include(role => role.Users)
             .SingleOrDefaultAsync(role => role.Id  == id, cancellationToken);

@@ -18,7 +18,7 @@ public class GetRoleByIdQueryHandlerTests
     public async Task Handle_ThrowsNotFound_WhenRepositoryReturnsNull()
     {
         const string id = "test-id";
-        _roleRepository.GetByIdAsync(id, Arg.Any<CancellationToken>())
+        _roleRepository.GetRoleByIdAsync(id, Arg.Any<CancellationToken>())
             .Returns(Task.FromResult<Role?>(null));
 
         var request = GetRequest(id);
@@ -32,7 +32,7 @@ public class GetRoleByIdQueryHandlerTests
     {
         const string id = "test-id";
         var role = new Role("name", "description");
-        _roleRepository.GetByIdAsync(id, Arg.Any<CancellationToken>())
+        _roleRepository.GetRoleByIdAsync(id, Arg.Any<CancellationToken>())
             .Returns(role);
 
         var request = GetRequest(id);

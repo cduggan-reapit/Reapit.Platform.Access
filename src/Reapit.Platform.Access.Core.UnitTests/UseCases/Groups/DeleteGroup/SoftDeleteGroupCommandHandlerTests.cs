@@ -28,7 +28,7 @@ public class SoftDeleteGroupCommandHandlerTests
     {
         var group = new Group("old name", "old description", "organisation-id");
 
-        _groupRepository.GetByIdAsync(group.Id, Arg.Any<CancellationToken>())
+        _groupRepository.GetGroupByIdAsync(group.Id, Arg.Any<CancellationToken>())
             .Returns(group);
         
         var sut = CreateSut();

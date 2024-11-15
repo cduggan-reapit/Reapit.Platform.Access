@@ -22,7 +22,7 @@ public class RemoveUserRoleCommandHandlerTests
         const int roleNumber = 7;
         var request = GetRequest(roleNumber);
         
-        _roleRepository.GetByIdAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+        _roleRepository.GetRoleByIdAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult<Role?>(null));
 
         var sut = CreateSut();
@@ -37,7 +37,7 @@ public class RemoveUserRoleCommandHandlerTests
         var request = GetRequest(roleNumber);
         var role = GetEntity(roleNumber, null);
         
-        _roleRepository.GetByIdAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+        _roleRepository.GetRoleByIdAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(role);
 
         var sut = CreateSut();
@@ -52,7 +52,7 @@ public class RemoveUserRoleCommandHandlerTests
         var request = GetRequest(roleNumber);
         var role = GetEntity(roleNumber, request.UserId);
         
-        _roleRepository.GetByIdAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+        _roleRepository.GetRoleByIdAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(role);
 
         var sut = CreateSut();

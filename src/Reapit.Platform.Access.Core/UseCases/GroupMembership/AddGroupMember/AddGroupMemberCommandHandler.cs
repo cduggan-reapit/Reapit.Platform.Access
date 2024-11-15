@@ -18,7 +18,7 @@ public class AddGroupMemberCommandHandler(IUnitOfWork unitOfWork, ILogger<AddGro
     public async Task Handle(AddGroupMemberCommand request, CancellationToken cancellationToken)
     {
         // Get Group (there'll be fewer groups than users so this _should_ be marginally cheaper)
-        var group = await unitOfWork.Groups.GetByIdAsync(request.GroupId, cancellationToken)
+        var group = await unitOfWork.Groups.GetGroupByIdAsync(request.GroupId, cancellationToken)
                     ?? throw new NotFoundException(typeof(Group), request.GroupId);
         
         // If the user's already in the group, throw conflict

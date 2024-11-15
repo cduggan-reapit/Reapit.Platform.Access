@@ -20,4 +20,9 @@ public interface IRoleRepository : IBaseRepository<Role>
         PaginationFilter? pagination = null,
         TimestampFilter? dateFilter = null,
         CancellationToken cancellationToken = default);
+    
+    /// <summary>Get a role by its unique identifier.</summary>
+    /// <param name="id">The unique identifier of the entity.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    public Task<Role?> GetRoleByIdAsync(string id, CancellationToken cancellationToken);
 }

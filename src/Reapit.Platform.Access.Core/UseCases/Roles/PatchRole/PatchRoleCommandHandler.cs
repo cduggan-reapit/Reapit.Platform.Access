@@ -34,7 +34,7 @@ public class PatchRoleCommandHandler : IRequestHandler<PatchRoleCommand, Role>
         if (!validation.IsValid)
             throw new ValidationException(validation.Errors);
 
-        var entity = await _unitOfWork.Roles.GetByIdAsync(request.Id, cancellationToken)
+        var entity = await _unitOfWork.Roles.GetRoleByIdAsync(request.Id, cancellationToken)
             ?? throw new NotFoundException(nameof(Role), request.Id);
         
         // Update the role and return early if there are no changes to apply...

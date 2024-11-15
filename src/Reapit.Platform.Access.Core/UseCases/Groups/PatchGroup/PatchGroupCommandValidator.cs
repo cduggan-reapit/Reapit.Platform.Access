@@ -35,7 +35,7 @@ public class PatchGroupCommandValidator : AbstractValidator<PatchGroupCommand>
     private async Task<bool> IsNameUnique(PatchGroupCommand command, CancellationToken cancellationToken)
     {
         // If the group doesn't exist, return true. Validation should pass and allow the handler to throw NotFound.
-        var subject = await _unitOfWork.Groups.GetByIdAsync(command.Id, cancellationToken);
+        var subject = await _unitOfWork.Groups.GetGroupByIdAsync(command.Id, cancellationToken);
         if (subject is null)
             return true;
 
