@@ -46,7 +46,11 @@ public abstract class EntityBase
         
         // If current is null and updated is not null, return updated.
         if (current == null)
+        {
+            IsDirty = true;
+            SetDateModified();
             return updated;
+        }
         
         // Return current if both have values and the values are equal.
         if (current.Equals(updated))

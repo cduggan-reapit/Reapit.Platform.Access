@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Reapit.Platform.Access.Api.Controllers.Roles.V1.Models;
 using Reapit.Platform.Access.Api.Controllers.Shared;
+using Reapit.Platform.Access.Core.UseCases.Roles.GetRoles;
 using Reapit.Platform.Access.Domain.Entities;
 
 namespace Reapit.Platform.Access.Api.Controllers.Roles.V1;
@@ -23,6 +24,18 @@ public class RolesProfile : Profile
             .ForCtorParam(nameof(ResultPage<RoleModel>.Data), ops => ops.MapFrom(collection => collection))
             .ForCtorParam(nameof(ResultPage<RoleModel>.Count), ops => ops.MapFrom(collection => collection.Count()))
             .ForCtorParam(nameof(ResultPage<RoleModel>.Cursor), ops => ops.MapFrom(collection => GetCursor(ref collection)));
+        
+        // GetRolesRequestModel => GetRolesQuery
+        CreateMap<GetRolesRequestModel, GetRolesQuery>()
+            .ForCtorParam(nameof(GetRolesQuery.Cursor), ops => ops.MapFrom(request => request.Cursor))
+            .ForCtorParam(nameof(GetRolesQuery.PageSize), ops => ops.MapFrom(request => request.PageSize))
+            .ForCtorParam(nameof(GetRolesQuery.UserId), ops => ops.MapFrom(request => request.UserId))
+            .ForCtorParam(nameof(GetRolesQuery.Name), ops => ops.MapFrom(request => request.Name))
+            .ForCtorParam(nameof(GetRolesQuery.Description), ops => ops.MapFrom(request => request.Description))
+            .ForCtorParam(nameof(GetRolesQuery.CreatedFrom), ops => ops.MapFrom(request => request.CreatedFrom))
+            .ForCtorParam(nameof(GetRolesQuery.CreatedTo), ops => ops.MapFrom(request => request.CreatedTo))
+            .ForCtorParam(nameof(GetRolesQuery.ModifiedFrom), ops => ops.MapFrom(request => request.ModifiedFrom))
+            .ForCtorParam(nameof(GetRolesQuery.ModifiedTo), ops => ops.MapFrom(request => request.ModifiedTo));
     }
 
     /// <summary>Gets the maximum cursor value from a collection of objects.</summary>

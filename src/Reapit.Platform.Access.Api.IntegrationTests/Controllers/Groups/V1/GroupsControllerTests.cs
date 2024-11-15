@@ -331,19 +331,62 @@ public class GroupsControllerTests(TestApiFactory apiFactory) : ApiIntegrationTe
     }
       
     /*
-    /// <summary>Remove a user from a group.</summary>
-    /// <param name="id">The unique identifier of the group.</param>
-    /// <param name="userId">The unique identifier of the user.</param>
-    [HttpDelete("{id}/members/{userId}")]
-    [ProducesResponseType(204)]
-    [ProducesResponseType<ProblemDetails>(404)]
-    [SwaggerResponseExample(404, typeof(NotFoundProblemDetailsExample))]
-    public async Task<IActionResult> RemoveMember([FromRoute] string id, [FromRoute] string userId)
+     * DELETE /api/groups/{id}/members/{userId}
+     */
+    
+    [Fact]
+    public async Task RemoveMember_ReturnsNoContent_WhenRemovedFromGroup()
     {
-        var request = new RemoveGroupMemberCommand(GroupId: id, UserId: userId);
-        await mediator.Send(request);
-        return NoContent();
-    }*/
+        await InitializeDatabaseAsync();
+        
+        var user = SeedUsers[0];
+        
+        const int id = 6;
+        var url = $"/api/groups/{id:D32}/members/{user.Id}";
+
+        // Add the user to the group (confirm it worked)
+        var setup = await SendRequestAsync(HttpMethod.Post, url);
+        setup.Should().HaveStatusCode(HttpStatusCode.NoContent);
+        
+        // Remove the user from the group (this is the test!)
+        var response = await SendRequestAsync(HttpMethod.Delete, url);
+        response.Should().HaveStatusCode(HttpStatusCode.NoContent);
+    }
+    
+    [Fact]
+    public async Task RemoveMember_ReturnsBadRequest_WhenApiVersionNotProvided()
+    {
+        var response = await SendRequestAsync(HttpMethod.Delete, "/api/groups/any/members/any", null);
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnspecifiedApiVersion);
+    }
+    
+    [Fact]
+    public async Task RemoveMember_ReturnsBadRequest_WhenEndpointNotAvailableInVersion()
+    {
+        var response = await SendRequestAsync(HttpMethod.Delete, "/api/groups/any/members/any", "0.9");
+        await response.Should().HaveStatusCode(HttpStatusCode.BadRequest).And.BeProblemDescriptionAsync(ProblemDetailsTypes.UnsupportedApiVersion);
+    }
+    
+    [Fact]
+    public async Task RemoveMember_ReturnsNotFound_WhenGroupNotExists()
+    {
+        await InitializeDatabaseAsync();
+        const string url = "/api/groups/missing/members/user-00";
+        var response = await SendRequestAsync(HttpMethod.Delete, url);
+        await response.Should().HaveStatusCode(HttpStatusCode.NotFound)
+            .And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound);
+    }
+    
+    [Fact]
+    public async Task RemoveMember_ReturnsNotFound_WhenUserNotAssignedToGroup()
+    {
+        await InitializeDatabaseAsync();
+        const int id = 6;
+        var url = $"/api/groups/{id:D32}/members/user-99";
+        var response = await SendRequestAsync(HttpMethod.Delete, url);
+        await response.Should().HaveStatusCode(HttpStatusCode.NotFound)
+            .And.BeProblemDescriptionAsync(ProblemDetailsTypes.ResourceNotFound);
+    }
     
     /*
      * Private methods

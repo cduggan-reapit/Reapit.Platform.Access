@@ -62,7 +62,7 @@ public class RoleTests
         sut.IsDirty.Should().BeFalse();
         sut.DateModified.Should().Be(sut.DateCreated);
     }
-    
+
     [Fact]
     public void Update_UpdatesEntity_WhenValuesChanged()
     {
@@ -72,6 +72,16 @@ public class RoleTests
         sut.IsDirty.Should().BeTrue();
         sut.DateModified.Should().NotBe(sut.DateCreated);
     }
+
+    [Fact]
+    public void Update_UpdatesEntity_WhenCurrentValueNull()
+    {
+        var sut = new Role("name", null);
+        sut.Update(null, "description");
+
+        sut.IsDirty.Should().BeTrue();
+        sut.DateModified.Should().NotBe(sut.DateCreated);
+    }   
     
     /*
      * AddUser

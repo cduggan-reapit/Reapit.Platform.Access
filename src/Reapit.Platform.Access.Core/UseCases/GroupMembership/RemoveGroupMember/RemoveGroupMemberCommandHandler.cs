@@ -27,6 +27,6 @@ public class RemoveGroupMemberCommandHandler(IUnitOfWork unitOfWork, ILogger<Rem
         _ = await unitOfWork.Groups.UpdateAsync(group, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        logger.LogInformation("User {userId} added to group {groupId}", request.UserId, request.GroupId);
+        logger.LogInformation("User {userId} removed from group {groupId}", request.UserId, request.GroupId);
     }
 }

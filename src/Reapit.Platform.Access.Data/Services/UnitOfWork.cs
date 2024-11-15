@@ -37,7 +37,7 @@ public class UnitOfWork : IUnitOfWork
     /// <inheritdoc/>
     public IRoleRepository Roles
         => _roleRepository ??= new RoleRepository(_context);
-    
+
     /// <inheritdoc />
     public async Task SaveChangesAsync(CancellationToken cancellationToken)
         => await _context.SaveChangesAsync(cancellationToken);
