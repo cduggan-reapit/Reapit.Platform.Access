@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Reapit.Platform.Access.Data.Context;
-using Reapit.Platform.Common.Providers.Temporal;
 
 namespace Reapit.Platform.Access.Api.IntegrationTests;
 

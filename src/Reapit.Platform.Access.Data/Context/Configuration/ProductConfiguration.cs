@@ -15,6 +15,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
     {
         builder.ConfigureEntityBase()
             .ToTable("products");
+
+        builder.HasIndex(entity => new { entity.Name, entity.DateDeleted })
+            .IsUnique();
         
         builder.Property(entity => entity.Name)
             .HasColumnName("name")

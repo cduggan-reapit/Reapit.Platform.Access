@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
-using MediatR.Wrappers;
 using Reapit.Platform.Access.Core.Exceptions;
 using Reapit.Platform.Access.Core.UseCases.Roles.GetRoles;
 using Reapit.Platform.Access.Data.Repositories;

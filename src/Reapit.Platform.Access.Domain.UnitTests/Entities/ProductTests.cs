@@ -6,14 +6,14 @@ using Reapit.Platform.Common.Providers.Temporal;
 
 namespace Reapit.Platform.Access.Domain.UnitTests.Entities;
 
-public class RoleTests
+public class ProductTests
 {
     /*
      * Ctor
      */
 
     [Fact]
-    public void Ctor_SetsProperties_WhenInitializingInstance()
+    public void Ctor_SetsProperties_WhenInitializing()
     {
         var fixedId = Guid.NewGuid();
         var fixedDate = new DateTimeOffset(2024, 11, 13, 13, 40, 11, TimeSpan.FromHours(1));
@@ -22,15 +22,13 @@ public class RoleTests
         using var timeContext = new DateTimeOffsetProviderContext(fixedDate);
         
         const string name = "this is the name";
-        const string description = "this is the description";
         
         var expectedEpochTime = (long)(fixedDate - DateTimeOffset.UnixEpoch).TotalMicroseconds;
 
-        var sut = new Role(name, description);
+        var sut = new Product(name);
 
         // Explicit
         sut.Name.Should().Be(name);
-        sut.Description.Should().Be(description);
         
         // Implicit
         sut.Id.Should().Be($"{fixedId:N}");
@@ -46,8 +44,8 @@ public class RoleTests
     [Fact]
     public void Update_DoesNotUpdateEntity_WhenParametersNull()
     {
-        var sut = new Role("name", "description");
-        sut.Update(null, null);
+        var sut = new Product("name");
+        sut.Update(null);
 
         sut.IsDirty.Should().BeFalse();
         sut.DateModified.Should().Be(sut.DateCreated);
@@ -56,8 +54,8 @@ public class RoleTests
     [Fact]
     public void Update_DoesNotUpdateEntity_WhenValuesUnchanged()
     {
-        var sut = new Role("name", "description");
-        sut.Update(sut.Name, sut.Description);
+        var sut = new Product("name");
+        sut.Update(sut.Name);
 
         sut.IsDirty.Should().BeFalse();
         sut.DateModified.Should().Be(sut.DateCreated);
@@ -66,53 +64,26 @@ public class RoleTests
     [Fact]
     public void Update_UpdatesEntity_WhenValuesChanged()
     {
-        var sut = new Role("name", "description");
-        sut.Update("new name", sut.Description);
+        var sut = new Product("name");
+        sut.Update("new name");
 
         sut.IsDirty.Should().BeTrue();
         sut.DateModified.Should().NotBe(sut.DateCreated);
     }
-
-    [Fact]
-    public void Update_UpdatesEntity_WhenCurrentValueNull()
-    {
-        var sut = new Role("name", null);
-        sut.Update(null, "description");
-
-        sut.IsDirty.Should().BeTrue();
-        sut.DateModified.Should().NotBe(sut.DateCreated);
-    }   
     
     /*
      * AddUser
      */
 
     [Fact]
-    public void AddUser_AddsUserToCollection()
+    public void AddInstance_AddsInstanceToCollection()
     {
-        var user = new User("user-id", "user-name", "user-email");
-        var sut = new Role("name", "description");
-        sut.AddUser(user);
-        sut.Users.Should().BeEquivalentTo([user]);
+        var instance = new Instance("name", "productId", "organisationId");
+        var sut = new Product("name");
+        sut.AddInstance(instance);
+        sut.Instances.Should().BeEquivalentTo([instance]);
     }
-    
-    /*
-     * RemoveUser
-     */
-    
-    [Fact]
-    public void RemoveUser_RemovesUserFromCollection()
-    {
-        var user = new User("user-id", "user-name", "user-email");
-        var sut = new Role("name", "description")
-        {
-            Users = [user]
-        };
-        
-        sut.RemoveUser(user);
-        sut.Users.Should().BeEmpty();
-    }
-    
+   
     /*
      * SoftDelete
      */
@@ -121,7 +92,7 @@ public class RoleTests
     public void SoftDelete_SetsDateDeleted_WhenCalled()
     {
         using var timeFixture = new DateTimeOffsetProviderContext(DateTimeOffset.UnixEpoch);
-        var sut = new Role( "name", "description");
+        var sut = new Product( "name");
         sut.DateDeleted.Should().BeNull();
         
         var fixedDate = new DateTimeOffset(2024, 10, 18, 15, 12, 17, TimeSpan.FromHours(1));
@@ -137,14 +108,14 @@ public class RoleTests
      */
 
     [Fact]
-    public void AsSerializable_ReturnsAnonymousObject_ForRole()
+    public void AsSerializable_ReturnsAnonymousObject_ForProduct()
     {
         const string name = "name";
         
-        var role = new Role(name, null);
-        var expected = new { role.Id, role.Name, role.DateCreated, role.DateModified };
+        var entity = new Product(name);
+        var expected = new { entity.Id, entity.Name, entity.DateCreated, entity.DateModified };
         
-        var actual = role.AsSerializable();
+        var actual = entity.AsSerializable();
         actual.Should().BeEquivalentTo(expected);
     }
     
@@ -155,7 +126,7 @@ public class RoleTests
     [Fact]
     public void ToString_ReturnsSerializedObject_ForEntity()
     {
-        var entity = new Role("name", null);
+        var entity = new Product("name");
         var expected = JsonSerializer.Serialize(entity.AsSerializable());
         var actual = entity.ToString();
         actual.Should().Be(expected);

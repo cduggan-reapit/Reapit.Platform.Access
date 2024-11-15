@@ -135,6 +135,9 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
 
                     b.HasIndex("ProductId");
 
+                    b.HasIndex("Name", "ProductId", "OrganisationId", "DateDeleted")
+                        .IsUnique();
+
                     b.ToTable("instances", (string)null);
                 });
 
@@ -199,6 +202,9 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                     b.HasIndex("DateDeleted");
 
                     b.HasIndex("DateModified");
+
+                    b.HasIndex("Name", "DateDeleted")
+                        .IsUnique();
 
                     b.ToTable("products", (string)null);
                 });
@@ -301,6 +307,21 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                     b.ToTable("groupUsers");
                 });
 
+            modelBuilder.Entity("instanceGroups", b =>
+                {
+                    b.Property<string>("groupId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("instanceId")
+                        .HasColumnType("varchar(36)");
+
+                    b.HasKey("groupId", "instanceId");
+
+                    b.HasIndex("instanceId");
+
+                    b.ToTable("instanceGroups");
+                });
+
             modelBuilder.Entity("organisationUsers", b =>
                 {
                     b.Property<string>("organisationId")
@@ -372,6 +393,21 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                     b.HasOne("Reapit.Platform.Access.Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("userId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("instanceGroups", b =>
+                {
+                    b.HasOne("Reapit.Platform.Access.Domain.Entities.Group", null)
+                        .WithMany()
+                        .HasForeignKey("groupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reapit.Platform.Access.Domain.Entities.Instance", null)
+                        .WithMany()
+                        .HasForeignKey("instanceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

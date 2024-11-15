@@ -1,6 +1,4 @@
 ﻿using System.Net;
-using AutoMapper;
-using Reapit.Platform.Access.Api.Controllers.Internal.Organisations.V1;
 using Reapit.Platform.Access.Api.Controllers.Internal.Organisations.V1.Models;
 using Reapit.Platform.Access.Data.Context;
 using Reapit.Platform.Access.Domain.Entities;

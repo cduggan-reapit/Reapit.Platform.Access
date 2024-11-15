@@ -1,7 +1,4 @@
-﻿using Reapit.Platform.Access.Domain.Entities.Abstract;
-using Reapit.Platform.Common.Providers.Identifiers;
-
-namespace Reapit.Platform.Access.Domain.Entities;
+﻿namespace Reapit.Platform.Access.Domain.Entities;
 
 /// <summary>Represents a global role.</summary>
 public class Role : EntityBase
@@ -9,8 +6,7 @@ public class Role : EntityBase
     /// <summary>Initializes a new instance of the <see cref="Role"/> class.</summary>
     /// <param name="name">The name of the role.</param>
     /// <param name="description">A description of the role.</param>
-    public Role(string name, string? description) 
-        : base(GuidProvider.New.ToString("N"))
+    public Role(string name, string? description)
     {
         Name = name;
         Description = description;

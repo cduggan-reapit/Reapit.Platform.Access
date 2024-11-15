@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using Reapit.Platform.Access.Core.Extensions;
 using Reapit.Platform.Access.Data.Services;
 using Reapit.Platform.Access.Domain.Entities;
 
@@ -20,7 +19,7 @@ public class SoftDeleteRoleCommandHandler(IUnitOfWork unitOfWork, ILogger<SoftDe
         _ = await unitOfWork.Roles.UpdateAsync(role, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         
-        logger.LogInformation("Role soft-deleted: {id} ({blob})", request.Id, role.AsSerializable().ToJson());
+        logger.LogInformation("Role soft-deleted: {id} ({blob})", request.Id, role.ToString());
 
         return role;
     }

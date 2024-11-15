@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using Reapit.Platform.Access.Core.Extensions;
 using Reapit.Platform.Access.Data.Services;
 using Reapit.Platform.Access.Domain.Entities;
 
@@ -32,7 +31,7 @@ public class DeleteOrganisationCommandHandler : IRequestHandler<DeleteOrganisati
         _ = await _unitOfWork.Organisations.DeleteOrganisationAsync(organisation, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Organisation deleted: {id} ({json})", organisation.Id, organisation.AsSerializable().ToJson());
+        _logger.LogInformation("Organisation deleted: {id} ({json})", organisation.Id, organisation.ToString());
         return organisation;
     }
 }

@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-using FluentValidation.Results;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using Reapit.Platform.Access.Core.Exceptions;
 using Reapit.Platform.Access.Core.Extensions;

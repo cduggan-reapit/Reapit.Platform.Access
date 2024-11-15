@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Text.Json;
+using FluentAssertions;
 using Reapit.Platform.Access.Domain.Entities;
 using Reapit.Platform.Common.Providers.Temporal;
 
@@ -63,5 +64,18 @@ public class UserTests
         var expected = new { user.Id, user.Name, user.Email, Sync = user.DateLastSynchronised.UtcDateTime };
         var actual = user.AsSerializable();
         actual.Should().BeEquivalentTo(expected);
+    }
+    
+    /*
+     * ToString
+     */
+
+    [Fact]
+    public void ToString_ReturnsSerializedObject_ForEntity()
+    {
+        var entity = new User("id", "name", "email");
+        var expected = JsonSerializer.Serialize(entity.AsSerializable());
+        var actual = entity.ToString();
+        actual.Should().Be(expected);
     }
 }

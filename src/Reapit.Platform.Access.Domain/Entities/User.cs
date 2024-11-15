@@ -1,5 +1,4 @@
-﻿using Reapit.Platform.Access.Domain.Entities.Abstract;
-using Reapit.Platform.Common.Providers.Temporal;
+﻿using Reapit.Platform.Common.Providers.Temporal;
 
 namespace Reapit.Platform.Access.Domain.Entities;
 

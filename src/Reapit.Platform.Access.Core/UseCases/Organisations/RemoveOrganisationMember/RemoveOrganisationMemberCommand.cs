@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Reapit.Platform.Access.Domain.Entities;
 
 namespace Reapit.Platform.Access.Core.UseCases.Organisations.RemoveOrganisationMember;
 

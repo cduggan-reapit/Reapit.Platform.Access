@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Reapit.Platform.Access.Core.Extensions;
 using Reapit.Platform.Access.Data.Services;
 using Reapit.Platform.Access.Domain.Entities;
 
@@ -35,7 +34,7 @@ public class SynchroniseOrganisationCommandHandler(
         }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        logger.LogInformation("Organisation synchronised: {id} ({json})", organisation.Id, organisation.AsSerializable().ToJson());
+        logger.LogInformation("Organisation synchronised: {id} ({json})", organisation.Id, organisation.ToString());
         
         return organisation;
     }

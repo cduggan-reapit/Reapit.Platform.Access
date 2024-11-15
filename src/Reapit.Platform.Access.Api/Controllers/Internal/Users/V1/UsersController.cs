@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Reapit.Platform.Access.Api.Controllers.Internal.Users.V1.Examples;
 using Reapit.Platform.Access.Api.Controllers.Internal.Users.V1.Models;

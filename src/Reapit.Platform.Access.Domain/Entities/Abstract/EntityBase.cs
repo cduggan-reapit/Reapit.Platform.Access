@@ -1,14 +1,14 @@
-﻿using Reapit.Platform.Common.Providers.Temporal;
+﻿using System.Text.Json;
+using Reapit.Platform.Common.Providers.Temporal;
 
 namespace Reapit.Platform.Access.Domain.Entities.Abstract;
 
 public abstract class EntityBase
 {
     /// <summary>Initialize a new instance of the <see cref="EntityBase"/> class.</summary>
-    /// <param name="id">The unique identifier of the entity.</param>
-    protected EntityBase(string id)
+    protected EntityBase()
     {
-        Id = id;
+        Id = IdentityGenerator.Create();
         SetDateCreated();
     }
     
@@ -84,9 +84,9 @@ public abstract class EntityBase
         => DateDeleted = DateTimeOffsetProvider.Now.UtcDateTime;
     
     /// <summary>Gets an anonymous, serializable object representing this entity.</summary>
-    /// <remarks>
-    /// Due to relationships between subclasses of <see cref="EntityBase"/>, circular relationships can be established
-    /// which causes problems for object serialization.  This method generates an object which is safe to serialize.
-    /// </remarks>
     public abstract object AsSerializable();
+
+    /// <inheritdoc />
+    public override string ToString() 
+        => JsonSerializer.Serialize(AsSerializable());
 }

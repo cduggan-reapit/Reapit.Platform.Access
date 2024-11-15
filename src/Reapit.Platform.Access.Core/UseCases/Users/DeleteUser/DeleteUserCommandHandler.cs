@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using Reapit.Platform.Access.Core.Extensions;
 using Reapit.Platform.Access.Data.Services;
 using Reapit.Platform.Access.Domain.Entities;
 
@@ -32,7 +31,7 @@ public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, User>
         _ = await _unitOfWork.Users.DeleteUserAsync(user, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("User deleted: {id} ({json})", user.Id, user.AsSerializable().ToJson());
+        _logger.LogInformation("User deleted: {id} ({json})", user.Id, user.ToString());
         return user;
     }
 }

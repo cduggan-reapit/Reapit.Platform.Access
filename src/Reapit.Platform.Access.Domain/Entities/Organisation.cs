@@ -1,5 +1,4 @@
-﻿using Reapit.Platform.Access.Domain.Entities.Abstract;
-using Reapit.Platform.Common.Providers.Temporal;
+﻿using Reapit.Platform.Common.Providers.Temporal;
 
 namespace Reapit.Platform.Access.Domain.Entities;
 
@@ -41,13 +40,13 @@ public class Organisation : RemoteEntityBase
     public string Name { get; private set; }
 
     /// <summary>The product instances associated with the organisation.</summary>
-    public ICollection<Instance> Instances { get; set; } = new List<Instance>();
+    public IEnumerable<Instance> Instances { get; } = new List<Instance>();
     
     /// <summary>The user groups associated with the organisation.</summary>
-    public ICollection<Group> Groups { get; set; } = new List<Group>();
+    public IEnumerable<Group> Groups { get; } = new List<Group>();
 
     /// <summary>The users associated with this organisation.</summary>
-    public ICollection<User> Users { get; set; } = new List<User>();
+    public ICollection<User> Users { get; init; } = new List<User>();
     
     /// <inheritdoc /> 
     public override object AsSerializable()

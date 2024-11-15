@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using System.Text.Json;
 using Reapit.Platform.Access.Domain.Entities;
 using Reapit.Platform.Common.Providers.Identifiers;
 using Reapit.Platform.Common.Providers.Temporal;
@@ -128,7 +129,7 @@ public class GroupTests
      */
 
     [Fact]
-    public void AsSerializable_ReturnsAnonymousObject_ForUser()
+    public void AsSerializable_ReturnsAnonymousObject_ForGroup()
     {
         const string name = "name", description = "description", organisationId = "organisation-id";
         
@@ -137,5 +138,18 @@ public class GroupTests
         
         var actual = group.AsSerializable();
         actual.Should().BeEquivalentTo(expected);
+    }
+    
+    /*
+     * ToString
+     */
+
+    [Fact]
+    public void ToString_ReturnsSerializedObject_ForEntity()
+    {
+        var entity = new Group("name", "description", "organisationId");
+        var expected = JsonSerializer.Serialize(entity.AsSerializable());
+        var actual = entity.ToString();
+        actual.Should().Be(expected);
     }
 }

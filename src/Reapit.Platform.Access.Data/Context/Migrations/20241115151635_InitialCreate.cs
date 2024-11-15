@@ -234,6 +234,33 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "instanceGroups",
+                columns: table => new
+                {
+                    groupId = table.Column<string>(type: "varchar(36)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    instanceId = table.Column<string>(type: "varchar(36)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_instanceGroups", x => new { x.groupId, x.instanceId });
+                    table.ForeignKey(
+                        name: "FK_instanceGroups_groups_groupId",
+                        column: x => x.groupId,
+                        principalTable: "groups",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_instanceGroups_instances_instanceId",
+                        column: x => x.instanceId,
+                        principalTable: "instances",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateIndex(
                 name: "IX_groups_cursor",
                 table: "groups",
@@ -267,6 +294,11 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 column: "userId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_instanceGroups_instanceId",
+                table: "instanceGroups",
+                column: "instanceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_instances_cursor",
                 table: "instances",
                 column: "cursor",
@@ -286,6 +318,12 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 name: "IX_instances_deleted",
                 table: "instances",
                 column: "deleted");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_instances_name_product_id_organisation_id_deleted",
+                table: "instances",
+                columns: new[] { "name", "product_id", "organisation_id", "deleted" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_instances_organisation_id",
@@ -322,6 +360,12 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 name: "IX_products_deleted",
                 table: "products",
                 column: "deleted");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_products_name_deleted",
+                table: "products",
+                columns: new[] { "name", "deleted" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_roles_cursor",
@@ -363,7 +407,7 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 name: "groupUsers");
 
             migrationBuilder.DropTable(
-                name: "instances");
+                name: "instanceGroups");
 
             migrationBuilder.DropTable(
                 name: "organisationUsers");
@@ -375,7 +419,7 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
                 name: "groups");
 
             migrationBuilder.DropTable(
-                name: "products");
+                name: "instances");
 
             migrationBuilder.DropTable(
                 name: "roles");
@@ -385,6 +429,9 @@ namespace Reapit.Platform.Access.Data.Context.Migrations
 
             migrationBuilder.DropTable(
                 name: "organisations");
+
+            migrationBuilder.DropTable(
+                name: "products");
         }
     }
 }

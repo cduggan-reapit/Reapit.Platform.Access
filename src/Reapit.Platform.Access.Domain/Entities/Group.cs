@@ -1,8 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Reapit.Platform.Access.Domain.Entities.Abstract;
-using Reapit.Platform.Common.Providers.Identifiers;
-
-namespace Reapit.Platform.Access.Domain.Entities;
+﻿namespace Reapit.Platform.Access.Domain.Entities;
 
 /// <summary>Represents a group with which users can be associated.</summary>
 public class Group : EntityBase
@@ -11,8 +7,7 @@ public class Group : EntityBase
     /// <param name="name">The name of the group.</param>
     /// <param name="description">A description of the group.</param>
     /// <param name="organisationId">The unique identifier of the organisation with which the group is associated.</param>
-    public Group(string name, string? description, string organisationId) 
-        : base(GuidProvider.New.ToString("N"))
+    public Group(string name, string? description, string organisationId)
     {
         Name = name;
         Description = description;
@@ -48,12 +43,14 @@ public class Group : EntityBase
     public string OrganisationId { get; init; }
     
     /// <summary>The organisation with which the group is associated.</summary>
-    [ForeignKey(nameof(OrganisationId))]
     public Organisation? Organisation { get; init; }
 
     /// <summary>The collection of users associated with this group.</summary>
     public ICollection<User> Users { get; init; } = new List<User>();
-    
+
+    /// <summary>The product instances that the group can access.</summary>
+    public IEnumerable<Instance> Instances { get; } = new List<Instance>();
+
     /// <inheritdoc/>
     public override object AsSerializable()
         => new { Id, Name, Description, OrganisationId, DateCreated, DateModified };
